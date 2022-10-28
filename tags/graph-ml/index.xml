@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>GradientDissent</title>
-    <link>https://potatospudowski.github.io/</link>
-    <description>Recent content on GradientDissent</description>
+    <title>Graph ML on GradientDissent</title>
+    <link>https://potatospudowski.github.io/tags/graph-ml/</link>
+    <description>Recent content in Graph ML on GradientDissent</description>
     <image>
       <url>https://potatospudowski.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
       <link>https://potatospudowski.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 19 Jun 2021 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 19 Jun 2021 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/tags/graph-ml/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Understanding the mathematical foundations and applications of Graph Convolutional Networks</title>
       <link>https://potatospudowski.github.io/posts/gnn/</link>
@@ -20,19 +20,6 @@
       <description>Recent advances in neural networks have driven study of data mining and pattern recognition. End-to-end deep learning models including convolutional neural networks (CNNs), recurrent neural networks (RNNs), and autoencoders have breathed new life into traditional machine learning tasks such as object detection, machine translation, and speech recognition.
 Deep Learning is effective at uncovering hidden patterns among Euclidean data (images, text, videos). But what about applications that rely on data originating from non-Euclidean domains, which is typically represented as a graph with intricate interdependencies and relationships among objects?</description>
     </item>
-    
-    <item>
-      <title>RUL(Remaining Useful Life) and SOH(State of Health) estimation of Lithium-ion satellite power systems using Support-Vector-Regression</title>
-      <link>https://potatospudowski.github.io/posts/rul/</link>
-      <pubDate>Mon, 16 Sep 2019 00:41:42 +0530</pubDate>
-      
-      <guid>https://potatospudowski.github.io/posts/rul/</guid>
-      <description>Batteries are a critical part of any satellite&amp;rsquo;s power system.
-They are used to provide power:
-During launch and after the launch of the satellite till the solar panels are deployed To the spacecraft, its equipment, and payload during the shadow phase For communication and data transfer To maintain the electronics at a specific temperature Batteries with higher gravimetric(higher mass) and volumetric(higher volume) energy densities lead to lesser mass and volume for the power systems and thereby increase payload and mission capabilities.</description>
-    </item>
-    
-    
     
   </channel>
 </rss>

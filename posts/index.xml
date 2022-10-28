@@ -10,7 +10,17 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Sep 2019 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 19 Jun 2021 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding the mathematical foundations and applications of Graph Convolutional Networks</title>
+      <link>https://potatospudowski.github.io/posts/gnn/</link>
+      <pubDate>Sat, 19 Jun 2021 00:41:42 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/posts/gnn/</guid>
+      <description>Recent advances in neural networks have driven study of data mining and pattern recognition. End-to-end deep learning models including convolutional neural networks (CNNs), recurrent neural networks (RNNs), and autoencoders have breathed new life into traditional machine learning tasks such as object detection, machine translation, and speech recognition.
+Deep Learning is effective at uncovering hidden patterns among Euclidean data (images, text, videos). But what about applications that rely on data originating from non-Euclidean domains, which is typically represented as a graph with intricate interdependencies and relationships among objects?</description>
+    </item>
+    
     <item>
       <title>RUL(Remaining Useful Life) and SOH(State of Health) estimation of Lithium-ion satellite power systems using Support-Vector-Regression</title>
       <link>https://potatospudowski.github.io/posts/rul/</link>

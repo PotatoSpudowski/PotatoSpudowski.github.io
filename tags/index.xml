@@ -10,7 +10,25 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Sep 2019 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 19 Jun 2021 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Graph Convolutional Networks</title>
+      <link>https://potatospudowski.github.io/tags/graph-convolutional-networks/</link>
+      <pubDate>Sat, 19 Jun 2021 00:41:42 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/tags/graph-convolutional-networks/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Graph ML</title>
+      <link>https://potatospudowski.github.io/tags/graph-ml/</link>
+      <pubDate>Sat, 19 Jun 2021 00:41:42 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/tags/graph-ml/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Satellite Systems</title>
       <link>https://potatospudowski.github.io/tags/satellite-systems/</link>
