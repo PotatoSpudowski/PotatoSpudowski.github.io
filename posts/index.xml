@@ -10,7 +10,17 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 19 Jun 2021 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 31 Oct 2022 15:16:19 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding Transformers! (Part 1: Model Architecture)</title>
+      <link>https://potatospudowski.github.io/posts/attention/</link>
+      <pubDate>Mon, 31 Oct 2022 15:16:19 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/posts/attention/</guid>
+      <description>In the past, we&amp;rsquo;ve had different architectures for different modalities of data like CNNs for Images, RNNs for Text and GNNs for Graphs. Recently we have seen the adoption of Transformers for processing all types of data modalities. Transformers can be thought of like general purpose trainable architecture. Since the adoption of transformers has been growing so rapidly, It might be a good idea to revisit the original paper.
+Introduction In sequence modelling and transduction problems, recurrent neural networks, and in particular extended short-term memory and gated recurrent neural networks, have become standard.</description>
+    </item>
+    
     <item>
       <title>Understanding the mathematical foundations and applications of Graph Convolutional Networks</title>
       <link>https://potatospudowski.github.io/posts/gnn/</link>

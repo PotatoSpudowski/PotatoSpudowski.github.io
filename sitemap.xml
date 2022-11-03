@@ -3,18 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://potatospudowski.github.io/</loc>
-    <lastmod>2021-06-19T00:41:42+05:30</lastmod>
+    <lastmod>2022-10-31T15:16:19+05:30</lastmod>
+  </url><url>
+    <loc>https://potatospudowski.github.io/tags/nlp/</loc>
+    <lastmod>2022-10-31T15:16:19+05:30</lastmod>
+  </url><url>
+    <loc>https://potatospudowski.github.io/posts/</loc>
+    <lastmod>2022-10-31T15:16:19+05:30</lastmod>
+  </url><url>
+    <loc>https://potatospudowski.github.io/tags/self-attention/</loc>
+    <lastmod>2022-10-31T15:16:19+05:30</lastmod>
+  </url><url>
+    <loc>https://potatospudowski.github.io/tags/</loc>
+    <lastmod>2022-10-31T15:16:19+05:30</lastmod>
+  </url><url>
+    <loc>https://potatospudowski.github.io/tags/transformers/</loc>
+    <lastmod>2022-10-31T15:16:19+05:30</lastmod>
+  </url><url>
+    <loc>https://potatospudowski.github.io/posts/attention/</loc>
+    <lastmod>2022-10-31T15:16:19+05:30</lastmod>
   </url><url>
     <loc>https://potatospudowski.github.io/tags/graph-convolutional-networks/</loc>
     <lastmod>2021-06-19T00:41:42+05:30</lastmod>
   </url><url>
     <loc>https://potatospudowski.github.io/tags/graph-ml/</loc>
-    <lastmod>2021-06-19T00:41:42+05:30</lastmod>
-  </url><url>
-    <loc>https://potatospudowski.github.io/posts/</loc>
-    <lastmod>2021-06-19T00:41:42+05:30</lastmod>
-  </url><url>
-    <loc>https://potatospudowski.github.io/tags/</loc>
     <lastmod>2021-06-19T00:41:42+05:30</lastmod>
   </url><url>
     <loc>https://potatospudowski.github.io/posts/gnn/</loc>

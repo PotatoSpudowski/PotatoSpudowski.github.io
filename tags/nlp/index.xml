@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>NLP on GradientDissent</title>
+    <link>https://potatospudowski.github.io/tags/nlp/</link>
+    <description>Recent content in NLP on GradientDissent</description>
+    <image>
+      <url>https://potatospudowski.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://potatospudowski.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 31 Oct 2022 15:16:19 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/tags/nlp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding Transformers! (Part 1: Model Architecture)</title>
+      <link>https://potatospudowski.github.io/posts/attention/</link>
+      <pubDate>Mon, 31 Oct 2022 15:16:19 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/posts/attention/</guid>
+      <description>In the past, we&amp;rsquo;ve had different architectures for different modalities of data like CNNs for Images, RNNs for Text and GNNs for Graphs. Recently we have seen the adoption of Transformers for processing all types of data modalities. Transformers can be thought of like general purpose trainable architecture. Since the adoption of transformers has been growing so rapidly, It might be a good idea to revisit the original paper.
+Introduction In sequence modelling and transduction problems, recurrent neural networks, and in particular extended short-term memory and gated recurrent neural networks, have become standard.</description>
+    </item>
+    
+  </channel>
+</rss>

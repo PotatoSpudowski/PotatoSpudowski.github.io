@@ -10,7 +10,34 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 19 Jun 2021 00:41:42 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 31 Oct 2022 15:16:19 +0530</lastBuildDate><atom:link href="https://potatospudowski.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>NLP</title>
+      <link>https://potatospudowski.github.io/tags/nlp/</link>
+      <pubDate>Mon, 31 Oct 2022 15:16:19 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/tags/nlp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Self-Attention</title>
+      <link>https://potatospudowski.github.io/tags/self-attention/</link>
+      <pubDate>Mon, 31 Oct 2022 15:16:19 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/tags/self-attention/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Transformers</title>
+      <link>https://potatospudowski.github.io/tags/transformers/</link>
+      <pubDate>Mon, 31 Oct 2022 15:16:19 +0530</pubDate>
+      
+      <guid>https://potatospudowski.github.io/tags/transformers/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Graph Convolutional Networks</title>
       <link>https://potatospudowski.github.io/tags/graph-convolutional-networks/</link>
