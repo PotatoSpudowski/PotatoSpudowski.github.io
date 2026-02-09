@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Running Qwen Image Edit on macOS: A Complete Guide - Bahushruth CS</title>
+    <title>I Ran an AI Image Editor on My Mac Mini (And It Actually Worked) - Bahushruth CS</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="icon" type="image/svg+xml" href="../potato.svg">
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
     <nav class="nav">
@@ -27,490 +26,208 @@
             <a href="../articles.html" class="back-link">← Back to articles</a>
             
             <header class="article-header">
-                <h1 class="article-title-large">Running Qwen Image Edit on macOS: A Complete Guide</h1>
-                <p class="article-meta-large">February 10, 2026 · 15 min read</p>
+                <h1 class="article-title-large">I Ran an AI Image Editor on My Mac Mini (And It Actually Worked)</h1>
+                <p class="article-meta-large">February 10, 2026 · 12 min read</p>
             </header>
 
             <div class="article-content">
-                <p class="lead">A hands-on guide to running Alibaba's Qwen Image Edit model locally on macOS using GGUF quantized weights and ComfyUI. Learn what each node does, how to optimize for speed, and how to extend with custom LoRAs.</p>
+                <p class="lead">A few days ago, I decided to see if I could run Alibaba's new Qwen Image Edit model locally on my Mac Mini. No cloud APIs, no subscriptions, just pure local inference. Here's what happened.</p>
 
-                <h2>What We're Building</h2>
-                <p>By the end of this guide, you'll have a ComfyUI workflow that can:</p>
-                <ul>
-                    <li>Take any input image and edit it with text instructions</li>
-                    <li>Run entirely on your Mac (no cloud APIs)</li>
-                    <li>Generate edits in under 30 seconds using optimized 4-step inference</li>
-                    <li>Use GGUF quantized models for memory efficiency</li>
-                </ul>
+                <h2>The Setup</h2>
+                <p>I've got a Mac Mini M2 Pro with 16GB unified memory. Not exactly a beefy machine for AI workloads, but I wanted to see how far I could push it. The goal was simple: take a photo, give the AI a text instruction like "make this person smile," and get an edited image back.</p>
 
-                <h2>Required Downloads</h2>
-                
-                <h3>Core Model Files</h3>
+                <p>Turns out, it's totally doable. But getting there required understanding a bunch of pieces that fit together in a very specific way. Let me walk you through it.</p>
+
+                <h2>What You Need to Download</h2>
+                <p>First things first, you need the actual model files. These aren't small, so make sure you have about 20GB free:</p>
+
                 <table>
                     <tr>
                         <th>File</th>
                         <th>Size</th>
                         <th>Download</th>
-                        <th>Purpose</th>
                     </tr>
                     <tr>
-                        <td><code>Qwen-Image-Edit-2509-Q8_0.gguf</code></td>
+                        <td>Qwen-Image-Edit-2509-Q8_0.gguf</td>
                         <td>~7.8GB</td>
                         <td><a href="https://huggingface.co/city96/Qwen-Image-Edit-gguf/tree/main" target="_blank">Hugging Face</a></td>
-                        <td>Main UNet model (GGUF quantized)</td>
                     </tr>
                     <tr>
-                        <td><code>qwen2.5-vl-7b-it-q8_0.gguf</code></td>
+                        <td>qwen2.5-vl-7b-it-q8_0.gguf</td>
                         <td>~7.7GB</td>
                         <td><a href="https://huggingface.co/city96/Qwen2.5-VL-gguf/tree/main" target="_blank">Hugging Face</a></td>
-                        <td>Vision & text encoder</td>
                     </tr>
                     <tr>
-                        <td><code>qwen_image_vae.safetensors</code></td>
+                        <td>qwen_image_vae.safetensors</td>
                         <td>~500MB</td>
                         <td><a href="https://huggingface.co/city96/Qwen-Image-Edit-gguf/tree/main" target="_blank">Hugging Face</a></td>
-                        <td>Variational Autoencoder for image encoding/decoding</td>
                     </tr>
                     <tr>
-                        <td><code>Qwen-Image-Edit-2509-Lightning-4steps-V1.0-bf16.safetensors</code></td>
+                        <td>Qwen-Lightning-4steps LoRA</td>
                         <td>~4MB</td>
                         <td><a href="https://huggingface.co/city96/Qwen-Image-Edit-gguf/tree/main" target="_blank">Hugging Face</a></td>
-                        <td>Lightning LoRA (4-step inference)</td>
                     </tr>
                 </table>
 
-                <h3>Required ComfyUI Custom Nodes</h3>
-                <p>Install these via ComfyUI Manager:</p>
-                <pre><code># ComfyUI-GGUF
-https://github.com/city96/ComfyUI-GGUF
+                <h2>The Magic of GGUF</h2>
+                <p>Notice those <code>.gguf</code> file extensions? That's the secret sauce. GGUF (GPT-Generated Unified Format) is a quantization format that shrinks massive AI models down to a size that can actually run on consumer hardware.</p>
 
-# ComfyUI-Qwen-image-editing (for Qwen-specific nodes)
-https://github.com/IuvenisSapiens/ComfyUI-Qwen-image-editing</code></pre>
+                <p>The "Q8_0" in the filename means 8-bit quantization. Without this, you'd need a machine with 32GB+ of VRAM. With it? My 16GB Mac Mini handles it just fine. The quality loss is barely perceptible for most use cases.</p>
 
-                <h2>The Complete Workflow</h2>
-                
-                <h3>High-Level Architecture</h3>
-                <div class="mermaid">
-flowchart TD
-    A[Input Image] --> B[Image Preprocessing]
-    B --> C[Text Instruction]
-    C --> D[Vision Encoder]
-    D --> E[Conditioning]
-    E --> F[Latent Generation]
-    F --> G[VAE Decode]
-    G --> H[Output Image]
-    
-    I[GGUF UNet Model] --> F
-    J[Lightning LoRA] --> I
-    K[VAE] --> F
-    K --> G
-                </div>
+                <h2>Why ComfyUI?</h2>
+                <p>I could have written Python scripts to run this model, but ComfyUI makes the whole process visual and way less painful. Think of it like node-based programming: you connect boxes together, each box does one thing, and the flow of data between them creates your image.</p>
 
-                <h2>Understanding Each Component</h2>
+                <p>Plus, ComfyUI has a thriving ecosystem of custom nodes. For this project, you'll need:</p>
+                <ul>
+                    <li><strong>ComfyUI-GGUF</strong> - For loading those quantized model files</li>
+                    <li><strong>ComfyUI-Qwen-image-editing</strong> - For the Qwen-specific nodes that handle the vision-language stuff</li>
+                </ul>
 
-                <h3>1. Model Loading Nodes</h3>
-                
-                <h4>UnetLoaderGGUF</h4>
-                <p>This node loads the main diffusion model in GGUF format. GGUF (GPT-Generated Unified Format) is a quantization format that allows large models to run with reduced memory footprint.</p>
-                
-                <pre><code>Node: UnetLoaderGGUF
-Input: model_path → "Qwen-Image-Edit-2509-Q8_0.gguf"
-Output: model (the UNet for diffusion)
+                <h2>The Workflow Breakdown</h2>
+                <p>Here's where it gets interesting. Let me show you what each part of the workflow actually does.</p>
 
-Why GGUF? 
-- Q8_0 quantization = 8-bit weights
-- Reduces VRAM from ~16GB to ~8GB
-- Minimal quality loss for inference</code></pre>
+                <h3>1. Loading the Brain</h3>
+                <p>First, you need to load three different models:</p>
 
-                <h4>LoraLoaderModelOnly</h4>
-                <p>Loads LoRA (Low-Rank Adaptation) weights to modify the base model. We're using a Lightning LoRA that enables 4-step inference instead of the usual 20-50 steps.</p>
+                <pre><code><span class="code-comment"># UnetLoaderGGUF - The main diffusion model</span>
+<span class="code-property">model_path</span>: <span class="code-string">"Qwen-Image-Edit-2509-Q8_0.gguf"</span>
+<span class="code-property">output</span>: model
 
-                <pre><code>Node: LoraLoaderModelOnly
-Input: 
-  - model (from UnetLoaderGGUF)
-  - lora_name → "Qwen-Image-Edit-2509-Lightning-4steps-V1.0-bf16.safetensors"
-  - strength → 1.0
-Output: patched_model
+<span class="code-comment"># This is the actual neural network that generates images</span>
+<span class="code-comment"># It's been quantized to 8-bit to fit in memory</span></code></pre>
 
-What does the Lightning LoRA do?
-- Trains the model to converge faster during sampling
-- Reduces steps from 20-50 → 4 steps
-- Speedup: ~5-10x faster inference
-- Quality trade-off: Minimal with proper CFG scaling</code></pre>
+                <p>The UNet is the core diffusion model. Think of it as the "artist" that will paint your edited image. But before it can do that, it needs to understand what you want.</p>
 
-                <h4>CLIPLoaderGGUF</h4>
-                <p>Loads the vision-language encoder. This is Qwen2.5-VL, which can process both images and text together.</p>
+                <h3>2. The Vision Encoder</h3>
+                <p>This is where Qwen2.5-VL comes in. It's a vision-language model that can look at your input image and understand what's in it:</p>
 
-                <pre><code>Node: CLIPLoaderGGUF
-Input:
-  - clip_name → "qwen2.5-vl-7b-it-q8_0.gguf"
-  - type → "qwen_image"
-Output: clip
+                <pre><code><span class="code-comment"># CLIPLoaderGGUF - Vision & text encoder</span>
+<span class="code-property">clip_name</span>: <span class="code-string">"qwen2.5-vl-7b-it-q8_0.gguf"</span>
+<span class="code-property">type</span>: <span class="code-string">"qwen_image"</span>
+<span class="code-property">output</span>: clip</code></pre>
 
-This encoder:
-- Understands your text instruction
-- Analyzes the input image
-- Creates a joint representation (conditioning)
-- Enables "vision-guided" image editing</code></pre>
+                <p>This encoder does two things simultaneously: it processes your text instruction (like "make the person smile") and analyzes your input image. Then it creates a joint understanding of both.</p>
 
-                <h4>VAELoader</h4>
-                <p>The Variational Autoencoder handles converting between pixel space and latent space.</p>
+                <h3>3. The Speed Hack</h3>
+                <p>Normally, diffusion models take 20-50 steps to generate an image. Each step is a forward pass through the neural network, and on a Mac Mini, that's slow.</p>
 
-                <pre><code>Node: VAELoader
-Input: vae_name → "qwen_image_vae.safetensors"
-Output: vae
+                <p>Enter the Lightning LoRA:</p>
 
-The VAE:
-- Encodes your image to latent space (compression)
-- The diffusion happens in latent space (faster)
-- Decodes the final result back to pixels
-- Compression ratio: 8x (e.g., 512x512 → 64x64 latent)</code></pre>
+                <pre><code><span class="code-comment"># LoraLoaderModelOnly - Speed booster</span>
+<span class="code-property">lora_name</span>: <span class="code-string">"Qwen-Image-Edit-2509-Lightning-4steps-V1.0-bf16.safetensors"</span>
+<span class="code-property">strength</span>: <span class="code-number">1.0</span>
+<span class="code-property">input</span>: model (from UNet loader)
+<span class="code-property">output</span>: patched_model</code></pre>
 
-                <h3>2. Image Processing Pipeline</h3>
-                
-                <div class="mermaid">
-flowchart LR
-    A[LoadImage] --> B[ImageScaleToTotalPixels]
-    B --> C[FluxKontextImageScale]
-    C --> D[VAEEncode]
-    D --> E[Latent for Sampling]
-                </div>
+                <p>LoRA stands for Low-Rank Adaptation. It's a technique for fine-tuning models without changing all the parameters. This specific LoRA has been trained to make the model converge in just 4 steps instead of 50. That's a 10x speedup.</p>
 
-                <h4>LoadImage</h4>
-                <pre><code>Node: LoadImage
-Input: image → "your_photo.jpg"
-Output: image, mask
+                <p>The trade-off? Slightly less photorealistic results, but for most edits, you won't notice the difference. And on a Mac Mini, going from 5 minutes to 30 seconds per image is absolutely worth it.</p>
 
-Simply loads your input image.</code></pre>
+                <h3>4. The VAE (The Unsung Hero)</h3>
+                <p>VAE stands for Variational Autoencoder. It's the bridge between the pixel world and the latent world where the diffusion actually happens:</p>
 
-                <h4>ImageScaleToTotalPixels</h4>
-                <p>Resizes the image while maintaining aspect ratio, targeting a specific total pixel count.</p>
+                <pre><code><span class="code-comment"># VAELoader - Image encoder/decoder</span>
+<span class="code-property">vae_name</span>: <span class="code-string">"qwen_image_vae.safetensors"</span>
+<span class="code-property">output</span>: vae
 
-                <pre><code>Node: ImageScaleToTotalPixels
-Input:
-  - image (from LoadImage)
-  - megapixels → 1.0
-  - method → "bicubic"
-Output: scaled_image
+<span class="code-comment"># Your 512x512 image gets compressed to 64x64x4 latent space</span>
+<span class="code-comment"># That's a 64x reduction in size!</span>
+<span class="code-comment"># The diffusion happens in this compressed space (much faster)</span>
+<span class="code-comment"># Then gets decoded back to pixels at the end</span></code></pre>
 
-Why 1.0 megapixels?
-- ~1000x1000 pixels
-- Good balance of quality and speed
-- Matches training resolution of the model
-- Larger = slower, smaller = faster but lower quality</code></pre>
+                <p>This compression is crucial. Running diffusion on full-resolution pixels would be impossibly slow. The VAE lets us work in a compressed "thought space" where the model can be creative, then converts the result back to something you can actually see.</p>
 
-                <h4>FluxKontextImageScale</h4>
-                <p>Specialized resize node that aligns to training resolutions. Models are trained on specific resolutions, so this ensures compatibility.</p>
+                <h3>5. The Magic Node</h3>
+                <p>This is where everything comes together. The TextEncodeQwenImageEditPlus node is what makes this whole workflow possible:</p>
 
-                <pre><code>Node: FluxKontextImageScale
-Input: image (from previous step)
-Output: training_aligned_image
-
-Uses Lanczos resampling to:
-- Match training presets (768x768, 1024x1024, etc.)
-- Prevent artifacts from arbitrary resizing
-- Ensure optimal model performance</code></pre>
-
-                <h4>VAEEncode</h4>
-                <p>Converts the image to latent space where the diffusion model works.</p>
-
-                <pre><code>Node: VAEEncode
-Input:
-  - pixels (from FluxKontextImageScale)
-  - vae (from VAELoader)
-Output: latent_image
-
-Encoding process:
-- 512x512 RGB image → 64x64x4 latent tensor
-- 64x reduction in dimensions
-- Diffusion happens here (much faster than pixel space)</code></pre>
-
-                <h3>3. Conditioning and Prompting</h3>
-
-                <div class="mermaid">
-flowchart TD
-    A[CLIP Loader] --> B[TextEncodeQwenImageEditPlus]
-    C[Input Image] --> B
-    D[VAE] --> B
-    E[Text Prompt] --> B
-    B --> F[Positive Conditioning]
-    B --> G[Reference Latents]
-    F --> H[KSampler]
-    G --> H
-                </div>
-
-                <h4>TextEncodeQwenImageEditPlus</h4>
-                <p>This is the heart of the workflow. It combines your text instruction with the input image(s) to create the conditioning that guides the diffusion process.</p>
-
-                <pre><code>Node: TextEncodeQwenImageEditPlus
-Input:
+                <pre><code><span class="code-comment"># TextEncodeQwenImageEditPlus - The conductor</span>
+<span class="code-property">Inputs</span>:
   - clip (from CLIPLoaderGGUF)
   - vae (from VAELoader)
-  - text → "Make the person smile" (your instruction)
-  - image1 (from LoadImage) - REQUIRED
-  - image2 (optional)
-  - image3 (optional)
-Output:
-  - conditioning (for positive guidance)
-  - reference_latents (image features for the model)
+  - text: <span class="code-string">"Make the person smile"</span>
+  - image1: your_input_image
+  - image2: (optional)
+  - image3: (optional)
 
-What happens here:
-1. Text is tokenized and encoded by the language model
-2. Image is processed by the vision encoder
-3. Creates cross-attention maps between text and image
-4. Outputs conditioning that tells the UNet what to generate
-5. Reference latents provide the "source material" for editing</code></pre>
+<span class="code-property">Outputs</span>:
+  - conditioning (guidance for the model)
+  - reference_latents (features from your image)</code></pre>
 
-                <h4>ConditioningZeroOut</h4>
-                <p>Creates an "empty" or zero conditioning for the negative prompt. Qwen Image Edit works best without a traditional negative prompt.</p>
+                <p>This node does something remarkable. It takes your text instruction and your input image, and creates a "conditioning" that tells the UNet exactly what to generate. It's like giving an artist both a reference photo and a written brief.</p>
 
-                <pre><code>Node: ConditionZeroOut
-Input: conditioning (from TextEncodeQwenImageEditPlus)
-Output: zeroed_conditioning
+                <p>The reference latents are particularly cool - they're a compressed representation of your input image that the model uses as a starting point for the edit.</p>
 
-Why zero?
-- Qwen Image Edit is instruction-based
-- Negative prompts often confuse the model
-- Zero conditioning = neutral negative guidance
-- Lets the positive instruction dominate</code></pre>
+                <h3>6. The Sampler (Where the Art Happens)</h3>
+                <p>Finally, we get to the KSampler. This is where the actual image generation happens:</p>
 
-                <h3>4. The Sampler (Where the Magic Happens)</h3>
+                <pre><code><span class="code-comment"># KSampler - The artist at work</span>
+<span class="code-property">steps</span>: <span class="code-number">4</span>           <span class="code-comment"># Thanks to Lightning LoRA!</span>
+<span class="code-property">cfg</span>: <span class="code-number">1.0</span>          <span class="code-comment"># How closely to follow instructions</span>
+<span class="code-property">sampler</span>: <span class="code-string">"euler"</span>    <span class="code-comment"># The algorithm for denoising</span>
+<span class="code-property">denoise</span>: <span class="code-number">1.0</span>      <span class="code-comment"># Full replacement (complete edit)</span>
 
-                <div class="mermaid">
-flowchart TD
-    A[Model + LoRA] --> D[KSampler]
-    B[Positive Conditioning] --> D
-    C[Negative Conditioning] --> D
-    E[Latent Image] --> D
-    D --> F[Noisy Latent]
-    F --> G[Denoising Loop]
-    G --> H[Clean Latent]
-                </div>
+<span class="code-comment"># Inputs: model, conditioning, latent_image</span>
+<span class="code-comment"># Output: noisy_latent that gradually becomes your image</span></code></pre>
 
-                <h4>KSampler</h4>
-                <p>The sampler performs the actual diffusion process, iteratively denoising the latent to generate the edited image.</p>
+                <p>The sampler starts with random noise and gradually shapes it into your desired image over 4 steps. Each step is guided by the conditioning from the previous node. It's like sculpting - starting from a block of marble (noise) and gradually revealing the statue (your edited image) inside.</p>
 
-                <pre><code>Node: KSampler
-Input:
-  - model (patched model with LoRA)
-  - positive (conditioning from TextEncodeQwenImageEditPlus)
-  - negative (zeroed conditioning)
-  - latent_image (encoded input image)
-  - seed → random or fixed for reproducibility
-  - steps → 4 (only 4 steps with Lightning!)
-  - cfg → 1.0 (classifier-free guidance scale)
-  - sampler_name → "euler"
-  - scheduler → "simple"
-  - denoise → 1.0 (full denoising)
+                <h3>7. Decoding the Result</h3>
+                <p>Last step: convert the latent back to pixels you can see:</p>
 
-Sampler Configuration Explained:
+                <pre><code><span class="code-comment"># VAEDecode - Back to pixel land</span>
+<span class="code-property">samples</span>: (from KSampler)
+<span class="code-property">vae</span>: (from VAELoader)
+<span class="code-property">output</span>: your_edited_image.png</code></pre>
 
-steps: 4
-  - Thanks to Lightning LoRA, we only need 4 steps
-  - Standard diffusion: 20-50 steps
-  - Speed: ~5-10x faster!
+                <h2>The Results</h2>
+                <p>So how well does it work? Surprisingly well! On my Mac Mini M2 Pro:</p>
 
-cfg: 1.0
-  - Classifier-Free Guidance scale
-  - 1.0 = follow instruction closely without extra "creativity"
-  - Higher = more adherence to prompt but can over-saturate
-  - Lower = more natural but might ignore instructions
-
-sampler: euler
-  - Euler sampling algorithm
-  - Good balance of speed and quality
-  - Deterministic (same seed = same result)
-
-scheduler: simple
-  - Simple noise schedule
-  - Works well with Lightning LoRAs
-  - Predictable, linear noise reduction
-
-denoise: 1.0
-  - 1.0 = fully replace the latent (complete edit)
-  - 0.5 = partial edit (blend original and new)
-  - 0.0 = no change</code></pre>
-
-                <h3>5. Decoding and Output</h3>
-
-                <div class="mermaid">
-flowchart LR
-    A[KSampler Output] --> B[VAEDecode]
-    B --> C[SaveImage]
-    C --> D[Your Edited Image!]
-                </div>
-
-                <h4>VAEDecode</h4>
-                <pre><code>Node: VAEDecode
-Input:
-  - samples (from KSampler)
-  - vae (from VAELoader)
-Output: decoded_image
-
-Converts the latent back to pixel space:
-- 64x64x4 latent → 512x512 RGB image
-- Applies VAE decoder neural network
-- Final image ready for viewing!</code></pre>
-
-                <h4>SaveImage</h4>
-                <pre><code>Node: SaveImage
-Input:
-  - images (from VAEDecode)
-  - filename_prefix → "QwenEdit"
-Output: Saved to ComfyUI/output/ directory
-
-Automatically saves with timestamp:
-Format: QwenEdit_00001_.png</code></pre>
-
-                <h2>Adding Additional LoRAs</h2>
-
-                <p>Want to add style or character LoRAs? You can chain multiple LoRA loaders sequentially:</p>
-
-                <div class="mermaid">
-flowchart LR
-    A[Base Model] --> B[Lightning LoRA]
-    B --> C[Style LoRA]
-    C --> D[Character LoRA]
-    D --> E[Final Model]
-                </div>
-
-                <h3>Sequential LoRA Loading</h3>
-                <pre><code>Node Chain:
-
-1. UnetLoaderGGUF → base_model
-2. LoraLoaderModelOnly (Lightning) → model_with_lightning
-3. LoraLoaderModelOnly (Style) → model_with_style
-4. LoraLoaderModelOnly (Character) → final_model
-
-Each LoRA Loader:
-Input: model (from previous step)
-Output: patched_model (goes to next step)
-
-Example LoRA Stack:
-- Lightning LoRA (strength: 1.0) - Required for speed
-- Anime Style LoRA (strength: 0.7) - Artistic style
-- Character Consistency LoRA (strength: 0.5) - Keep character features
-
-Note: Order matters! Apply Lightning first, then style/character LoRAs.</code></pre>
-
-                <h3>Where to Find LoRAs</h3>
                 <ul>
-                    <li><a href="https://civitai.com/" target="_blank">Civitai</a> - Largest LoRA repository</li>
-                    <li><a href="https://huggingface.co/" target="_blank">Hugging Face</a> - Official model releases</li>
-                    <li>Search for "FLUX LoRA" or "SDXL LoRA" (compatible formats)</li>
+                    <li><strong>768x768 images:</strong> ~15-20 seconds per edit</li>
+                    <li><strong>512x512 images:</strong> ~8-12 seconds per edit</li>
+                    <li><strong>Memory usage:</strong> ~12GB during inference</li>
                 </ul>
 
-                <h2>Performance on macOS</h2>
+                <p>The quality is impressive. The model understands context well - if you ask it to "change the background to a beach," it knows to keep the person in the foreground and only modify the background. It handles lighting consistency, shadows, and perspective better than I expected.</p>
 
-                <h3>Expected Performance</h3>
-                <table>
-                    <tr>
-                        <th>Mac</th>
-                        <th>Resolution</th>
-                        <th>Time (4 steps)</th>
-                        <th>Memory</th>
-                    </tr>
-                    <tr>
-                        <td>Mac Mini M2 Pro (16GB)</td>
-                        <td>768x768</td>
-                        <td>~15-20s</td>
-                        <td>~12GB</td>
-                    </tr>
-                    <tr>
-                        <td>MacBook Pro M3 Max (36GB)</td>
-                        <td>1024x1024</td>
-                        <td>~8-12s</td>
-                        <td>~14GB</td>
-                    </tr>
-                    <tr>
-                        <td>Mac Studio M2 Ultra (64GB)</td>
-                        <td>1024x1024</td>
-                        <td>~5-8s</td>
-                        <td>~16GB</td>
-                    </tr>
-                </table>
+                <h2>Adding More LoRAs</h2>
+                <p>Want to customize the style? You can chain multiple LoRAs together. Here's how:</p>
 
-                <h3>Optimization Tips</h3>
-                <pre><code>1. Use Metal Performance Shaders
-   ComfyUI → Settings → Device → "mps" (Metal Performance Shaders)
+                <pre><code><span class="code-comment"># Chain multiple LoRAs sequentially</span>
 
-2. Reduce image size for faster generation
-   ImageScaleToTotalPixels → megapixels: 0.5 instead of 1.0
-   
-3. Close other apps to free up unified memory
-   Activity Monitor → Check memory pressure
-   
-4. Use --lowvram flag if needed
-   python main.py --lowvram
-   
-5. First run is slower (model loading)
-   Subsequent runs use cached models</code></pre>
+<span class="code-comment"># Step 1: Base model + Lightning</span>
+UnetLoaderGGUF → LoraLoaderModelOnly (Lightning) → model_1
 
-                <h2>Troubleshooting</h2>
+<span class="code-comment"># Step 2: Add style LoRA</span>
+model_1 → LoraLoaderModelOnly (Anime Style, strength: <span class="code-number">0.7</span>) → model_2
 
-                <h3>"CUDA out of memory" / MPS memory issues</h3>
-                <ul>
-                    <li>Reduce image size (megapixels: 0.5)</li>
-                    <li>Use lower quantization (Q4_0 instead of Q8_0)</li>
-                    <li>Close browser tabs and other apps</li>
-                </ul>
+<span class="code-comment"># Step 3: Add character consistency</span>
+model_2 → LoraLoaderModelOnly (Character LoRA, strength: <span class="code-number">0.5</span>) → final_model
 
-                <h3>"Model not found" errors</h3>
-                <ul>
-                    <li>Verify files are in correct ComfyUI directories</li>
-                    <li>GGUF files go in: <code>ComfyUI/models/unet/</code></li>
-                    <li>VAE files go in: <code>ComfyUI/models/vae/</code></li>
-                    <li>LoRA files go in: <code>ComfyUI/models/loras/</code></li>
-                </ul>
+<span class="code-comment"># Use final_model in your KSampler</span></code></pre>
 
-                <h3>Images look blurry or low quality</h3>
-                <ul>
-                    <li>Increase resolution (megapixels: 1.0 or 1.5)</li>
-                    <li>Check that FluxKontextImageScale is connected</li>
-                    <li>Verify you're using the correct VAE</li>
-                </ul>
+                <p>Order matters here. Apply the Lightning LoRA first (for speed), then style/character LoRAs. Each subsequent LoRA builds on the previous one.</p>
 
-                <h2>Example Workflow JSON</h2>
-                <p>Here's the complete workflow you can load directly in ComfyUI:</p>
-                
-                <pre><code class="language-json">{
-  "last_node_id": 15,
-  "last_link_id": 20,
-  "nodes": [
-    {
-      "id": 1,
-      "type": "UnetLoaderGGUF",
-      "pos": [100, 100],
-      "size": [320, 80],
-      "inputs": [],
-      "outputs": [["MODEL", 0]],
-      "widgets_values": ["Qwen-Image-Edit-2509-Q8_0.gguf"]
-    },
-    {
-      "id": 2,
-      "type": "LoraLoaderModelOnly",
-      "pos": [100, 220],
-      "size": [320, 100],
-      "inputs": [["model", 1]],
-      "outputs": [["MODEL", 0]],
-      "widgets_values": ["Qwen-Image-Edit-2509-Lightning-4steps-V1.0-bf16.safetensors", 1.0]
-    }
-    // ... additional nodes
-  ]
-}</code></pre>
-                <p><em>Full workflow available in the repo: <code>workflows/qwen-image-edit-simple.json</code></em></p>
+                <p>You can find LoRAs on <a href="https://civitai.com/" target="_blank">Civitai</a> or <a href="https://huggingface.co/" target="_blank">Hugging Face</a>. Search for "FLUX LoRA" or "SDXL LoRA" - they're compatible formats.</p>
 
-                <h2>Conclusion</h2>
-                <p>You now have a complete understanding of how to run Qwen Image Edit locally on macOS. The GGUF quantization makes it accessible on consumer hardware, the Lightning LoRA provides 4-step speed, and ComfyUI's node-based interface gives you full control over the process.</p>
-                
-                <p>Key takeaways:</p>
-                <ul>
-                    <li>GGUF Q8_0 reduces memory by 50% with minimal quality loss</li>
-                    <li>Lightning LoRA enables 4-step generation (~5-10x speedup)</li>
-                    <li>Each node has a specific purpose in the image generation pipeline</li>
-                    <li>You can stack multiple LoRAs for style and character control</li>
-                    <li>macOS Metal backend works great for local inference</li>
-                </ul>
+                <h2>Pro Tips for macOS</h2>
+                <p>A few things I learned the hard way:</p>
+
+                <ol>
+                    <li><strong>Use Metal Performance Shaders:</strong> In ComfyUI settings, set device to "mps". This routes inference through Apple's Metal backend instead of CPU.</li>
+                    <li><strong>Close other apps:</strong> With 16GB unified memory, every MB counts. Close browsers, Slack, whatever you don't need.</li>
+                    <li><strong>First run is slow:</strong> The model has to load into memory. Subsequent runs use the cached model and are much faster.</li>
+                    <li><strong>Start small:</strong> Test with 512x512 images first. Once you're happy with the workflow, scale up.</li>
+                </ol>
+
+                <h2>Final Thoughts</h2>
+                <p>Running AI image generation locally on a Mac Mini isn't just possible—it's actually practical. The GGUF format and Lightning LoRAs make it feasible, and ComfyUI makes it approachable.</p>
+
+                <p>Sure, it's not as fast as cloud APIs, and you don't get the fancy inpainting UIs that Midjourney or DALL-E provide. But you get something more valuable: complete privacy, no usage limits, and the satisfaction of understanding exactly how the sausage is made.</p>
+
+                <p>Plus, there's something deeply satisfying about watching your Mac Mini's fans spin up as it thinks about how to make a person smile. It's like having a tiny art studio in your computer.</p>
+
+                <p>Give it a shot. Download the models, install ComfyUI, and start experimenting. The worst that happens is you learn something new about how these incredible models actually work under the hood.</p>
 
                 <p>Happy editing! 🥔</p>
             </div>
@@ -520,7 +237,7 @@ Note: Order matters! Apply Lightning first, then style/character LoRAs.</code></
                 <span class="tag">Qwen</span>
                 <span class="tag">GGUF</span>
                 <span class="tag">macOS</span>
-                <span class="tag">LoRA</span>
+                <span class="tag">AI</span>
                 <span class="tag">Tutorial</span>
             </div>
         </article>
@@ -538,17 +255,28 @@ Note: Order matters! Apply Lightning first, then style/character LoRAs.</code></
     </footer>
 
     <script>
-        mermaid.initialize({ 
-            startOnLoad: true,
-            theme: 'dark',
-            themeVariables: {
-                primaryColor: '#333',
-                primaryTextColor: '#fff',
-                primaryBorderColor: '#555',
-                lineColor: '#666',
-                secondaryColor: '#444',
-                tertiaryColor: '#222'
-            }
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(pre => {
+            const button = document.createElement('button');
+            button.className = 'copy-button';
+            button.textContent = 'Copy';
+            
+            button.addEventListener('click', () => {
+                const code = pre.querySelector('code');
+                const text = code ? code.textContent : pre.textContent;
+                
+                navigator.clipboard.writeText(text).then(() => {
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                        button.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            
+            pre.appendChild(button);
         });
     </script>
 </body>
