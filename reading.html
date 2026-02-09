@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading - Bahushruth CS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="potato.svg">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Home">
+                <img src="potato.svg" alt="Potato" class="potato-icon">
+            </a>
+            <div class="nav-links">
+                <a href="articles.html" class="nav-link">Articles</a>
+                <a href="reading.html" class="nav-link active">Reading</a>
+                <a href="about.html" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        <h1 class="page-title">Reading</h1>
+        <p class="page-subtitle">Papers I find interesting on ML, LLMs, and optimization</p>
+
+        <section class="reading-section">
+            <h2 class="section-subtitle">Transformers & BERT</h2>
+            <div class="reading-list">
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/1706.03762" class="reading-title pdf-link" target="_blank">Attention Is All You Need</a>
+                        <span class="reading-author">Vaswani et al. (2017)</span>
+                        <p class="reading-why">The foundational paper that started the transformer revolution—essential for understanding modern LLMs.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/1810.04805" class="reading-title pdf-link" target="_blank">BERT: Pre-training of Deep Bidirectional Transformers</a>
+                        <span class="reading-author">Devlin et al. (2018)</span>
+                        <p class="reading-why">Changed how we think about language representation—bidirectional context was a game changer for NLP.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2007.14062" class="reading-title pdf-link" target="_blank">Big Bird: Transformers for Longer Sequences</a>
+                        <span class="reading-author">Zaheer et al. (2020)</span>
+                        <p class="reading-why">Solves the quadratic attention problem—crucial for processing long documents in lending and credit workflows.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2502.12033" class="reading-title pdf-link" target="_blank">The Geometry of BERT</a>
+                        <span class="reading-author">(2025)</span>
+                        <p class="reading-why">Fresh perspective on how BERT represents language geometrically—helps reason about embedding spaces.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reading-section">
+            <h2 class="section-subtitle">Graph Neural Networks</h2>
+            <div class="reading-list">
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/1812.08434" class="reading-title pdf-link" target="_blank">Graph Neural Networks: A Review of Methods and Applications</a>
+                        <span class="reading-author">Zhou et al. (2018)</span>
+                        <p class="reading-why">Comprehensive survey that ties together GCNs, GATs, and GraphSAGE—essential for relational data.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/1609.02907" class="reading-title pdf-link" target="_blank">Semi-Supervised Classification with Graph Convolutional Networks</a>
+                        <span class="reading-author">Kipf & Welling (2016)</span>
+                        <p class="reading-why">The paper that made GNNs practical—spectral convolutions simplified for semi-supervised learning.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/1710.10903" class="reading-title pdf-link" target="_blank">Graph Attention Networks</a>
+                        <span class="reading-author">Veličković et al. (2017)</span>
+                        <p class="reading-why">Attention mechanism adapted for graphs—lets nodes learn which neighbors matter most.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/1706.02216" class="reading-title pdf-link" target="_blank">Inductive Representation Learning on Large Graphs (GraphSAGE)</a>
+                        <span class="reading-author">Hamilton et al. (2017)</span>
+                        <p class="reading-why">Enables generalization to unseen nodes—critical for dynamic graphs in production systems.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/1810.02244" class="reading-title pdf-link" target="_blank">Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks</a>
+                        <span class="reading-author">Morris et al. (2018)</span>
+                        <p class="reading-why">Connects GNNs to graph isomorphism testing—helps understand the theoretical limits of GNN expressiveness.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reading-section">
+            <h2 class="section-subtitle">LLM Optimization & Efficiency</h2>
+            <div class="reading-list">
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2106.09685" class="reading-title pdf-link" target="_blank">LoRA: Low-Rank Adaptation of Large Language Models</a>
+                        <span class="reading-author">Hu et al. (2021)</span>
+                        <p class="reading-why">Train 10,000x fewer parameters while matching full fine-tuning—makes LLM customization accessible.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2305.14314" class="reading-title pdf-link" target="_blank">QLoRA: Efficient Finetuning of Quantized LLMs</a>
+                        <span class="reading-author">Dettmers et al. (2023)</span>
+                        <p class="reading-why">Fine-tune 65B models on single GPU—quantization + LoRA combination is production-ready magic.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2205.14135" class="reading-title pdf-link" target="_blank">FlashAttention: Fast and Memory-Efficient Exact Attention</a>
+                        <span class="reading-author">Dao et al. (2022)</span>
+                        <p class="reading-why">IO-aware algorithm that reduces HBM reads—2-4x speedup without approximation, changed how we scale transformers.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2407.08608" class="reading-title pdf-link" target="_blank">FlashAttention-3: Fast and Accurate Attention with Asynchrony</a>
+                        <span class="reading-author">Shah et al. (2024)</span>
+                        <p class="reading-why">75% utilization on H100 GPUs with FP8—pushes hardware limits for production inference.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2602.04998" class="reading-title pdf-link" target="_blank">Learning Rate Matters: Vanilla LoRA May Suffice for LLM Fine-tuning</a>
+                        <span class="reading-author">Lee et al. (2026)</span>
+                        <p class="reading-why">Challenges the LoRA variant hype—shows proper learning rate tuning beats complex modifications.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reading-section">
+            <h2 class="section-subtitle">RAG & Knowledge Retrieval</h2>
+            <div class="reading-list">
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2312.10997" class="reading-title pdf-link" target="_blank">Retrieval-Augmented Generation for Large Language Models: A Survey</a>
+                        <span class="reading-author">Gao et al. (2023)</span>
+                        <p class="reading-why">Comprehensive overview of RAG architectures—the foundation for grounding LLMs in external knowledge.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2501.09136" class="reading-title pdf-link" target="_blank">Agentic Retrieval-Augmented Generation: A Survey on Agentic RAG</a>
+                        <span class="reading-author">Singh et al. (2025)</span>
+                        <p class="reading-why">Autonomous agents meet retrieval—next evolution for multi-step reasoning with external knowledge.</p>
+                    </div>
+                </div>
+                <div class="reading-item">
+                    <div class="reading-info">
+                        <a href="https://arxiv.org/abs/2601.16462" class="reading-title pdf-link" target="_blank">Graph-Anchored Knowledge Indexing for RAG</a>
+                        <span class="reading-author">Liu et al. (2026)</span>
+                        <p class="reading-why">Uses graph structures as dynamic knowledge indices—connects entity relationships for better retrieval.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">© 2026 Bahushruth CS</p>
+            <div class="footer-social">
+                <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>
+                <a href="https://www.linkedin.com/in/bahushruth/" target="_blank" class="footer-link">LinkedIn</a>
+                <a href="https://github.com/bahushruth" target="_blank" class="footer-link">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

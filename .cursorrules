@@ -1,0 +1,228 @@
+# Coding Agent Style Guide
+
+This document defines coding standards and conventions for this repository to ensure consistency across all contributions.
+
+## General Principles
+
+- **Minimal & Clean**: Keep code simple and purposeful
+- **Consistent**: Follow existing patterns
+- **Self-Documenting**: Clear naming over excessive comments
+- **Mobile-First**: Design for mobile, enhance for desktop
+
+## HTML Conventions
+
+### Structure
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title - Bahushruth CS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="potato.svg">
+</head>
+<body>
+    <!-- Navigation is consistent across all pages -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Home">
+                <img src="potato.svg" alt="Potato" class="potato-icon">
+            </a>
+            <div class="nav-links">
+                <a href="articles.html" class="nav-link">Articles</a>
+                <a href="reading.html" class="nav-link">Reading</a>
+                <a href="about.html" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        <!-- Page content -->
+    </main>
+
+    <!-- Footer is consistent across all pages -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">© 2026 Bahushruth CS</p>
+            <div class="footer-social">
+                <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>
+                <a href="https://www.linkedin.com/in/bahushruth/" target="_blank" class="footer-link">LinkedIn</a>
+                <a href="https://github.com/bahushruth" target="_blank" class="footer-link">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+```
+
+### Rules
+- Always include `lang="en"` on `<html>`
+- Use relative paths for internal links
+- Use `target="_blank"` for external links
+- Include the potato favicon on every page
+- Navigation must be identical on all pages
+- Footer must be identical on all pages
+
+## CSS Conventions
+
+### Naming
+- Use **kebab-case** for class names: `.nav-container`, `.hero-title`
+- Use semantic class names that describe function, not appearance
+- Avoid IDs for styling
+
+### Organization
+```css
+/* 1. CSS Variables */
+:root {
+    --bg-primary: #000000;
+    /* etc */
+}
+
+/* 2. Reset & Base */
+* { }
+html { }
+body { }
+
+/* 3. Layout Components */
+.nav { }
+.nav-container { }
+.main { }
+.footer { }
+
+/* 4. Page-Specific Components */
+.hero { }
+.article-list { }
+.reading-section { }
+
+/* 5. Utilities */
+.view-all { }
+.back-link { }
+
+/* 6. Responsive (always at end) */
+@media (max-width: 768px) { }
+```
+
+### Colors
+Always use CSS variables:
+```css
+background-color: var(--bg-primary);
+color: var(--text-secondary);
+border: 1px solid var(--border);
+```
+
+### Spacing
+- Use `rem` units for all spacing (padding, margins, gaps)
+- Base unit: `1rem = 16px`
+- Section padding: `4rem 2rem` (desktop), `2rem 1rem` (mobile)
+- Component gaps: `1rem`, `1.5rem`, `2rem`
+
+### Borders
+- Border radius: `8px` for cards, `0` for profile images (square), `4px` for tags
+- Border color: `var(--border)` (#222222)
+
+## Content Guidelines
+
+### Articles
+- Use `<article>` tags for article content
+- Include `.article-header`, `.article-content`, `.article-tags`
+- Use `<h1>` for article title, `<h2>` for sections, `<h3>` for subsections
+- Include publication date in meta
+- Tags should be lowercase unless proper nouns
+
+### Reading List
+- Papers should link directly to arXiv
+- Include author names and year
+- Add one-line "why" explanation for each paper
+- Group papers by topic (Transformers, GNNs, etc.)
+
+### Images
+- Profile images: Square corners (`border-radius: 0`)
+- Other images: Max 100% width, maintain aspect ratio
+- Always include `alt` text
+
+## Git Conventions
+
+### Commit Messages
+```
+Add: [feature description]
+Update: [what changed]
+Fix: [what was fixed]
+Remove: [what was removed]
+```
+
+Examples:
+- `Add: new article on Qwen Image Edit`
+- `Update: reading list with FlashAttention papers`
+- `Fix: mobile navigation layout`
+
+### File Structure
+```
+/
+├── index.html          # Homepage
+├── about.html          # About page
+├── articles.html       # Articles listing
+├── reading.html        # Reading list
+├── styles.css          # All styles
+├── potato.svg          # Favicon/logo
+├── articles/           # Individual article pages
+│   └── [article-slug].html
+└── pdfs/              # PDF downloads
+    └── [paper].pdf
+```
+
+## Mobile Responsiveness
+
+### Breakpoints
+- Mobile: `< 768px`
+- Desktop: `≥ 768px`
+
+### Mobile Rules
+- Navigation: Horizontal row, not stacked
+- Footer: Stack vertically
+- Typography: Slightly smaller (reduce by ~15%)
+- Profile image: `100px` instead of `120px`
+- Tables: Allow horizontal scroll or stack
+
+## External Links
+
+All external links must:
+- Open in new tab (`target="_blank"`)
+- Include social links in footer
+- Articles/papers link to source
+
+## Accessibility
+
+- Semantic HTML5 tags (`<nav>`, `<main>`, `<article>`, `<footer>`)
+- `alt` text on all images
+- Sufficient color contrast (WCAG AA)
+- Focus states for interactive elements
+- Keyboard navigable
+
+## Prohibited
+
+- ❌ Inline styles
+- ❌ `!important` (unless absolutely necessary)
+- ❌ Frameworks (Bootstrap, Tailwind, etc.) - pure CSS only
+- ❌ JavaScript (unless specifically requested)
+- ❌ Comments in CSS (unless complex logic)
+- ❌ Multiple font families (stick to system fonts)
+
+## Testing Checklist
+
+Before pushing changes:
+- [ ] Works on mobile (768px and below)
+- [ ] Works on desktop (1200px and above)
+- [ ] All links work
+- [ ] Images load correctly
+- [ ] No console errors
+- [ ] Consistent with other pages
+- [ ] Valid HTML (check with validator)
+
+## Questions?
+
+When in doubt:
+1. Look at existing code
+2. Follow the pattern
+3. Keep it simple
+4. Ask if unsure
