@@ -461,9 +461,7 @@ body {
 }
 
 .tl-card:hover {
-    border-color: #444;
-    transform: translateX(8px);
-    box-shadow: -8px 0 0 0 #fff, 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-color: #333;
 }
 
 .tl-card h3 {
