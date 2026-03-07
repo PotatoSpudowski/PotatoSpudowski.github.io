@@ -15,8 +15,6 @@
             </a>
             <div class="nav-links">
                 <a href="articles.html" class="nav-link active">Articles</a>
-                <a href="reading.html" class="nav-link">Reading</a>
-                <a href="about.html" class="nav-link">About</a>
             </div>
         </div>
     </nav>
@@ -24,26 +22,61 @@
     <main class="main">
         <h1 class="page-title">Articles</h1>
         
-        <div class="article-list">
-            <article class="article-item">
-                <a href="articles/qwen-image-edit-comfyui.html" class="article-link">
-                    <h2 class="article-title">Image Edit: Qwen + macOS GGUF (Workflow Notes)</h2>
-                    <p class="article-meta">February 9, 2026 · 10 min read</p>
-                    <p class="article-excerpt">Running Qwen Image Edit on a Mac Mini with Metal backend using ComfyUI. Comparing multi-image composition vs single-image edit workflows.</p>
-                </a>
-            </article>
-        </div>
+        <!--
+            To add an article:
+            1. Create articles/your-slug.md with frontmatter (title, date, readtime, tags)
+            2. Add an entry to the ARTICLES array below
+        -->
+        <div class="article-list" id="article-list"></div>
+
+        <script>
+        var ARTICLES = [
+            {
+                slug: 'why-this-site-exists',
+                title: 'Why This Site Exists',
+                date: 'March 8, 2026',
+                readtime: '2 min read',
+                excerpt: "This isn't a portfolio. Resumes are a lossy compression format for human experience. This is the uncompressed version."
+            }
+        ];
+
+        var list = document.getElementById('article-list');
+        ARTICLES.forEach(function (a) {
+            var article = document.createElement('article');
+            article.className = 'article-item';
+            var link = document.createElement('a');
+            link.href = 'article.html?slug=' + a.slug;
+            link.className = 'article-link';
+            link.innerHTML =
+                '<h2 class="article-title">' + a.title + '</h2>' +
+                '<p class="article-meta">' + a.date + ' &middot; ' + a.readtime + '</p>' +
+                '<p class="article-excerpt">' + a.excerpt + '</p>';
+            article.appendChild(link);
+            list.appendChild(article);
+        });
+        </script>
     </main>
 
     <footer class="footer">
         <div class="footer-content">
-            <p class="footer-text">© 2026 Bahushruth CS</p>
-            <div class="footer-social">
-                <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>
-                <a href="https://www.linkedin.com/in/bahushruth/" target="_blank" class="footer-link">LinkedIn</a>
-                <a href="https://github.com/bahushruth" target="_blank" class="footer-link">GitHub</a>
+            <p class="footer-reach">Want to reach out? Drop me an email at <a class="footer-link" id="reach"></a> or DM me on <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>. I check both.</p>
+            <div class="footer-bottom">
+                <p class="footer-text">&copy; 2026 Bahushruth CS</p>
+                <div class="footer-social">
+                    <a href="https://github.com/bahushruth" target="_blank" class="footer-link">GitHub</a>
+                    <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>
+                    <a href="https://www.linkedin.com/in/bahushruth/" target="_blank" class="footer-link">LinkedIn</a>
+                </div>
             </div>
         </div>
     </footer>
+    <script>
+    (function () {
+        var u = 'bahushruth.bahushruth';
+        var d = 'gmail.com';
+        var el = document.getElementById('reach');
+        if (el) { el.href = 'mail' + 'to:' + u + '@' + d; el.textContent = u + '@' + d; }
+    })();
+    </script>
 </body>
 </html>

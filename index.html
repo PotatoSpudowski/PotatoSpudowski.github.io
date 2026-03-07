@@ -6,6 +6,8 @@
     <title>Bahushruth CS</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="potato.svg">
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 </head>
 <body>
     <nav class="nav">
@@ -15,8 +17,6 @@
             </a>
             <div class="nav-links">
                 <a href="articles.html" class="nav-link">Articles</a>
-                <a href="reading.html" class="nav-link">Reading</a>
-                <a href="about.html" class="nav-link">About</a>
             </div>
         </div>
     </nav>
@@ -24,45 +24,362 @@
     <main class="main">
         <section class="hero">
             <img src="https://pbs.twimg.com/profile_images/1997230766435274752/LmLhsWSA_400x400.jpg" alt="Bahushruth CS" class="profile-image">
-            <h1 class="hero-title">Hello, I'm Bahushruth CS</h1>
-            <p class="hero-subtitle">Building AI for lending at Cassian | EF Fall '25 | Prev @ QuillBot, Flippy, IBM Research. Interested in LLMs, efficient fine-tuning, and production ML systems.</p>
-        </section>
-
-        <section class="recent-section">
-            <h2 class="section-title">Recent Articles</h2>
-            <div class="article-list">
-                <article class="article-item">
-                    <a href="articles/qwen-image-edit-comfyui.html" class="article-link">
-                        <h3 class="article-title">Image Edit: Qwen + macOS GGUF (Workflow Notes)</h3>
-                        <p class="article-meta">February 9, 2026 · 10 min read</p>
-                        <p class="article-excerpt">Running Qwen Image Edit on a Mac Mini with Metal backend using ComfyUI. Comparing multi-image composition vs single-image edit workflows.</p>
-                    </a>
-                </article>
+            <h1 class="hero-title">Bahushruth CS</h1>
+            <p class="hero-subtitle">I build things, mostly with AI. Currently working on Cassian where we're trying to make commercial lending less painful. Before this I've been at a bunch of places, done a bunch of stuff. Scroll down if you want the full story.</p>
+            <div class="hero-links">
+                <a href="https://github.com/bahushruth" target="_blank" class="hero-social-link">GitHub</a>
+                <a href="https://x.com/Bahushruth" target="_blank" class="hero-social-link">X/Twitter</a>
+                <a href="https://www.linkedin.com/in/bahushruth/" target="_blank" class="hero-social-link">LinkedIn</a>
             </div>
-            <a href="articles.html" class="view-all">View all articles →</a>
         </section>
 
-        <section class="recent-section">
-            <h2 class="section-title">Currently Reading</h2>
-            <div class="reading-list">
-                <div class="reading-item">
-                    <a href="https://arxiv.org/abs/2106.09685" class="reading-title pdf-link" target="_blank">LoRA: Low-Rank Adaptation of Large Language Models</a>
-                    <span class="reading-author">Hu et al. (2021)</span>
+        <section class="timeline-section">
+            <h2 class="section-title">The Story So Far</h2>
+
+            <!--
+                HOW TO ADD ENTRIES:
+
+                Add a <div> inside #timeline-entries with:
+                  data-year="2025" data-month="11"
+                  data-tag="work" data-tag-label="work"   (optional)
+                  data-title="Card Title"
+
+                Put your content inside a <script type="text/markdown"> tag.
+                Full markdown supported: headers, lists, bold, italic, code,
+                links, images, tables. Math with $inline$ or $$block$$.
+
+                Optional: add data-links as JSON for footer links:
+                  data-links='[{"text":"Paper","url":"https://..."}]'
+
+                Cards are collapsed by default. Click to expand.
+            -->
+            <div id="timeline-entries" style="display:none;">
+
+                <div data-year="2025" data-month="11" data-tag="work" data-tag-label="work"
+                     data-title="Co-founded Cassian">
+                    <script type="text/markdown">
+Came out of EF with a cofounder and an idea. We're building AI that takes messy borrower docs and turns them into something lenders can actually work with. Commercial lending is stuck in the stone age and we're trying to fix that.
+
+### What we're doing
+
+- Automating borrower onboarding for commercial lenders
+- Parsing messy, incomplete loan submissions with LLMs
+- Turning them into clean, decision-ready packages
+
+The whole pipeline uses a mix of **document understanding** and **structured extraction**. Think of it as going from a pile of PDFs to a spreadsheet a lender can actually use.
+                    </script>
                 </div>
+
+                <div data-year="2025" data-month="9" data-tag="work" data-tag-label="work"
+                     data-title="Entrepreneurs First, Fall '25">
+                    <script type="text/markdown">
+Moved to London for EF. Three months of figuring out what to build and who to build it with. Met a lot of interesting people. Most ideas died in a week but thats the point.
+
+Tested like 5 different ideas before landing on Cassian. The EF model is basically: throw smart people in a room, see what sticks. It worked.
+                    </script>
+                </div>
+
+                <div data-year="2025" data-month="3" data-tag="project" data-tag-label="project"
+                     data-title="Some side project that went nowhere">
+                    <script type="text/markdown">
+Tried building a thing. Didn't work out. Learned a lot about what not to do though, which is honestly more valuable sometimes.
+                    </script>
+                </div>
+
+                <div data-year="2024" data-month="8" data-tag="project" data-tag-label="project"
+                     data-title="Oil well efficiency prediction"
+                     data-links='[{"text":"Write-up","url":"#"}]'>
+                    <script type="text/markdown">
+Built a prediction model for an oil company so they could figure out which wells to run and when. Took production data, weather patterns, equipment specs and trained a model that actually saved them money.
+
+One of those projects where you realise ML can be useful outside of tech twitter.
+
+### The approach
+
+The core model used gradient boosted trees on historical production data. Features included:
+
+- Well depth and geological composition
+- Historical flow rates and pressure readings
+- Weather and seasonal patterns
+- Equipment age and maintenance history
+
+The loss function we optimized was basically minimizing the cost of running a well vs the expected output:
+
+$$\min_{w} \sum_{i=1}^{N} C_{\text{run}}(w_i) - \hat{R}(w_i)$$
+
+where $C_{\text{run}}$ is operating cost and $\hat{R}$ is predicted revenue from the well.
+                    </script>
+                </div>
+
+                <div data-year="2024" data-month="2" data-tag="hackathon" data-tag-label="hackathon"
+                     data-title="Won something at a hackathon">
+                    <script type="text/markdown">
+48 hours, too much coffee, shipped a working demo. The usual. Details are fuzzy but pretty sure we placed top 3.
+                    </script>
+                </div>
+
+                <div data-year="2023" data-month="6" data-tag="work" data-tag-label="work"
+                     data-title="MLOps at QuillBot">
+                    <script type="text/markdown">
+First MLOps hire. Kept the GPU infra running, deployed models that served millions of users every day. Learned what production ML actually looks like when things break at 3am and you have to fix it.
+
+### What I actually did
+
+- Managed GPU clusters for model training and inference
+- Set up CI/CD pipelines for model deployment
+- Built monitoring and alerting for model performance
+- Dealt with the fun stuff like OOM errors at scale
+                    </script>
+                </div>
+
+                <div data-year="2023" data-month="1" data-tag="research" data-tag-label="research"
+                     data-title="Messed around with graph neural networks">
+                    <script type="text/markdown">
+Spent a few weeks going deep on GNNs. Read a bunch of papers, implemented some stuff, tried to apply it to a recommendation problem. Didn't ship anything but the knowledge stuck.
+
+Was playing with message passing networks where each node $v$ updates its representation:
+
+$$h_v^{(k)} = \sigma\left(W_k \sum_{u \in \mathcal{N}(v)} \frac{h_u^{(k-1)}}{|\mathcal{N}(v)|}\right)$$
+                    </script>
+                </div>
+
+                <div data-year="2022" data-month="10" data-tag="work" data-tag-label="work"
+                     data-title="Founding engineer at Flippy">
+                    <script type="text/markdown">
+YC backed crypto startup. Built things fast, broke things faster. The startup didn't make it but I learned more in those months than most people learn in a year. Startups are like that.
+                    </script>
+                </div>
+
+                <div data-year="2022" data-month="4" data-tag="hackathon" data-tag-label="hackathon"
+                     data-title="Built a chatbot for college admissions">
+                    <script type="text/markdown">
+Hackathon project. Made a bot that could answer questions about college admissions using NLP. It was janky but it worked and people actually used it for a bit.
+                    </script>
+                </div>
+
+                <div data-year="2021" data-month="5" data-tag="research" data-tag-label="research"
+                     data-title="Research intern at IBM Research"
+                     data-links='[{"text":"Paper","url":"#"}]'>
+                    <script type="text/markdown">
+Worked on multimodal information retrieval. First real taste of research. Spent the summer figuring out how to make machines understand text and images together. Published a paper out of it too which was cool.
+
+### The problem
+
+Given a query that could be text or an image, retrieve relevant documents from a corpus that contains both modalities. The challenge is learning a shared embedding space where:
+
+$$\text{sim}(q, d) = \frac{f(q) \cdot g(d)}{||f(q)|| \cdot ||g(d)||}$$
+
+works regardless of whether $q$ and $d$ are text, images, or both.
+                    </script>
+                </div>
+
+                <div data-year="2021" data-month="2" data-tag="hackathon" data-tag-label="hackathon"
+                     data-title="First hackathon win">
+                    <script type="text/markdown">
+College hackathon. Built something in 24 hours with a team of 3. Can't even remember what the prize was but that feeling of shipping under pressure got me hooked.
+                    </script>
+                </div>
+
             </div>
-            <a href="reading.html" class="view-all">View reading list →</a>
+
+            <div class="timeline" id="timeline"></div>
         </section>
     </main>
 
     <footer class="footer">
         <div class="footer-content">
-            <p class="footer-text">© 2026 Bahushruth CS</p>
-            <div class="footer-social">
-                <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>
-                <a href="https://www.linkedin.com/in/bahushruth/" target="_blank" class="footer-link">LinkedIn</a>
-                <a href="https://github.com/bahushruth" target="_blank" class="footer-link">GitHub</a>
+            <p class="footer-reach">Want to reach out? Drop me an email at <a class="footer-link" id="reach"></a> or DM me on <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>. I check both.</p>
+            <div class="footer-bottom">
+                <p class="footer-text">&copy; 2026 Bahushruth CS</p>
+                <div class="footer-social">
+                    <a href="https://github.com/bahushruth" target="_blank" class="footer-link">GitHub</a>
+                    <a href="https://x.com/Bahushruth" target="_blank" class="footer-link">X/Twitter</a>
+                    <a href="https://www.linkedin.com/in/bahushruth/" target="_blank" class="footer-link">LinkedIn</a>
+                </div>
             </div>
         </div>
     </footer>
+
+    <!-- Markdown + Math libs -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <script>
+    (function () {
+        // Email obfuscation
+        var u = 'bahushruth.bahushruth';
+        var d = 'gmail.com';
+        var el = document.getElementById('reach');
+        if (el) { el.href = 'mail' + 'to:' + u + '@' + d; el.textContent = u + '@' + d; }
+    })();
+    </script>
+
+    <script>
+    (function () {
+        var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var src = document.getElementById('timeline-entries');
+        var tl = document.getElementById('timeline');
+
+        // ── Markdown + math rendering ──
+        function renderMath(html) {
+            // Block math: $$...$$
+            html = html.replace(/\$\$([\s\S]+?)\$\$/g, function (_, tex) {
+                try { return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false }); }
+                catch (e) { return '$$' + tex + '$$'; }
+            });
+            // Inline math: $...$  (but not $$)
+            html = html.replace(/\$([^\$\n]+?)\$/g, function (_, tex) {
+                try { return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false }); }
+                catch (e) { return '$' + tex + '$'; }
+            });
+            return html;
+        }
+
+        function renderMarkdown(mdText) {
+            // Render math first (before marked escapes things), then markdown
+            var withMath = renderMath(mdText);
+            return marked.parse(withMath);
+        }
+
+        // ── Read entries ──
+        var entries = {};
+        var rawEntries = src.querySelectorAll('[data-year]');
+        var minYear = Infinity, maxYear = -Infinity;
+
+        for (var i = 0; i < rawEntries.length; i++) {
+            var el = rawEntries[i];
+            var y = parseInt(el.dataset.year);
+            var m = parseInt(el.dataset.month);
+            if (y < minYear) minYear = y;
+            if (y > maxYear) maxYear = y;
+            var key = y + '-' + m;
+            if (!entries[key]) entries[key] = [];
+            entries[key].push(el);
+        }
+
+        // ── Build ruler ──
+        for (var year = maxYear; year >= minYear; year--) {
+            var yearDiv = document.createElement('div');
+            yearDiv.className = 'tl-year';
+
+            var yearLabel = document.createElement('div');
+            yearLabel.className = 'tl-year-marker';
+            yearLabel.innerHTML = '<span>' + year + '</span>';
+            yearDiv.appendChild(yearLabel);
+
+            for (var month = 12; month >= 1; month--) {
+                var key = year + '-' + month;
+                var hasEntry = entries[key] && entries[key].length > 0;
+
+                var monthDiv = document.createElement('div');
+                monthDiv.className = 'tl-month' + (hasEntry ? ' tl-month--active' : '');
+
+                var tick = document.createElement('div');
+                tick.className = 'tl-month-tick';
+                tick.innerHTML = '<span>' + MONTHS[month - 1] + '</span>';
+                monthDiv.appendChild(tick);
+
+                if (hasEntry) {
+                    for (var j = 0; j < entries[key].length; j++) {
+                        var raw = entries[key][j];
+                        var title = raw.dataset.title || 'Untitled';
+                        var tag = raw.dataset.tag;
+                        var tagLabel = raw.dataset.tagLabel || tag;
+                        var linksData = raw.dataset.links;
+                        var mdScript = raw.querySelector('script[type="text/markdown"]');
+                        var mdText = mdScript ? mdScript.textContent : '';
+
+                        var fullHtml = renderMarkdown(mdText);
+                        var nonEmpty = mdText.trim().split('\n').filter(function(l) { return l.trim() !== ''; });
+                        var isShort = nonEmpty.length <= 2;
+
+                        var entryDiv = document.createElement('div');
+                        entryDiv.className = 'tl-entry';
+
+                        var card = document.createElement('div');
+                        card.className = 'tl-card' + (isShort ? '' : ' tl-card--expandable');
+
+                        // Title
+                        var titleEl = document.createElement('h3');
+                        titleEl.textContent = title;
+                        card.appendChild(titleEl);
+
+                        // Body — one single div, clipped by CSS when collapsed
+                        var bodyEl = document.createElement('div');
+                        bodyEl.className = 'tl-body';
+                        bodyEl.innerHTML = fullHtml;
+                        card.appendChild(bodyEl);
+
+                        // Footer: tag + links + expand hint
+                        var footer = document.createElement('div');
+                        footer.className = 'tl-card-footer';
+
+                        if (tag) {
+                            var tagSpan = document.createElement('span');
+                            tagSpan.className = 'tl-tag tag-' + tag;
+                            tagSpan.textContent = tagLabel;
+                            footer.appendChild(tagSpan);
+                        }
+
+                        if (linksData) {
+                            var links = JSON.parse(linksData);
+                            var linksDiv = document.createElement('div');
+                            linksDiv.className = 'tl-links';
+                            for (var k = 0; k < links.length; k++) {
+                                var a = document.createElement('a');
+                                a.href = links[k].url;
+                                a.target = '_blank';
+                                a.textContent = links[k].text;
+                                linksDiv.appendChild(a);
+                            }
+                            footer.appendChild(linksDiv);
+                        }
+
+                        if (!isShort) {
+                            var expandHint = document.createElement('span');
+                            expandHint.className = 'tl-expand-hint';
+                            expandHint.textContent = 'read more';
+                            footer.appendChild(expandHint);
+                        }
+
+                        card.appendChild(footer);
+                        entryDiv.appendChild(card);
+                        monthDiv.appendChild(entryDiv);
+
+                        // Click to expand/collapse
+                        if (!isShort) {
+                            (function (c) {
+                                c.addEventListener('click', function (e) {
+                                    // Don't toggle when clicking links
+                                    if (e.target.closest('a')) return;
+                                    c.classList.toggle('tl-card--open');
+                                });
+                            })(card);
+                        }
+                    }
+                }
+
+                yearDiv.appendChild(monthDiv);
+            }
+
+            tl.appendChild(yearDiv);
+        }
+
+        // Scroll-triggered reveal
+        var observer = new IntersectionObserver(function (items) {
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].isIntersecting) {
+                    items[i].target.classList.add('tl-visible');
+                    observer.unobserve(items[i].target);
+                }
+            }
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        var entryEls = tl.querySelectorAll('.tl-entry');
+        for (var i = 0; i < entryEls.length; i++) {
+            observer.observe(entryEls[i]);
+        }
+    })();
+    </script>
 </body>
 </html>
