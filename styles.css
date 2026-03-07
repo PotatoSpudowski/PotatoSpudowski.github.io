@@ -244,6 +244,33 @@ body {
     margin-bottom: 4rem;
 }
 
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-header .section-title {
+    margin-bottom: 0;
+}
+
+.timeline-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.timeline-toggle:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
 .timeline {
     position: relative;
     margin-left: 4.5rem;
@@ -257,8 +284,21 @@ body {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 1px;
-    background: #1e1e1e;
+    width: 2px;
+    background: #1a1a1a;
+}
+
+/* ── Progress line that fills as you scroll ── */
+.timeline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: var(--scroll-progress, 0%);
+    background: linear-gradient(to bottom, #fff, var(--text-muted));
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+    transition: height 0.1s linear;
 }
 
 /* ── Year block ── */
@@ -272,6 +312,15 @@ body {
     height: 2.25rem;
     display: flex;
     align-items: center;
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tl-year-marker.tl-in-view {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 /* Long horizontal tick */
@@ -280,11 +329,26 @@ body {
     position: absolute;
     left: -2.75rem;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scaleX(0);
+    transform-origin: left;
     width: 22px;
     height: 2px;
     background: var(--text-muted);
     z-index: 1;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+.tl-year-marker.tl-in-view::before {
+    transform: translateY(-50%) scaleX(1);
+}
+
+/* Year glow effect when in view */
+.tl-year-marker span {
+    transition: text-shadow 0.5s ease;
+}
+
+.tl-year-marker.tl-in-view span {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 /* Year label to the left */
@@ -308,6 +372,12 @@ body {
     height: 1.5rem;
     display: flex;
     align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.tl-month-tick.tl-in-view {
+    opacity: 1;
 }
 
 /* Short horizontal tick */
@@ -316,11 +386,17 @@ body {
     position: absolute;
     left: -2.75rem;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scaleX(0);
+    transform-origin: left;
     width: 10px;
     height: 1px;
     background: #2a2a2a;
     z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tl-month-tick.tl-in-view::before {
+    transform: translateY(-50%) scaleX(1);
 }
 
 /* Month label */
@@ -348,13 +424,14 @@ body {
 .tl-entry {
     padding: 0.5rem 0 0.75rem;
     opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateX(60px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tl-entry.tl-visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
 }
 
 .tl-card {
@@ -362,11 +439,31 @@ body {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 8px;
-    transition: border-color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect on card */
+.tl-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+    transition: left 0.5s ease;
+}
+
+.tl-entry.tl-visible .tl-card::before {
+    left: 100%;
 }
 
 .tl-card:hover {
-    border-color: #333;
+    border-color: #444;
+    transform: translateX(8px);
+    box-shadow: -8px 0 0 0 #fff, 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .tl-card h3 {
@@ -581,6 +678,55 @@ body {
     color: #000;
     background: #f0883e;
     border: none;
+}
+
+.tag-milestone {
+    color: #000;
+    background: #f778ba;
+    border: none;
+}
+
+/* Milestone line item */
+.tl-milestone {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tl-visible .tl-milestone {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.tl-milestone-title {
+    position: relative;
+}
+
+/* Milestone underline animation */
+.tl-milestone-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--text-muted);
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+.tl-visible .tl-milestone-title::after {
+    width: 100%;
+}
+
+.tl-milestone-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-secondary);
 }
 
 /* Links in card footer */
@@ -951,6 +1097,10 @@ pre:hover .copy-button {
     }
 
     .timeline::before {
+        left: 0.5rem;
+    }
+
+    .timeline::after {
         left: 0.5rem;
     }
 

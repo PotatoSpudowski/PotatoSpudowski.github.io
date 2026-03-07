@@ -36,7 +36,10 @@
         </section>
 
         <section class="timeline-section">
-            <h2 class="section-title">The Story So Far</h2>
+            <div class="timeline-header">
+                <h2 class="section-title">The Story So Far</h2>
+                <button class="timeline-toggle" id="timeline-toggle">Start from the beginning</button>
+            </div>
 
             <!--
                 HOW TO ADD ENTRIES:
@@ -58,9 +61,11 @@
             <div id="timeline-entries" style="display:none;">
 
                 <div data-year="2025" data-month="11" data-tag="work" data-tag-label="work"
-                     data-title="Co-founded Cassian">
+                     data-title="Co-founded Cassian, AI infrastructure for commercial lending">
                     <script type="text/markdown">
 Came out of EF with a cofounder and an idea. We're building AI that takes messy borrower docs and turns them into something lenders can actually work with. Commercial lending is stuck in the stone age and we're trying to fix that.
+
+Raised from [Entrepreneurs First](https://www.joinef.com/) and [Transpose VC](https://www.transpose.vc/).
 
 ### What we're doing
 
@@ -75,110 +80,185 @@ The whole pipeline uses a mix of **document understanding** and **structured ext
                 <div data-year="2025" data-month="9" data-tag="work" data-tag-label="work"
                      data-title="Entrepreneurs First, Fall '25">
                     <script type="text/markdown">
-Moved to London for EF. Three months of figuring out what to build and who to build it with. Met a lot of interesting people. Most ideas died in a week but thats the point.
+Second time at EF. Moved to London. Explored vertical AI in legal tech (time tracking for lawyers) and lending before landing on Cassian.
 
-Tested like 5 different ideas before landing on Cassian. The EF model is basically: throw smart people in a room, see what sticks. It worked.
+The EF model is basically: throw smart people in a room, see what sticks. It worked.
                     </script>
                 </div>
 
-                <div data-year="2025" data-month="3" data-tag="project" data-tag-label="project"
-                     data-title="Some side project that went nowhere">
-                    <script type="text/markdown">
-Tried building a thing. Didn't work out. Learned a lot about what not to do though, which is honestly more valuable sometimes.
-                    </script>
+                <div data-year="2026" data-month="2" data-tag="milestone" data-tag-label="milestone"
+                     data-title="Middle East escalates">
                 </div>
 
-                <div data-year="2024" data-month="8" data-tag="project" data-tag-label="project"
-                     data-title="Oil well efficiency prediction"
-                     data-links='[{"text":"Write-up","url":"#"}]'>
-                    <script type="text/markdown">
-Built a prediction model for an oil company so they could figure out which wells to run and when. Took production data, weather patterns, equipment specs and trained a model that actually saved them money.
-
-One of those projects where you realise ML can be useful outside of tech twitter.
-
-### The approach
-
-The core model used gradient boosted trees on historical production data. Features included:
-
-- Well depth and geological composition
-- Historical flow rates and pressure readings
-- Weather and seasonal patterns
-- Equipment age and maintenance history
-
-The loss function we optimized was basically minimizing the cost of running a well vs the expected output:
-
-$$\min_{w} \sum_{i=1}^{N} C_{\text{run}}(w_i) - \hat{R}(w_i)$$
-
-where $C_{\text{run}}$ is operating cost and $\hat{R}$ is predicted revenue from the well.
-                    </script>
-                </div>
-
-                <div data-year="2024" data-month="2" data-tag="hackathon" data-tag-label="hackathon"
-                     data-title="Won something at a hackathon">
-                    <script type="text/markdown">
-48 hours, too much coffee, shipped a working demo. The usual. Details are fuzzy but pretty sure we placed top 3.
-                    </script>
-                </div>
-
-                <div data-year="2023" data-month="6" data-tag="work" data-tag-label="work"
-                     data-title="MLOps at QuillBot">
-                    <script type="text/markdown">
-First MLOps hire. Kept the GPU infra running, deployed models that served millions of users every day. Learned what production ML actually looks like when things break at 3am and you have to fix it.
-
-### What I actually did
-
-- Managed GPU clusters for model training and inference
-- Set up CI/CD pipelines for model deployment
-- Built monitoring and alerting for model performance
-- Dealt with the fun stuff like OOM errors at scale
-                    </script>
-                </div>
-
-                <div data-year="2023" data-month="1" data-tag="research" data-tag-label="research"
-                     data-title="Messed around with graph neural networks">
-                    <script type="text/markdown">
-Spent a few weeks going deep on GNNs. Read a bunch of papers, implemented some stuff, tried to apply it to a recommendation problem. Didn't ship anything but the knowledge stuck.
-
-Was playing with message passing networks where each node $v$ updates its representation:
-
-$$h_v^{(k)} = \sigma\left(W_k \sum_{u \in \mathcal{N}(v)} \frac{h_u^{(k-1)}}{|\mathcal{N}(v)|}\right)$$
-                    </script>
+                <div data-year="2022" data-month="11" data-tag="milestone" data-tag-label="milestone"
+                     data-title="ChatGPT launches">
                 </div>
 
                 <div data-year="2022" data-month="10" data-tag="work" data-tag-label="work"
+                     data-title="MLOps at QuillBot">
+                    <script type="text/markdown">
+First MLOps hire. Kept the GPU infra running, deployed models that served millions of users every day. Learned what production ML actually looks like when things break at 3am.
+
+Stayed for almost 3 years. Longest job I've had.
+                    </script>
+                </div>
+
+                <div data-year="2022" data-month="5" data-tag="milestone" data-tag-label="milestone"
+                     data-title="Crypto winter">
+                </div>
+
+                <div data-year="2022" data-month="3" data-tag="milestone" data-tag-label="milestone"
+                     data-title="ZIRP ends, rates start rising">
+                </div>
+
+                <div data-year="2022" data-month="2" data-tag="milestone" data-tag-label="milestone"
+                     data-title="War in Europe">
+                </div>
+
+                <div data-year="2021" data-month="12" data-tag="work" data-tag-label="work"
                      data-title="Founding engineer at Flippy">
                     <script type="text/markdown">
-YC backed crypto startup. Built things fast, broke things faster. The startup didn't make it but I learned more in those months than most people learn in a year. Startups are like that.
+YC backed crypto startup. Handled the entire backend. EC2 microservices, NoSQL DBs, event-driven serverless stuff with EventBridge, Lambdas, SQS.
+
+The startup didn't make it but I learned more in those 10 months than most people learn in a year.
                     </script>
                 </div>
 
-                <div data-year="2022" data-month="4" data-tag="hackathon" data-tag-label="hackathon"
-                     data-title="Built a chatbot for college admissions">
+                <div data-year="2021" data-month="10" data-tag="work" data-tag-label="work"
+                     data-title="ML at Amikus AI">
                     <script type="text/markdown">
-Hackathon project. Made a bot that could answer questions about college admissions using NLP. It was janky but it worked and people actually used it for a bit.
+Short stint. Built an MVP for contract review lawyers using encoder models for NER. Needle in haystack type detection in legal docs.
+
+The MVP helped them get early customers and raise pre-seed from EF.
                     </script>
                 </div>
 
-                <div data-year="2021" data-month="5" data-tag="research" data-tag-label="research"
-                     data-title="Research intern at IBM Research"
-                     data-links='[{"text":"Paper","url":"#"}]'>
+                <div data-year="2021" data-month="7" data-tag="research" data-tag-label="research"
+                     data-title="IBM Research, round two">
                     <script type="text/markdown">
-Worked on multimodal information retrieval. First real taste of research. Spent the summer figuring out how to make machines understand text and images together. Published a paper out of it too which was cool.
+Back at IBM. This time working on multimodal information retrieval. Text and images together.
 
-### The problem
-
-Given a query that could be text or an image, retrieve relevant documents from a corpus that contains both modalities. The challenge is learning a shared embedding space where:
-
-$$\text{sim}(q, d) = \frac{f(q) \cdot g(d)}{||f(q)|| \cdot ||g(d)||}$$
-
-works regardless of whether $q$ and $d$ are text, images, or both.
+Published papers at AAAI workshops and ACM SIGKDD.
                     </script>
                 </div>
 
-                <div data-year="2021" data-month="2" data-tag="hackathon" data-tag-label="hackathon"
-                     data-title="First hackathon win">
+                <div data-year="2021" data-month="6" data-tag="milestone" data-tag-label="milestone"
+                     data-title="Graduated BTech">
+                </div>
+
+                <div data-year="2021" data-month="2" data-tag="work" data-tag-label="work"
+                     data-title="Entrepreneurs First, first time">
                     <script type="text/markdown">
-College hackathon. Built something in 24 hours with a team of 3. Can't even remember what the prize was but that feeling of shipping under pressure got me hooked.
+BA5 cohort. Explored ideas in information retrieval and generative AI before it was mainstream.
+
+Didn't find a cofounder that time. Came back 4 years later.
+                    </script>
+                </div>
+
+                <div data-year="2020" data-month="7" data-tag="research" data-tag-label="research"
+                     data-title="IBM Research intern">
+                    <script type="text/markdown">
+NLP and Graph ML research. First real research experience.
+
+Papers published at AAAI workshops, ACM SIGKDD workshops, and Complex Networks conference.
+                    </script>
+                </div>
+
+                <div data-year="2020" data-month="3" data-tag="milestone" data-tag-label="milestone"
+                     data-title="COVID hits">
+                </div>
+
+
+                <div data-year="2019" data-month="2" data-tag="project" data-tag-label="project"
+                     data-title="malnou - IBM Call for Code semifinalist"
+                     data-links='[{"text":"GitHub","url":"https://github.com/malnou-org/malnou"}]'>
+                    <script type="text/markdown">
+Built IoT devices and a platform to monitor children's healthcare data to combat malnutrition.
+
+Made it to the global semifinals of IBM Call for Code 2019.
+                    </script>
+                </div>
+
+                <div data-year="2018" data-month="9" data-tag="work" data-tag-label="work"
+                     data-title="Freelance data science on Topcoder">
+                    <script type="text/markdown">
+Part-time freelance work during 2nd year of college. Clients from petroleum, insurance, and finance.
+
+Made 5 figures in USD while still in college. That was a good year.
+                    </script>
+                </div>
+
+                <div data-year="2017" data-month="8" data-tag="milestone" data-tag-label="milestone"
+                     data-title="Started BTech">
+                </div>
+
+                <div data-year="2017" data-month="6" data-tag="project" data-tag-label="project"
+                     data-title="Glaucoma detection, the hard way">
+                    <script type="text/markdown">
+12th grade. I was at the Indian Institute of Science for a student program. Saw researchers detecting glaucoma from eye images using OpenCV. Edge detection, thresholding, that sort of thing.
+
+I'd already done CS231n by then. So I thought, why not try deep learning?
+
+Wrote a CNN in PyTorch. The dataset was maybe 200 retinal images that students had collected. Trained it on my laptop. It worked, sort of. Good enough accuracy on the test set, though looking back the test set was tiny so who knows.
+
+Ended up presenting it at IISc's Open Day. I wasn't even a student there, just some high schooler who showed up with a project. But the professors were interested enough to let me demo it. That was the first time I pitched something technical to people who actually knew what they were talking about.
+                    </script>
+                </div>
+
+                <div data-year="2016" data-month="3" data-tag="project" data-tag-label="project"
+                     data-title="Hacking the school computers">
+                    <script type="text/markdown">
+10th-11th grade. I was writing VBS scripts to mess with school computers. Fake error messages, CD trays popping open. The IT admin was not happy.
+
+Somewhere in there I found out about machine learning. Code that learns. Programs that get better without you rewriting them. That sounded way more interesting than pranking the computer lab.
+
+I didn't understand the math. Couldn't tell you what a gradient was. But I knew I wanted to figure it out.
+                    </script>
+                </div>
+
+                <div data-year="2016" data-month="9" data-tag="research" data-tag-label="research"
+                     data-title="CS231n changed how I thought about ML"
+                     data-links='[{"text":"Course","url":"https://cs231n.stanford.edu/"}]'>
+                    <script type="text/markdown">
+Found Stanford's CS231n lectures online. Andrej Karpathy, Fei-Fei Li, Justin Johnson teaching CNNs and deep learning for computer vision.
+
+This was the first time someone explained backprop in a way that made sense. How gradients flow. Why certain architectures work. The whole thing clicked.
+
+Watched the lectures, did the assignments, trained models on my laptop. By the end I actually understood what I was doing instead of just copying code.
+                    </script>
+                </div>
+
+                <div data-year="2015" data-month="1" data-tag="project" data-tag-label="project"
+                     data-title="Harvesting radio waves for power"
+                     data-links='[{"text":"Times of India Feature","url":"https://timesofindia.indiatimes.com/city/bengaluru/young-scientists-discover-traffic-solutions-generate-energy/articleshow/45926161.cms"}]'>
+                    <script type="text/markdown">
+10th grade. Radio waves are everywhere. FM, cell towers, WiFi. All that energy just sitting in the air.
+
+Built a thing to capture it. Schottky diodes, a circuit, nothing fancy. It could charge a small capacitor, light up one of those old flashlight bulbs, or give a phone maybe a few seconds of juice. Not useful, but it worked.
+
+Ended up in the finals of Teenovators 2014 at Manipal with this.
+                    </script>
+                </div>
+
+                <div data-year="2014" data-month="6" data-tag="project" data-tag-label="project"
+                     data-title="Arduino and the end of soldering">
+                    <script type="text/markdown">
+9th grade. I'd been building circuits from hobby kits. Proximity sensors, alarms, basic stuff. Every change meant more soldering, more wires, more burnt fingers.
+
+Then I got an Arduino. Later a Raspberry Pi.
+
+Want to change how something works? Edit a few lines of code. No rewiring. The hardware stays the same, the behavior changes. Software could replace circuits. I didn't have to solder everything from scratch anymore.
+                    </script>
+                </div>
+
+                <div data-year="2013" data-month="4" data-tag="project" data-tag-label="project"
+                     data-title="RC planes that mostly crashed">
+                    <script type="text/markdown">
+8th grade. I wanted to build something that flies.
+
+Bought brushless motors, speed controllers, a radio transmitter. Cut the frame from foam board. Followed build guides online. Crashed it. Rebuilt it. Crashed it again.
+
+Most of it was just following instructions, but getting something you built to actually leave the ground, even for a few seconds before it nosedives, that felt like real engineering.
                     </script>
                 </div>
 
@@ -259,128 +339,232 @@ College hackathon. Built something in 24 hours with a team of 3. Can't even reme
             entries[key].push(el);
         }
 
-        // ── Build ruler ──
-        for (var year = maxYear; year >= minYear; year--) {
-            var yearDiv = document.createElement('div');
-            yearDiv.className = 'tl-year';
+        // ── Build timeline function ──
+        function buildTimeline(reversed) {
+            tl.innerHTML = '';
+            
+            var yearStart = reversed ? minYear : maxYear;
+            var yearEnd = reversed ? maxYear : minYear;
+            var yearStep = reversed ? 1 : -1;
+            
+            for (var year = yearStart; reversed ? year <= yearEnd : year >= yearEnd; year += yearStep) {
+                var yearDiv = document.createElement('div');
+                yearDiv.className = 'tl-year';
 
-            var yearLabel = document.createElement('div');
-            yearLabel.className = 'tl-year-marker';
-            yearLabel.innerHTML = '<span>' + year + '</span>';
-            yearDiv.appendChild(yearLabel);
+                var yearLabel = document.createElement('div');
+                yearLabel.className = 'tl-year-marker';
+                yearLabel.innerHTML = '<span>' + year + '</span>';
+                yearDiv.appendChild(yearLabel);
 
-            for (var month = 12; month >= 1; month--) {
-                var key = year + '-' + month;
-                var hasEntry = entries[key] && entries[key].length > 0;
+                var monthStart = reversed ? 1 : 12;
+                var monthEnd = reversed ? 12 : 1;
+                var monthStep = reversed ? 1 : -1;
 
-                var monthDiv = document.createElement('div');
-                monthDiv.className = 'tl-month' + (hasEntry ? ' tl-month--active' : '');
+                for (var month = monthStart; reversed ? month <= monthEnd : month >= monthEnd; month += monthStep) {
+                    var key = year + '-' + month;
+                    var hasEntry = entries[key] && entries[key].length > 0;
 
-                var tick = document.createElement('div');
-                tick.className = 'tl-month-tick';
-                tick.innerHTML = '<span>' + MONTHS[month - 1] + '</span>';
-                monthDiv.appendChild(tick);
+                    var monthDiv = document.createElement('div');
+                    monthDiv.className = 'tl-month' + (hasEntry ? ' tl-month--active' : '');
 
-                if (hasEntry) {
-                    for (var j = 0; j < entries[key].length; j++) {
-                        var raw = entries[key][j];
-                        var title = raw.dataset.title || 'Untitled';
-                        var tag = raw.dataset.tag;
-                        var tagLabel = raw.dataset.tagLabel || tag;
-                        var linksData = raw.dataset.links;
-                        var mdScript = raw.querySelector('script[type="text/markdown"]');
-                        var mdText = mdScript ? mdScript.textContent : '';
+                    var tick = document.createElement('div');
+                    tick.className = 'tl-month-tick';
+                    tick.innerHTML = '<span>' + MONTHS[month - 1] + '</span>';
+                    monthDiv.appendChild(tick);
 
-                        var fullHtml = renderMarkdown(mdText);
-                        var nonEmpty = mdText.trim().split('\n').filter(function(l) { return l.trim() !== ''; });
-                        var isShort = nonEmpty.length <= 2;
+                    if (hasEntry) {
+                        for (var j = 0; j < entries[key].length; j++) {
+                            var raw = entries[key][j];
+                            var title = raw.dataset.title || 'Untitled';
+                            var tag = raw.dataset.tag;
+                            var tagLabel = raw.dataset.tagLabel || tag;
+                            var linksData = raw.dataset.links;
+                            var mdScript = raw.querySelector('script[type="text/markdown"]');
+                            var mdText = mdScript ? mdScript.textContent : '';
 
-                        var entryDiv = document.createElement('div');
-                        entryDiv.className = 'tl-entry';
+                            var entryDiv = document.createElement('div');
+                            entryDiv.className = 'tl-entry tl-visible';
 
-                        var card = document.createElement('div');
-                        card.className = 'tl-card' + (isShort ? '' : ' tl-card--expandable');
+                            // Milestone: simple line item, no card or tag
+                            if (tag === 'milestone') {
+                                var lineItem = document.createElement('div');
+                                lineItem.className = 'tl-milestone';
 
-                        // Title
-                        var titleEl = document.createElement('h3');
-                        titleEl.textContent = title;
-                        card.appendChild(titleEl);
+                                var titleSpan = document.createElement('span');
+                                titleSpan.className = 'tl-milestone-title';
+                                titleSpan.textContent = title;
+                                lineItem.appendChild(titleSpan);
 
-                        // Body — one single div, clipped by CSS when collapsed
-                        var bodyEl = document.createElement('div');
-                        bodyEl.className = 'tl-body';
-                        bodyEl.innerHTML = fullHtml;
-                        card.appendChild(bodyEl);
-
-                        // Footer: tag + links + expand hint
-                        var footer = document.createElement('div');
-                        footer.className = 'tl-card-footer';
-
-                        if (tag) {
-                            var tagSpan = document.createElement('span');
-                            tagSpan.className = 'tl-tag tag-' + tag;
-                            tagSpan.textContent = tagLabel;
-                            footer.appendChild(tagSpan);
-                        }
-
-                        if (linksData) {
-                            var links = JSON.parse(linksData);
-                            var linksDiv = document.createElement('div');
-                            linksDiv.className = 'tl-links';
-                            for (var k = 0; k < links.length; k++) {
-                                var a = document.createElement('a');
-                                a.href = links[k].url;
-                                a.target = '_blank';
-                                a.textContent = links[k].text;
-                                linksDiv.appendChild(a);
+                                entryDiv.appendChild(lineItem);
+                                monthDiv.appendChild(entryDiv);
+                                continue;
                             }
-                            footer.appendChild(linksDiv);
-                        }
 
-                        if (!isShort) {
-                            var expandHint = document.createElement('span');
-                            expandHint.className = 'tl-expand-hint';
-                            expandHint.textContent = 'read more';
-                            footer.appendChild(expandHint);
-                        }
+                            var fullHtml = renderMarkdown(mdText);
+                            var nonEmpty = mdText.trim().split('\n').filter(function(l) { return l.trim() !== ''; });
+                            var isShort = nonEmpty.length <= 2;
 
-                        card.appendChild(footer);
-                        entryDiv.appendChild(card);
-                        monthDiv.appendChild(entryDiv);
+                            var card = document.createElement('div');
+                            card.className = 'tl-card' + (isShort ? '' : ' tl-card--expandable');
 
-                        // Click to expand/collapse
-                        if (!isShort) {
-                            (function (c) {
-                                c.addEventListener('click', function (e) {
-                                    // Don't toggle when clicking links
-                                    if (e.target.closest('a')) return;
-                                    c.classList.toggle('tl-card--open');
-                                });
-                            })(card);
+                            // Title
+                            var titleEl = document.createElement('h3');
+                            titleEl.textContent = title;
+                            card.appendChild(titleEl);
+
+                            // Body
+                            var bodyEl = document.createElement('div');
+                            bodyEl.className = 'tl-body';
+                            bodyEl.innerHTML = fullHtml;
+                            card.appendChild(bodyEl);
+
+                            // Footer: tag + links + expand hint
+                            var footer = document.createElement('div');
+                            footer.className = 'tl-card-footer';
+
+                            if (tag) {
+                                var tagSpan = document.createElement('span');
+                                tagSpan.className = 'tl-tag tag-' + tag;
+                                tagSpan.textContent = tagLabel;
+                                footer.appendChild(tagSpan);
+                            }
+
+                            if (linksData) {
+                                var links = JSON.parse(linksData);
+                                var linksDiv = document.createElement('div');
+                                linksDiv.className = 'tl-links';
+                                for (var k = 0; k < links.length; k++) {
+                                    var a = document.createElement('a');
+                                    a.href = links[k].url;
+                                    a.target = '_blank';
+                                    a.textContent = links[k].text;
+                                    linksDiv.appendChild(a);
+                                }
+                                footer.appendChild(linksDiv);
+                            }
+
+                            if (!isShort) {
+                                var expandHint = document.createElement('span');
+                                expandHint.className = 'tl-expand-hint';
+                                expandHint.textContent = 'read more';
+                                footer.appendChild(expandHint);
+                            }
+
+                            card.appendChild(footer);
+                            entryDiv.appendChild(card);
+                            monthDiv.appendChild(entryDiv);
+
+                            // Click to expand/collapse
+                            if (!isShort) {
+                                (function (c) {
+                                    c.addEventListener('click', function (e) {
+                                        if (e.target.closest('a')) return;
+                                        c.classList.toggle('tl-card--open');
+                                    });
+                                })(card);
+                            }
                         }
                     }
+
+                    yearDiv.appendChild(monthDiv);
                 }
 
-                yearDiv.appendChild(monthDiv);
+                tl.appendChild(yearDiv);
             }
-
-            tl.appendChild(yearDiv);
         }
 
-        // Scroll-triggered reveal
-        var observer = new IntersectionObserver(function (items) {
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].isIntersecting) {
-                    items[i].target.classList.add('tl-visible');
-                    observer.unobserve(items[i].target);
-                }
-            }
-        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        // Initial build (present first)
+        buildTimeline(false);
 
-        var entryEls = tl.querySelectorAll('.tl-entry');
-        for (var i = 0; i < entryEls.length; i++) {
-            observer.observe(entryEls[i]);
+        // Scroll progress tracking
+        function updateScrollProgress() {
+            var tlRect = tl.getBoundingClientRect();
+            var windowHeight = window.innerHeight;
+            var tlTop = tlRect.top;
+            var tlHeight = tlRect.height;
+            
+            // Calculate progress: 0% when timeline top enters viewport, 100% when timeline bottom reaches viewport center
+            var startPoint = windowHeight * 0.8;
+            var endPoint = windowHeight * 0.5;
+            
+            var scrolled = startPoint - tlTop;
+            var totalDistance = tlHeight - (startPoint - endPoint);
+            
+            var progress = Math.max(0, Math.min(100, (scrolled / totalDistance) * 100));
+            
+            tl.style.setProperty('--scroll-progress', progress + '%');
         }
+
+        window.addEventListener('scroll', updateScrollProgress, { passive: true });
+        updateScrollProgress();
+
+        // Scroll-triggered animations
+        function setupScrollAnimations() {
+            var yearMarkers = tl.querySelectorAll('.tl-year-marker');
+            var monthTicks = tl.querySelectorAll('.tl-month-tick');
+            var entries = tl.querySelectorAll('.tl-entry');
+
+            var observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            // Year markers observer
+            var yearObserver = new IntersectionObserver(function (items) {
+                items.forEach(function (item) {
+                    if (item.isIntersecting) {
+                        item.target.classList.add('tl-in-view');
+                    }
+                });
+            }, observerOptions);
+
+            // Month ticks observer with stagger
+            var monthObserver = new IntersectionObserver(function (items) {
+                items.forEach(function (item, index) {
+                    if (item.isIntersecting) {
+                        setTimeout(function () {
+                            item.target.classList.add('tl-in-view');
+                        }, index * 30);
+                    }
+                });
+            }, observerOptions);
+
+            // Entries observer with stagger
+            var entryObserver = new IntersectionObserver(function (items) {
+                items.forEach(function (item, index) {
+                    if (item.isIntersecting) {
+                        setTimeout(function () {
+                            item.target.classList.add('tl-visible');
+                        }, index * 100);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
+
+            yearMarkers.forEach(function (el) { yearObserver.observe(el); });
+            monthTicks.forEach(function (el) { monthObserver.observe(el); });
+            entries.forEach(function (el) { entryObserver.observe(el); });
+        }
+
+        setupScrollAnimations();
+
+        // Timeline toggle - start from beginning
+        var toggleBtn = document.getElementById('timeline-toggle');
+        var isReversed = false;
+
+        toggleBtn.addEventListener('click', function () {
+            isReversed = !isReversed;
+            buildTimeline(isReversed);
+            setupScrollAnimations();
+            
+            if (isReversed) {
+                toggleBtn.textContent = 'Back to present';
+            } else {
+                toggleBtn.textContent = 'Start from the beginning';
+            }
+            
+            // Scroll to top of timeline
+            tl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     })();
     </script>
 </body>
