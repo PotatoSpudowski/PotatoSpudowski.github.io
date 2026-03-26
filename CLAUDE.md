@@ -40,8 +40,8 @@
 
 ## Design System
 
-- Background: pure black `#000000`
-- Text: white `#ffffff`, secondary `#a0a0a0`, muted `#666666`
+- Background: dark charcoal `#0f0f0f`, secondary `#161616`, tertiary `#1c1c1c`
+- Text: off-white `#e0e0e0`, secondary `#909090`, muted `#585858`
 - Borders: `#222222`
 - Cards/code blocks: `#0a0a0a` bg
 - Font: system sans-serif (`-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`)

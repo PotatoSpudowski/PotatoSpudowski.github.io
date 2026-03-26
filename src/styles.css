@@ -6,21 +6,21 @@
 }
 
 :root {
-    --bg-primary: #000000;
-    --bg-secondary: #0a0a0a;
-    --bg-tertiary: #111111;
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --text-muted: #666666;
-    --accent: #ffffff;
-    --border: #222222;
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #161616;
+    --bg-tertiary: #1c1c1c;
+    --text-primary: #e0e0e0;
+    --text-secondary: #909090;
+    --text-muted: #585858;
+    --accent: #e0e0e0;
+    --border: #2a2a2a;
     --max-width: 1200px;
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-serif: Georgia, "Times New Roman", serif;
     --font-mono: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    --tl-line: #1a1a1a;
-    --tl-dot: #333333;
-    --tl-dot-glow: rgba(255, 255, 255, 0.06);
+    --tl-line: #222222;
+    --tl-dot: #3a3a3a;
+    --tl-dot-glow: rgba(255, 255, 255, 0.05);
 }
 
 html {
