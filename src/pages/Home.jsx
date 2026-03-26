@@ -12,7 +12,10 @@ export default function Home() {
         <div className="hero-text">
           <h1 className="hero-title">Hi, I'm Bahushruth</h1>
           <p className="hero-subtitle">
-            I build things, mostly with AI. currently at Cassian — were making commercial lending less of a nightmare. before that ive been at a bunch of places, done a bunch of stuff. scroll down if you want the full story.
+            started in 10th grade writing VBS scripts to mess with school computers. decided ML was more interesting. by 12th grade i was presenting a CNN to researchers at IISc. made 5 figures freelancing during college. IBM Research before graduating. founding engineer at a YC startup. MLOps for millions of users at QuillBot. twice at Entrepreneurs First.
+          </p>
+          <p className="hero-subtitle">
+            now at Cassian. were automating the nightmare that is commercial lending.
           </p>
           <div className="hero-links">
             <a href="https://github.com/bahushruth" target="_blank" rel="noreferrer" className="hero-social-link">GitHub</a>

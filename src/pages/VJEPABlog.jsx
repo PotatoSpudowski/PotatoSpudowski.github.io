@@ -189,7 +189,7 @@ function Arch() {
         {/* Context Encoder */}
         <DBox color={dc.green} style={{ flex: 2 }}>
           <DLabel bold size={16}>Context Encoder</DLabel>
-          <DLabel size={12} color={dc.green} mono>VisionTransformer — ViT-G</DLabel>
+          <DLabel size={12} color={dc.green} mono>VisionTransformer (ViT-G)</DLabel>
           <DLabel size={11} color="#888" mono>dim=1408 · depth=40 · heads=22 · SiLU · RoPE</DLabel>
           <div style={{ margin: '12px 0 8px' }}>
             <DLayerStack count={40} label="Self-Attn + SiLU MLP" color={dc.green} />
@@ -306,7 +306,7 @@ function RobotArch() {
       <DBox color={dc.green}>
         <DLabel bold size={15} color={dc.green}>Frozen Encoder (ViT-G)</DLabel>
         <DLabel size={12} color="#888">encode both views → latent representations</DLabel>
-        <DLabel size={10} color="#888" mono>no gradients — pretrained weights locked</DLabel>
+        <DLabel size={10} color="#888" mono>no gradients, pretrained weights locked</DLabel>
       </DBox>
       <DArrow />
 
@@ -318,7 +318,7 @@ function RobotArch() {
             <div key={t} style={{ padding: '3px 8px', borderRadius: 3, background: `${i < 2 ? dc.purple : dc.blue}15`, border: `1px solid ${i < 2 ? dc.purple : dc.blue}30`, fontSize: 10, color: i < 2 ? dc.purple : dc.blue, fontFamily: "'Monaco','Menlo',monospace" }}>{t}</div>
           ))}
         </div>
-        <DLabel size={11} color="#888">causal attention — each frame sees only past + current</DLabel>
+        <DLabel size={11} color="#888">causal attention, each frame sees only past + current</DLabel>
         <DLabel size={11} color="#888">simulates action sequences in embedding space</DLabel>
         <DLabel size={10} color="#888" mono style={{ marginTop: 4 }}>post-trained on DROID dataset</DLabel>
       </DBox>
@@ -332,7 +332,7 @@ function RobotArch() {
 
       <DBox color="#666">
         <DLabel bold size={15}>Robot Executes</DLabel>
-        <DLabel size={12} color="#888">Franka Panda arm — zero-shot, no fine-tuning</DLabel>
+        <DLabel size={12} color="#888">Franka Panda arm, zero-shot, no fine-tuning</DLabel>
       </DBox>
     </div>
   )
@@ -382,38 +382,38 @@ export default function VJEPABlog() {
 
         {/* ====== 01 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">01 — introduction</h2>
+          <h2 className="blog-section-tag">01. introduction</h2>
           <p className="blog-p">lets start from first principles because everyone talks about this model without explaining the actual insight behind it.</p>
-          <p className="blog-p">most video models try to predict future frames at the pixel level. like, you show the model 10 frames and ask it to generate frame 11. the problem with this is that the physical world is full of shit thats basically unpredictable at the pixel level — leaves rustling, water rippling, lighting changing. if you force the model to predict all of that, it wastes most of its capacity on noise instead of learning the actual physics of whats happening.</p>
+          <p className="blog-p">most video models try to predict future frames at the pixel level. like, you show the model 10 frames and ask it to generate frame 11. the problem with this is that the physical world is full of shit thats basically unpredictable at the pixel level: leaves rustling, water rippling, lighting changing. if you force the model to predict all of that, it wastes most of its capacity on noise instead of learning the actual physics of whats happening.</p>
           <p className="blog-p">JEPA (joint embedding predictive architecture) flips this. instead of predicting pixels, you predict in representation space. you take some of the video, encode it into abstract vectors, hide other parts, and train the model to predict the abstract representations of the hidden parts. the model never has to reconstruct actual pixels. it just has to predict the meaning.</p>
-          <p className="blog-p">this is yann lecuns whole thesis and honestly its a really clean idea. by learning in latent space the model is forced to understand the underlying structure — how objects interact, how gravity works, how hands grasp things — without getting bogged down in surface-level visual noise.</p>
+          <p className="blog-p">this is yann lecuns whole thesis and honestly its a really clean idea. by learning in latent space the model is forced to understand the underlying structure: how objects interact, how gravity works, how hands grasp things. without getting bogged down in surface-level visual noise.</p>
           <p className="blog-p">v-jepa 2 applies this to video. v-jepa 2.1 (dropped march 16, like 10 days ago) fixes some problems with the original and is now SOTA on basically everything. both are open source.</p>
         </section>
 
         {/* ====== 02 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">02 — the problem 2.1 actually solves</h2>
+          <h2 className="blog-section-tag">02. the problem 2.1 actually solves</h2>
           <p className="blog-p">video AI has been stuck in this annoying tradeoff that nobody could crack until now.</p>
-          <p className="blog-p">on one side you have video-first models (like the original v-jepa 2). these are great at understanding motion — the model gets that "person reaches for cup, lifts cup, drinks" is one continuous action. it understands temporal dynamics really well. but its shit at spatial detail. the object boundaries are blurry, depth estimation is mediocre, segmentation is grainy. it knows things are moving but cant tell you exactly where they are.</p>
+          <p className="blog-p">on one side you have video-first models (like the original v-jepa 2). these are great at understanding motion. the model gets that "person reaches for cup, lifts cup, drinks" is one continuous action. it understands temporal dynamics really well. but its shit at spatial detail. the object boundaries are blurry, depth estimation is mediocre, segmentation is grainy. it knows things are moving but cant tell you exactly where they are.</p>
           <p className="blog-p">on the other side you have image-first models like DINOv2 and DINOv3. these have pixel-perfect spatial understanding. incredible segmentation, depth, object boundaries. but theyre trained on static images so they have literally zero understanding of time. they dont know what "reaching for a cup" means as a sequence.</p>
-          <p className="blog-p">so youre fucked either way. you get motion OR spatial precision. never both. and for anything useful — like a robot that needs to track an object, predict where its going, and physically grab it — you need both.</p>
+          <p className="blog-p">so youre fucked either way. you get motion OR spatial precision. never both. and for anything useful. like a robot that needs to track an object, predict where its going, and physically grab it. you need both.</p>
           <p className="blog-p">v-jepa 2.1 finally cracks this. it beats DINOv3 (a 7 billion parameter image specialist) on depth estimation with only 2B params while simultaneously being SOTA on action recognition. one model does everything.</p>
         </section>
 
         {/* ====== 03 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">03 — the architecture (mapped to actual code)</h2>
+          <h2 className="blog-section-tag">03. the architecture (mapped to actual code)</h2>
           <p className="blog-p">ok heres the architecture. i cloned the repo and went through the source so everything here maps to actual classes and methods in <code>facebookresearch/vjepa2</code>.</p>
 
-          <Fig cap="full pretraining architecture — each box = a real class in src/models/">
+          <Fig cap="full pretraining architecture. each box = a real class in src/models/">
             <Arch />
           </Fig>
 
           <p className="blog-p">lets walk through it piece by piece.</p>
-          <p className="blog-p">first, tokenization. your video comes in as a tensor of shape B×3×T×H×W (batch × channels × frames × height × width). for a typical input thats 64 frames at 256×256. the tokenizer chops this into 3D patches called tubelets — each one is 2 frames × 16×16 pixels. thats a Conv3d under the hood. for a 64-frame 256×256 video you get 32×16×16 = 8192 tokens. each token represents a little chunk of spacetime.</p>
-          <p className="blog-p">the clever thing in 2.1 is that images get their own 2D tokenizer (a Conv2d) instead of being faked as 16x-duplicated video clips like in v-jepa 2. this is dumb simple but it matters — the old approach wasted compute and confused the model.</p>
+          <p className="blog-p">first, tokenization. your video comes in as a tensor of shape B×3×T×H×W (batch × channels × frames × height × width). for a typical input thats 64 frames at 256×256. the tokenizer chops this into 3D patches called tubelets. each one is 2 frames × 16×16 pixels. thats a Conv3d under the hood. for a 64-frame 256×256 video you get 32×16×16 = 8192 tokens. each token represents a little chunk of spacetime.</p>
+          <p className="blog-p">the clever thing in 2.1 is that images get their own 2D tokenizer (a Conv2d) instead of being faked as 16x-duplicated video clips like in v-jepa 2. this is dumb simple but it matters. the old approach wasted compute and confused the model.</p>
 
-          <CodeBlock file="src/models/vision_transformer.py — how tokenization works">
+          <CodeBlock file="src/models/vision_transformer.py: how tokenization works">
 {`# in VisionTransformer.__init__()
 if self.is_video:
     self.patch_embed = PatchEmbed3D(
@@ -427,10 +427,10 @@ else:
     )`}
           </CodeBlock>
 
-          <p className="blog-p">then about 75% of those 8192 tokens get masked out. the model only sees ~25% — random sparse patches scattered across space and time. the masking config uses 2 strategies simultaneously: 8 small spatiotemporal blocks (15% spatial scale) and 2 large blocks (70% spatial scale). this forces both local and global predictions.</p>
+          <p className="blog-p">then about 75% of those 8192 tokens get masked out. the model only sees ~25%, random sparse patches scattered across space and time. the masking config uses 2 strategies simultaneously: 8 small spatiotemporal blocks (15% spatial scale) and 2 large blocks (70% spatial scale). this forces both local and global predictions.</p>
           <p className="blog-p">the visible patches go through the encoder. for ViT-G thats a 40-layer vision transformer with 1408-dim embeddings, 22 attention heads, and 3D rotary position embeddings (RoPE). heres the actual constructor:</p>
 
-          <CodeBlock file="src/models/vision_transformer.py — ViT-G definition">
+          <CodeBlock file="src/models/vision_transformer.py: ViT-G definition">
 {`def vit_giant_xformers(patch_size=16, **kwargs):
     return VisionTransformer(
         embed_dim=1408,     # token dimension
@@ -442,9 +442,9 @@ else:
     )`}
           </CodeBlock>
 
-          <p className="blog-p">the key thing in 2.1 is the <code>out_layers</code> parameter. when you set this, the encoder taps intermediate layer outputs in addition to the final output. this is how deep self-supervision works — the loss gets applied at multiple points in the network, not just the end. in v-jepa 2 the loss only hit the final layer, and by that point all the fine-grained spatial info had been abstracted away. applying loss at intermediate layers forces spatial structure to propagate through the whole network.</p>
+          <p className="blog-p">the key thing in 2.1 is the <code>out_layers</code> parameter. when you set this, the encoder taps intermediate layer outputs in addition to the final output. this is how deep self-supervision works. the loss gets applied at multiple points in the network, not just the end. in v-jepa 2 the loss only hit the final layer, and by that point all the fine-grained spatial info had been abstracted away. applying loss at intermediate layers forces spatial structure to propagate through the whole network.</p>
 
-          <CodeBlock file="src/models/vision_transformer.py — forward() with deep supervision">
+          <CodeBlock file="src/models/vision_transformer.py: forward() with deep supervision">
 {`def forward(self, x, masks=None):
     x = self.patch_embed(x)       # tokenize
     if masks is not None:
@@ -465,11 +465,11 @@ else:
 
         {/* ====== 04 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">04 — the predictor (where the magic happens)</h2>
+          <h2 className="blog-section-tag">04. the predictor (where the magic happens)</h2>
           <p className="blog-p">the predictor is a separate, smaller transformer defined in <code>src/models/predictor.py</code>. its job is to take the context embeddings from the encoder and predict what the hidden patches look like in representation space.</p>
           <p className="blog-p">heres how it actually works step by step. it projects the context tokens down from 1408-dim to 384-dim (saves compute). creates learnable mask tokens that carry positional info about where the hidden patches are. concatenates everything together, sorts by position so the transformer sees tokens in spatial order, runs it through 24 transformer blocks (for ViT-G), then projects back up to 1408-dim.</p>
 
-          <CodeBlock file="src/models/predictor.py — the forward pass simplified">
+          <CodeBlock file="src/models/predictor.py: the forward pass simplified">
 {`def forward(self, x, masks_x, masks_y, mask_index=1):
     # x = context tokens from encoder
     # masks_x = where visible tokens are
@@ -503,16 +503,16 @@ else:
     return x`}
           </CodeBlock>
 
-          <p className="blog-p">the <code>return_all_tokens</code> flag is the switch between v-jepa 2 and 2.1 behavior. when False (v-jepa 2 default) it only returns predictions for the masked tokens. when True (2.1) it returns predictions for ALL tokens — both visible and hidden. this is what enables the dense predictive loss. the model gets supervised on every single token, not just the ones it had to guess.</p>
+          <p className="blog-p">the <code>return_all_tokens</code> flag is the switch between v-jepa 2 and 2.1 behavior. when False (v-jepa 2 default) it only returns predictions for the masked tokens. when True (2.1) it returns predictions for ALL tokens, both visible and hidden. this is what enables the dense predictive loss. the model gets supervised on every single token, not just the ones it had to guess.</p>
           <p className="blog-p">think about it like this. in v-jepa 2, the visible tokens just had to pass through the encoder well enough for the predictor to reconstruct the hidden ones. but the encoder was never directly told "hey, your representation of this visible patch needs to be accurate." so it took shortcuts. it could be sloppy about spatial details in visible patches because nobody was checking. v-jepa 2.1 checks everything.</p>
         </section>
 
         {/* ====== 05 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">05 — the loss function</h2>
+          <h2 className="blog-section-tag">05. the loss function</h2>
           <p className="blog-p">the actual loss is in <code>app/vjepa/train.py</code> and its dead simple. its an L1 loss (or generalized Lp loss) between the predicted embeddings and the target embeddings. nothing fancy.</p>
 
-          <CodeBlock file="app/vjepa/train.py — the full training step">
+          <CodeBlock file="app/vjepa/train.py: the full training step">
 {`def train_step():
     scheduler.step()
     wd_scheduler.step()
@@ -549,18 +549,18 @@ else:
           </CodeBlock>
 
           <p className="blog-p">ok let me break down what each of these 4 steps actually does because this is the whole training loop.</p>
-          <p className="blog-p">step 1 — the target encoder is an exponential moving average copy of the main encoder. its weights are a slow-moving average: 99.925% old weights + 0.075% new encoder weights every step. this gives you stable targets that dont collapse. its the same trick from BYOL and DINO. it processes the FULL unmasked video so the targets represent what the patches actually look like.</p>
-          <p className="blog-p">step 2 — the context encoder only sees the ~25% visible patches (masked input). it encodes those, and the predictor takes those encoded patches and tries to predict the representations of the hidden ~75%. in v-jepa 2.1 with return_all_tokens=True, it predicts everything.</p>
-          <p className="blog-p">step 3 — the loss is literally just the absolute difference between predicted embeddings (z) and target embeddings (h), averaged across all mask groups. the <code>loss_exp</code> is 1.0 which makes it an L1 loss. thats it. no contrastive learning, no negative pairs, no complicated shit. just "predict the representation and minimize the distance."</p>
-          <p className="blog-p">step 4 — after each step, the target encoder weights get nudged slightly toward the current encoder weights. this slow-moving target is what prevents representation collapse (where everything maps to the same embedding). its a beautifully simple design.</p>
+          <p className="blog-p">step 1. the target encoder is an exponential moving average copy of the main encoder. its weights are a slow-moving average: 99.925% old weights + 0.075% new encoder weights every step. this gives you stable targets that dont collapse. its the same trick from BYOL and DINO. it processes the FULL unmasked video so the targets represent what the patches actually look like.</p>
+          <p className="blog-p">step 2. the context encoder only sees the ~25% visible patches (masked input). it encodes those, and the predictor takes those encoded patches and tries to predict the representations of the hidden ~75%. in v-jepa 2.1 with return_all_tokens=True, it predicts everything.</p>
+          <p className="blog-p">step 3. the loss is literally just the absolute difference between predicted embeddings (z) and target embeddings (h), averaged across all mask groups. the <code>loss_exp</code> is 1.0 which makes it an L1 loss. thats it. no contrastive learning, no negative pairs, no complicated shit. just "predict the representation and minimize the distance."</p>
+          <p className="blog-p">step 4. after each step, the target encoder weights get nudged slightly toward the current encoder weights. this slow-moving target is what prevents representation collapse (where everything maps to the same embedding). its a beautifully simple design.</p>
         </section>
 
         {/* ====== 06 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">06 — fine-tuning (its barely any code)</h2>
-          <p className="blog-p">after pretraining you freeze the encoder. done. never touch those weights again. for downstream tasks you train a tiny attentive probe on top — its defined in <code>src/models/attentive_pooler.py</code> and its hilariously simple.</p>
+          <h2 className="blog-section-tag">06. fine-tuning (its barely any code)</h2>
+          <p className="blog-p">after pretraining you freeze the encoder. done. never touch those weights again. for downstream tasks you train a tiny attentive probe on top. its defined in <code>src/models/attentive_pooler.py</code> and its hilariously simple.</p>
 
-          <CodeBlock file="src/models/attentive_pooler.py — the whole probe">
+          <CodeBlock file="src/models/attentive_pooler.py: the whole probe">
 {`class AttentiveClassifier(nn.Module):
     def __init__(self, embed_dim, num_heads, num_classes):
         super().__init__()
@@ -578,9 +578,9 @@ else:
         return self.linear(x)           # [B, num_classes]`}
           </CodeBlock>
 
-          <p className="blog-p">thats the entire fine-tuning architecture. a single learned query token that cross-attends to all the frozen encoder features, then a linear layer. the loss is standard cross-entropy. only the probe weights get gradients — the encoder is behind a <code>torch.no_grad()</code> wall.</p>
+          <p className="blog-p">thats the entire fine-tuning architecture. a single learned query token that cross-attends to all the frozen encoder features, then a linear layer. the loss is standard cross-entropy. only the probe weights get gradients. the encoder is behind a <code>torch.no_grad()</code> wall.</p>
 
-          <CodeBlock file="evals/video_classification_frozen/eval.py — fine-tuning loop">
+          <CodeBlock file="evals/video_classification_frozen/eval.py: fine-tuning loop">
 {`criterion = torch.nn.CrossEntropyLoss()
 
 for clips, labels in data_loader:
@@ -593,21 +593,21 @@ for clips, labels in data_loader:
     optimizer.step()`}
           </CodeBlock>
 
-          <p className="blog-p">this is why the pretraining matters so much. the entire downstream performance depends on the quality of the frozen features. if the encoder learned good representations during self-supervised pretraining, a trivially simple probe on top should perform well. and it does — 77.3% on SSv2, 90.2% on Diving48, 39.7% on EPIC-KITCHENS. all with this tiny attentive probe.</p>
+          <p className="blog-p">this is why the pretraining matters so much. the entire downstream performance depends on the quality of the frozen features. if the encoder learned good representations during self-supervised pretraining, a trivially simple probe on top should perform well. and it does: 77.3% on SSv2, 90.2% on Diving48, 39.7% on EPIC-KITCHENS. all with this tiny attentive probe.</p>
         </section>
 
         {/* ====== 07 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">07 — zero-shot robot control</h2>
+          <h2 className="blog-section-tag">07. zero-shot robot control</h2>
           <p className="blog-p">the robot stuff uses a separate action-conditioned predictor (<code>VisionTransformerPredictorAC</code>) thats post-trained on the DROID dataset. this is where it gets wild.</p>
 
-          <Fig cap="robot planning pipeline — frozen encoder + action-conditioned world model">
+          <Fig cap="robot planning pipeline. frozen encoder + action-conditioned world model">
             <RobotArch />
           </Fig>
 
           <p className="blog-p">the AC predictor is like the regular predictor but it also takes robot actions and joint states as input. at each timestep it interleaves action tokens, state tokens, and visual tokens, then uses a causal attention mask so it cant peek at future frames:</p>
 
-          <CodeBlock file="src/models/ac_predictor.py — interleaving actions with vision">
+          <CodeBlock file="src/models/ac_predictor.py: interleaving actions with vision">
 {`def forward(self, x, actions, states):
     x = self.predictor_embed(x)  # visual tokens
     a = self.action_encoder(actions)  # Linear(7, 1024)
@@ -628,13 +628,13 @@ for clips, labels in data_loader:
     return self.predictor_proj(x)`}
           </CodeBlock>
 
-          <p className="blog-p">at inference time the robot does this: encode current camera view with the frozen encoder. encode goal image (what you want the world to look like). use the AC predictor to simulate different action sequences in embedding space — "if i move my arm this way, the world state embedding becomes X, if i then do Y it becomes Z." pick the action sequence that gets the predicted final state closest to the goal state. execute.</p>
+          <p className="blog-p">at inference time the robot does this: encode current camera view with the frozen encoder. encode goal image (what you want the world to look like). use the AC predictor to simulate different action sequences in embedding space: "if i move my arm this way, the world state embedding becomes X, if i then do Y it becomes Z." pick the action sequence that gets the predicted final state closest to the goal state. execute.</p>
           <p className="blog-p">the franka panda robot arm has never seen these objects before. zero fine-tuning on specific objects. it learned general physics from watching millions of videos of humans doing stuff and it just transfers to robot control. the pick-and-place success rate is 80% on cups vs 10% for Octo and 0% for Cosmos.</p>
         </section>
 
         {/* ====== 08 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">08 — the numbers</h2>
+          <h2 className="blog-section-tag">08. the numbers</h2>
           <p className="blog-p">official results from the repo. v-jepa 2 vs previous SOTA on video understanding benchmarks (frozen encoder + attentive probes):</p>
 
           <Fig>
@@ -653,7 +653,7 @@ for clips, labels in data_loader:
             </div>
           </Fig>
 
-          <p className="blog-p">the EK100 number is insane — 39.7% vs 27.6% previous best. thats the "predict what the human does 1 second from now" task. 12 point absolute improvement on egocentric action anticipation. directly relevant for AR headsets.</p>
+          <p className="blog-p">the EK100 number is insane: 39.7% vs 27.6% previous best. thats the "predict what the human does 1 second from now" task. 12 point absolute improvement on egocentric action anticipation. directly relevant for AR headsets.</p>
           <p className="blog-p">robot manipulation zero-shot:</p>
 
           <Fig>
@@ -678,7 +678,7 @@ for clips, labels in data_loader:
 
         {/* ====== 09 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">09 — running it</h2>
+          <h2 className="blog-section-tag">09. running it</h2>
           <CodeBlock file="setup + loading" language="bash">
 {`git clone https://github.com/facebookresearch/vjepa2
 cd vjepa2 && pip install .
@@ -706,10 +706,10 @@ python -m evals.main \\
 
         {/* ====== 10 ====== */}
         <section className="blog-section blog-section--last">
-          <h2 className="blog-section-tag">10 — bottom line</h2>
+          <h2 className="blog-section-tag">10. bottom line</h2>
           <p className="blog-p">v-jepa 2 is the best self-supervised video encoder out right now. the frozen features give you action recognition, depth, segmentation, tracking, and robot control from a single backbone with no architecture changes between tasks. just swap the probe on top.</p>
-          <p className="blog-p">the codebase is clean as fuck. encoder, predictor, and loss are all readable and well-structured. the only "tricks" are the masking strategy and the EMA target encoder — everything else is standard transformer machinery. that means improvements to ViTs in general directly benefit this model.</p>
-          <p className="blog-p">for anyone working on video understanding, temporal reasoning, or embodied AI — this is probably the foundation you want to build on. the encoder trained on 163M samples is hard to beat with smaller-scale training. and the latent world model approach for robot planning (simulating in embedding space instead of pixel space) is the more interesting long-term direction.</p>
+          <p className="blog-p">the codebase is clean as fuck. encoder, predictor, and loss are all readable and well-structured. the only "tricks" are the masking strategy and the EMA target encoder. everything else is standard transformer machinery. that means improvements to ViTs in general directly benefit this model.</p>
+          <p className="blog-p">for anyone working on video understanding, temporal reasoning, or embodied AI. this is probably the foundation you want to build on. the encoder trained on 163M samples is hard to beat with smaller-scale training. and the latent world model approach for robot planning (simulating in embedding space instead of pixel space) is the more interesting long-term direction.</p>
           <p className="blog-p">code and weights at github.com/facebookresearch/vjepa2. model variants from 300M to 1.4B params. MIT license. go nuts</p>
         </section>
 
