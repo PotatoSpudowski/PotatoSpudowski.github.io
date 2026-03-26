@@ -1056,7 +1056,9 @@ pre code {
     background: var(--bg-secondary);
     border-radius: 8px;
     border: 1px solid var(--border);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .blog-fig-cap {
