@@ -26,7 +26,7 @@ stayed for almost 3 years. longest job ive had.` },
   { year: 2022, month: 3, tag: 'milestone', title: 'ZIRP ends, rates start rising' },
   { year: 2022, month: 2, tag: 'milestone', title: 'War in Europe' },
   { year: 2021, month: 12, tag: 'work', title: 'Founding engineer at Flippy',
-    md: `YC backed crypto startup. handled the entire backend. EC2 microservices, NoSQL DBs, event-driven serverless stuff with EventBridge, Lambdas, SQS.
+    md: `YC backed crypto startup that came out of my EF batch. handled the entire backend. EC2 microservices, NoSQL DBs, event-driven serverless stuff with EventBridge, Lambdas, SQS.
 
 the startup didnt make it but i learned more in those 10 months than most people learn in a year.` },
   { year: 2021, month: 10, tag: 'work', title: 'ML at Amikus AI',
