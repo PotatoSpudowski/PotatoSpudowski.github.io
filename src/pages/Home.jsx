@@ -12,10 +12,7 @@ export default function Home() {
         <div className="hero-text">
           <h1 className="hero-title">Hi, I'm Bahushruth</h1>
           <p className="hero-subtitle">
-            I build things, mostly with AI. Currently working on Cassian where
-            we're trying to make commercial lending less painful. Before this
-            I've been at a bunch of places, done a bunch of stuff. Scroll down
-            if you want the full story.
+            I build things, mostly with AI. currently at Cassian — were making commercial lending less of a nightmare. before that ive been at a bunch of places, done a bunch of stuff. scroll down if you want the full story.
           </p>
           <div className="hero-links">
             <a href="https://github.com/bahushruth" target="_blank" rel="noreferrer" className="hero-social-link">GitHub</a>

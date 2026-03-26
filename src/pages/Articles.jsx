@@ -8,13 +8,6 @@ const ARTICLES = [
     readtime: '25 min read',
     excerpt: 'Architecture, loss, training, fine-tuning, robot deployment. Walked through the actual codebase so you don\'t have to read 15 files yourself.',
   },
-  {
-    slug: 'why-this-site-exists',
-    title: 'Why This Site Exists',
-    date: 'March 8, 2026',
-    readtime: '2 min read',
-    excerpt: "This isn't a portfolio. Resumes are a lossy compression format for human experience. This is the uncompressed version.",
-  },
 ]
 
 export default function Articles() {
