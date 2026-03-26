@@ -172,11 +172,12 @@ body {
 }
 
 .section-title {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
     color: var(--text-secondary);
     text-transform: uppercase;
+    letter-spacing: 0.05em;
     letter-spacing: 0.05em;
 }
 
