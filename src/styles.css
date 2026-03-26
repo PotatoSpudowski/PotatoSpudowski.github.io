@@ -1237,3 +1237,14 @@ pre code {
         padding: 0.75rem 0.875rem;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .tl-year-marker,
+    .tl-entry,
+    .tl-month-tick,
+    .tl-milestone {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}
