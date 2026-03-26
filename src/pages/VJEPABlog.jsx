@@ -382,7 +382,7 @@ export default function VJEPABlog() {
 
         {/* ====== 01 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">01. introduction</h2>
+          <h2 className="blog-section-tag">introduction</h2>
           <p className="blog-p">lets start from first principles because everyone talks about this model without explaining the actual insight behind it.</p>
           <p className="blog-p">most video models try to predict future frames at the pixel level. like, you show the model 10 frames and ask it to generate frame 11. the problem with this is that the physical world is full of shit thats basically unpredictable at the pixel level: leaves rustling, water rippling, lighting changing. if you force the model to predict all of that, it wastes most of its capacity on noise instead of learning the actual physics of whats happening.</p>
           <p className="blog-p">JEPA (joint embedding predictive architecture) flips this. instead of predicting pixels, you predict in representation space. you take some of the video, encode it into abstract vectors, hide other parts, and train the model to predict the abstract representations of the hidden parts. the model never has to reconstruct actual pixels. it just has to predict the meaning.</p>
@@ -392,7 +392,7 @@ export default function VJEPABlog() {
 
         {/* ====== 02 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">02. the problem 2.1 actually solves</h2>
+          <h2 className="blog-section-tag">the problem 2.1 actually solves</h2>
           <p className="blog-p">video AI has been stuck in this annoying tradeoff that nobody could crack until now.</p>
           <p className="blog-p">on one side you have video-first models (like the original v-jepa 2). these are great at understanding motion. the model gets that "person reaches for cup, lifts cup, drinks" is one continuous action. it understands temporal dynamics really well. but its shit at spatial detail. the object boundaries are blurry, depth estimation is mediocre, segmentation is grainy. it knows things are moving but cant tell you exactly where they are.</p>
           <p className="blog-p">on the other side you have image-first models like DINOv2 and DINOv3. these have pixel-perfect spatial understanding. incredible segmentation, depth, object boundaries. but theyre trained on static images so they have literally zero understanding of time. they dont know what "reaching for a cup" means as a sequence.</p>
@@ -402,7 +402,7 @@ export default function VJEPABlog() {
 
         {/* ====== 03 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">03. the architecture (mapped to actual code)</h2>
+          <h2 className="blog-section-tag">the architecture (mapped to actual code)</h2>
           <p className="blog-p">ok heres the architecture. i cloned the repo and went through the source so everything here maps to actual classes and methods in <code>facebookresearch/vjepa2</code>.</p>
 
           <Fig cap="full pretraining architecture. each box = a real class in src/models/">
@@ -465,7 +465,7 @@ else:
 
         {/* ====== 04 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">04. the predictor (where the magic happens)</h2>
+          <h2 className="blog-section-tag">the predictor (where the magic happens)</h2>
           <p className="blog-p">the predictor is a separate, smaller transformer defined in <code>src/models/predictor.py</code>. its job is to take the context embeddings from the encoder and predict what the hidden patches look like in representation space.</p>
           <p className="blog-p">heres how it actually works step by step. it projects the context tokens down from 1408-dim to 384-dim (saves compute). creates learnable mask tokens that carry positional info about where the hidden patches are. concatenates everything together, sorts by position so the transformer sees tokens in spatial order, runs it through 24 transformer blocks (for ViT-G), then projects back up to 1408-dim.</p>
 
@@ -509,7 +509,7 @@ else:
 
         {/* ====== 05 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">05. the loss function</h2>
+          <h2 className="blog-section-tag">the loss function</h2>
           <p className="blog-p">the actual loss is in <code>app/vjepa/train.py</code> and its dead simple. its an L1 loss (or generalized Lp loss) between the predicted embeddings and the target embeddings. nothing fancy.</p>
 
           <CodeBlock file="app/vjepa/train.py: the full training step">
@@ -557,7 +557,7 @@ else:
 
         {/* ====== 06 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">06. fine-tuning (its barely any code)</h2>
+          <h2 className="blog-section-tag">fine-tuning (its barely any code)</h2>
           <p className="blog-p">after pretraining you freeze the encoder. done. never touch those weights again. for downstream tasks you train a tiny attentive probe on top. its defined in <code>src/models/attentive_pooler.py</code> and its hilariously simple.</p>
 
           <CodeBlock file="src/models/attentive_pooler.py: the whole probe">
@@ -598,7 +598,7 @@ for clips, labels in data_loader:
 
         {/* ====== 07 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">07. zero-shot robot control</h2>
+          <h2 className="blog-section-tag">zero-shot robot control</h2>
           <p className="blog-p">the robot stuff uses a separate action-conditioned predictor (<code>VisionTransformerPredictorAC</code>) thats post-trained on the DROID dataset. this is where it gets wild.</p>
 
           <Fig cap="robot planning pipeline. frozen encoder + action-conditioned world model">
@@ -634,7 +634,7 @@ for clips, labels in data_loader:
 
         {/* ====== 08 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">08. the numbers</h2>
+          <h2 className="blog-section-tag">the numbers</h2>
           <p className="blog-p">official results from the repo. v-jepa 2 vs previous SOTA on video understanding benchmarks (frozen encoder + attentive probes):</p>
 
           <Fig>
@@ -678,7 +678,7 @@ for clips, labels in data_loader:
 
         {/* ====== 09 ====== */}
         <section className="blog-section">
-          <h2 className="blog-section-tag">09. running it</h2>
+          <h2 className="blog-section-tag">running it</h2>
           <CodeBlock file="setup + loading" language="bash">
 {`git clone https://github.com/facebookresearch/vjepa2
 cd vjepa2 && pip install .
@@ -706,7 +706,7 @@ python -m evals.main \\
 
         {/* ====== 10 ====== */}
         <section className="blog-section blog-section--last">
-          <h2 className="blog-section-tag">10. bottom line</h2>
+          <h2 className="blog-section-tag">bottom line</h2>
           <p className="blog-p">v-jepa 2 is the best self-supervised video encoder out right now. the frozen features give you action recognition, depth, segmentation, tracking, and robot control from a single backbone with no architecture changes between tasks. just swap the probe on top.</p>
           <p className="blog-p">the codebase is clean as fuck. encoder, predictor, and loss are all readable and well-structured. the only "tricks" are the masking strategy and the EMA target encoder. everything else is standard transformer machinery. that means improvements to ViTs in general directly benefit this model.</p>
           <p className="blog-p">for anyone working on video understanding, temporal reasoning, or embodied AI. this is probably the foundation you want to build on. the encoder trained on 163M samples is hard to beat with smaller-scale training. and the latent world model approach for robot planning (simulating in embedding space instead of pixel space) is the more interesting long-term direction.</p>
