@@ -996,7 +996,7 @@ pre code {
     color: var(--text-secondary);
     line-height: 1.8;
     margin: 0 0 1.25rem;
-    max-width: 700px;
+    max-width: 1060px;
 }
 
 .blog-p code {
