@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#666" stroke-width="1.2"/></marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#7ee787" stroke-width="1.2"/></marker>
+    <marker id="ab" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#79c0ff" stroke-width="1.2"/></marker>
+    <marker id="ao" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#ffa657" stroke-width="1.2"/></marker>
+  </defs>
+
+  <rect width="900" height="380" fill="#0a0a0a" rx="8"/>
+
+  <text x="450" y="26" text-anchor="middle" fill="#e0e0e0" font-size="14" font-weight="700">V-JEPA 2.1 — Training Loop (app/vjepa/train.py)</text>
+
+  <!-- Step labels -->
+  <text x="25" y="55" fill="#585858" font-size="8" font-weight="700" letter-spacing="1">STEP 1</text>
+  <text x="245" y="55" fill="#585858" font-size="8" font-weight="700" letter-spacing="1">STEP 2</text>
+  <text x="530" y="55" fill="#585858" font-size="8" font-weight="700" letter-spacing="1">STEP 3</text>
+  <text x="740" y="55" fill="#585858" font-size="8" font-weight="700" letter-spacing="1">STEP 4</text>
+
+  <!-- Step 1: Target encoder -->
+  <rect x="15" y="66" width="200" height="140" rx="6" fill="#111" stroke="#ffa657" stroke-width="1.2" stroke-dasharray="6 3"/>
+  <text x="115" y="86" text-anchor="middle" fill="#ffa657" font-size="11" font-weight="700">Target Encoder</text>
+  <text x="115" y="100" text-anchor="middle" fill="#585858" font-size="8">torch.no_grad()</text>
+
+  <rect x="30" y="112" width="170" height="16" rx="3" fill="#161616" stroke="#333" stroke-width="0.8"/>
+  <text x="115" y="123" text-anchor="middle" fill="#ffa657" font-size="8">Full video → E_theta_bar(clips)</text>
+
+  <rect x="30" y="134" width="170" height="16" rx="3" fill="#161616" stroke="#333" stroke-width="0.8"/>
+  <text x="115" y="145" text-anchor="middle" fill="#ffa657" font-size="8">F.layer_norm per level</text>
+
+  <text x="115" y="170" text-anchor="middle" fill="#ffa657" font-size="8" font-family="Monaco, monospace">h = [h1, h2, h3]</text>
+  <text x="115" y="184" text-anchor="middle" fill="#585858" font-size="7">target representations</text>
+  <text x="115" y="196" text-anchor="middle" fill="#585858" font-size="7">(multi-level, full video)</text>
+
+  <!-- Step 2: Encoder + Predictor -->
+  <rect x="235" y="66" width="270" height="230" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+
+  <!-- Encoder sub-box -->
+  <rect x="248" y="74" width="115" height="108" rx="4" fill="#161616" stroke="#7ee787" stroke-width="1"/>
+  <text x="305" y="92" text-anchor="middle" fill="#7ee787" font-size="10" font-weight="700">x-Encoder</text>
+  <text x="305" y="106" text-anchor="middle" fill="#585858" font-size="7.5">masked input only</text>
+
+  <rect x="258" y="116" width="95" height="14" rx="2" fill="#1c1c1c" stroke="#333" stroke-width="0.6"/>
+  <text x="305" y="126" text-anchor="middle" fill="#7ee787" font-size="7">40 blocks + taps</text>
+
+  <rect x="258" y="134" width="95" height="14" rx="2" fill="#1c1c1c" stroke="#333" stroke-width="0.6"/>
+  <text x="305" y="144" text-anchor="middle" fill="#d2a8ff" font-size="7">MLP fusion</text>
+
+  <text x="305" y="170" text-anchor="middle" fill="#7ee787" font-size="7.5" font-family="Monaco, monospace">z_enc [B,N_vis,1408]</text>
+
+  <!-- Arrow encoder → predictor -->
+  <line x1="305" y1="182" x2="305" y2="192" stroke="#7ee787" stroke-width="1.2" marker-end="url(#ag)"/>
+
+  <!-- Predictor sub-box -->
+  <rect x="248" y="200" width="115" height="88" rx="4" fill="#161616" stroke="#79c0ff" stroke-width="1"/>
+  <text x="305" y="216" text-anchor="middle" fill="#79c0ff" font-size="10" font-weight="700">Predictor</text>
+  <text x="305" y="230" text-anchor="middle" fill="#585858" font-size="7.5">+ mask tokens</text>
+
+  <rect x="258" y="238" width="95" height="14" rx="2" fill="#1c1c1c" stroke="#333" stroke-width="0.6"/>
+  <text x="305" y="248" text-anchor="middle" fill="#79c0ff" font-size="7">12 blocks</text>
+
+  <rect x="258" y="256" width="95" height="14" rx="2" fill="#1c1c1c" stroke="#333" stroke-width="0.6"/>
+  <text x="305" y="266" text-anchor="middle" fill="#79c0ff" font-size="7">384 → 1408 proj</text>
+
+  <text x="305" y="286" text-anchor="middle" fill="#79c0ff" font-size="7.5" font-family="Monaco, monospace">z [B, N_all, 1408]</text>
+
+  <!-- return_all_tokens annotation -->
+  <rect x="375" y="225" width="120" height="46" rx="4" fill="#0a0a0a" stroke="#333" stroke-width="0.8"/>
+  <text x="435" y="242" text-anchor="middle" fill="#79c0ff" font-size="7.5" font-weight="600">return_all_tokens</text>
+  <text x="435" y="254" text-anchor="middle" fill="#79c0ff" font-size="7.5" font-weight="600">= True</text>
+  <text x="435" y="266" text-anchor="middle" fill="#585858" font-size="7">predicts masked + context</text>
+
+  <!-- Step 3: Loss -->
+  <rect x="525" y="66" width="190" height="230" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="620" y="86" text-anchor="middle" fill="#e0e0e0" font-size="11" font-weight="700">Loss Computation</text>
+
+  <rect x="538" y="100" width="164" height="50" rx="4" fill="#161616" stroke="#ff7b72" stroke-width="1"/>
+  <text x="620" y="116" text-anchor="middle" fill="#ff7b72" font-size="9" font-weight="600">L_predict</text>
+  <text x="620" y="130" text-anchor="middle" fill="#ff7b72" font-size="8" font-family="Monaco, monospace">mean(|z - sg(h)|)</text>
+  <text x="620" y="143" text-anchor="middle" fill="#585858" font-size="7">on masked tokens only</text>
+
+  <rect x="538" y="158" width="164" height="50" rx="4" fill="#161616" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="620" y="174" text-anchor="middle" fill="#d2a8ff" font-size="9" font-weight="600">L_context</text>
+  <text x="620" y="188" text-anchor="middle" fill="#d2a8ff" font-size="7.5" font-family="Monaco, monospace">sum(lambda_i * |z-sg(h)|)</text>
+  <text x="620" y="201" text-anchor="middle" fill="#585858" font-size="7">on context tokens, weighted</text>
+
+  <rect x="538" y="218" width="164" height="20" rx="3" fill="#1c1c1c" stroke="#444" stroke-width="0.8"/>
+  <text x="620" y="232" text-anchor="middle" fill="#e0e0e0" font-size="9" font-weight="600">L = L_predict + L_context</text>
+
+  <rect x="538" y="246" width="164" height="16" rx="3" fill="#161616" stroke="#333" stroke-width="0.8"/>
+  <text x="620" y="257" text-anchor="middle" fill="#ff7b72" font-size="8">loss.backward()</text>
+
+  <text x="620" y="278" text-anchor="middle" fill="#585858" font-size="6.5">gradients flow through encoder + predictor</text>
+
+  <!-- Step 4: EMA Update -->
+  <rect x="735" y="66" width="150" height="140" rx="6" fill="#111" stroke="#ffa657" stroke-width="1.2"/>
+  <text x="810" y="86" text-anchor="middle" fill="#ffa657" font-size="11" font-weight="700">EMA Update</text>
+  <text x="810" y="100" text-anchor="middle" fill="#585858" font-size="8">torch.no_grad()</text>
+
+  <rect x="748" y="112" width="124" height="32" rx="3" fill="#161616" stroke="#ffa657" stroke-width="0.8"/>
+  <text x="810" y="126" text-anchor="middle" fill="#ffa657" font-size="8" font-family="Monaco, monospace">theta_bar = m * theta_bar</text>
+  <text x="810" y="138" text-anchor="middle" fill="#ffa657" font-size="8" font-family="Monaco, monospace">  + (1-m) * theta</text>
+
+  <rect x="748" y="150" width="124" height="16" rx="3" fill="#161616" stroke="#333" stroke-width="0.8"/>
+  <text x="810" y="161" text-anchor="middle" fill="#ffa657" font-size="8" font-family="Monaco, monospace">m = 0.99925</text>
+
+  <text x="810" y="186" text-anchor="middle" fill="#585858" font-size="7.5">slow-moving target</text>
+  <text x="810" y="198" text-anchor="middle" fill="#585858" font-size="7.5">prevents collapse</text>
+
+  <!-- Arrows between steps -->
+  <line x1="215" y1="138" x2="235" y2="138" stroke="#ffa657" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ao)"/>
+  <line x1="505" y1="190" x2="525" y2="190" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#ab)"/>
+  <line x1="715" y1="190" x2="735" y2="190" stroke="#666" stroke-width="1.2" marker-end="url(#a)"/>
+
+  <!-- Cycle arrow at bottom -->
+  <path d="M810,206 L810,340 L115,340 L115,206" fill="none" stroke="#ffa657" stroke-width="1" stroke-dasharray="6 3" marker-end="url(#ao)"/>
+  <text x="450" y="358" text-anchor="middle" fill="#ffa657" font-size="8">repeat for 800 epochs x 300 iterations</text>
+
+  <text x="620" y="322" text-anchor="middle" fill="#585858" font-size="7">applied at each deep supervision level (layers 24, 32, 40)</text>
+</svg>

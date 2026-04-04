@@ -5,7 +5,7 @@ export default function Home() {
     <main className="main">
       <section className="hero">
         <img
-          src="https://pbs.twimg.com/profile_images/1997230766435274752/LmLhsWSA.jpg"
+          src="/profile.jpg"
           alt="Bahushruth CS"
           className="profile-image"
         />

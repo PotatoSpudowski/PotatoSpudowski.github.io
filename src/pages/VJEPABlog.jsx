@@ -358,6 +358,27 @@ const bench = [
   { name: 'TempCompass', vjepa2: 76.9, prev: 75.3 },
 ]
 
+const ablation = [
+  { name: 'V-JEPA 2', seg: 22.2, cls: 72.8 },
+  { name: '+ Context Loss', seg: 33.8, cls: 62.5 },
+  { name: '+ Deep Self-Sup.', seg: 38.6, cls: 72.1 },
+  { name: '+ Data Scaling', seg: 40.8, cls: 72.6 },
+  { name: '+ Multi-modal Tok.', seg: 41.4, cls: 72.6 },
+  { name: '+ Model Scaling', seg: 47.1, cls: 76.1 },
+  { name: '+ Hi-Res Anneal', seg: 47.9, cls: 77.7 },
+]
+
+function PaperFig({ src, alt }) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      style={{ width: '100%', borderRadius: 6, display: 'block' }}
+      loading="lazy"
+    />
+  )
+}
+
 const robot = [
   { task: 'Reach', vjepa: 100, octo: 100, cosmos: 80 },
   { task: 'Grasp Cup', vjepa: 60, octo: 10, cosmos: 0 },
@@ -388,6 +409,10 @@ export default function VJEPABlog() {
           <p className="blog-p">JEPA (joint embedding predictive architecture) flips this. instead of predicting pixels, you predict in representation space. you take some of the video, encode it into abstract vectors, hide other parts, and train the model to predict the abstract representations of the hidden parts. the model never has to reconstruct actual pixels. it just has to predict the meaning.</p>
           <p className="blog-p">this is yann lecuns whole thesis and honestly its a really clean idea. by learning in latent space the model is forced to understand the underlying structure: how objects interact, how gravity works, how hands grasp things. without getting bogged down in surface-level visual noise.</p>
           <p className="blog-p">v-jepa 2 applies this to video. v-jepa 2.1 (dropped march 16, like 10 days ago) fixes some problems with the original and is now SOTA on basically everything. both are open source.</p>
+
+          <Fig cap="PCA of patch features mapped to RGB. V-JEPA 2 features are noisy and fragmented. V-JEPA 2.1 produces spatially coherent representations where similar objects map to the same colors. source: Mur-Labadia et al. 2026, arxiv:2603.14482">
+            <PaperFig src="/diagrams/paper/fig1-pca-features-crop.png" alt="PCA feature visualization comparing V-JEPA 2 vs V-JEPA 2.1 dense features" />
+          </Fig>
         </section>
 
         {/* ====== 02 ====== */}
@@ -405,8 +430,12 @@ export default function VJEPABlog() {
           <h2 className="blog-section-tag">the architecture (mapped to actual code)</h2>
           <p className="blog-p">ok heres the architecture. i cloned the repo and went through the source so everything here maps to actual classes and methods in <code>facebookresearch/vjepa2</code>.</p>
 
-          <Fig cap="full pretraining architecture. each box = a real class in src/models/">
-            <Arch />
+          <Fig cap="V-JEPA 2.1 architecture from the paper. x-encoder processes visible tokens, predictor fills in the rest, y-encoder (EMA) provides targets. two losses: L1 on masked predictions + distance-weighted L1 on context tokens. source: Mur-Labadia et al. 2026, arxiv:2603.14482">
+            <PaperFig src="/diagrams/paper/fig4-architecture-crop.png" alt="V-JEPA 2.1 detailed architecture diagram from the paper" />
+          </Fig>
+
+          <Fig cap="same architecture mapped to actual code. each box = a real class in src/models/">
+            <img src="/diagrams/vjepa21-architecture.svg" alt="V-JEPA 2.1 architecture diagram mapped to code" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
           <p className="blog-p">lets walk through it piece by piece.</p>
@@ -428,6 +457,10 @@ else:
           </CodeBlock>
 
           <p className="blog-p">then about 75% of those 8192 tokens get masked out. the model only sees ~25%, random sparse patches scattered across space and time. the masking config uses 2 strategies simultaneously: 8 small spatiotemporal blocks (15% spatial scale) and 2 large blocks (70% spatial scale). this forces both local and global predictions.</p>
+
+          <Fig cap="the masking strategy. 8 small blocks force local prediction, 2 large blocks force global prediction. ~75% of tokens are masked total.">
+            <img src="/diagrams/vjepa21-masking.svg" alt="V-JEPA 2.1 multi-block masking strategy" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+          </Fig>
           <p className="blog-p">the visible patches go through the encoder. for ViT-G thats a 40-layer vision transformer with 1408-dim embeddings, 22 attention heads, and 3D rotary position embeddings (RoPE). heres the actual constructor:</p>
 
           <CodeBlock file="src/models/vision_transformer.py: ViT-G definition">
@@ -443,6 +476,10 @@ else:
           </CodeBlock>
 
           <p className="blog-p">the key thing in 2.1 is the <code>out_layers</code> parameter. when you set this, the encoder taps intermediate layer outputs in addition to the final output. this is how deep self-supervision works. the loss gets applied at multiple points in the network, not just the end. in v-jepa 2 the loss only hit the final layer, and by that point all the fine-grained spatial info had been abstracted away. applying loss at intermediate layers forces spatial structure to propagate through the whole network.</p>
+
+          <Fig cap="deep self-supervision: tap encoder at layers 24, 32, 40. layernorm each, concat to 4224d, MLP fuse back to 1408d. loss applied at every tap.">
+            <img src="/diagrams/vjepa21-deep-supervision.svg" alt="Deep self-supervision tap mechanism" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+          </Fig>
 
           <CodeBlock file="src/models/vision_transformer.py: forward() with deep supervision">
 {`def forward(self, x, masks=None):
@@ -467,6 +504,10 @@ else:
         <section className="blog-section">
           <h2 className="blog-section-tag">the predictor (where the magic happens)</h2>
           <p className="blog-p">the predictor is a separate, smaller transformer defined in <code>src/models/predictor.py</code>. its job is to take the context embeddings from the encoder and predict what the hidden patches look like in representation space.</p>
+
+          <Fig cap="the full predictor forward pass. project down, add positions, create mask tokens, concat and sort, run through 12 transformer blocks, project back up.">
+            <img src="/diagrams/vjepa21-predictor-flow.svg" alt="Predictor forward pass step by step" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+          </Fig>
           <p className="blog-p">heres how it actually works step by step. it projects the context tokens down from 1408-dim to 384-dim (saves compute). creates learnable mask tokens that carry positional info about where the hidden patches are. concatenates everything together, sorts by position so the transformer sees tokens in spatial order, runs it through 24 transformer blocks (for ViT-G), then projects back up to 1408-dim.</p>
 
           <CodeBlock file="src/models/predictor.py: the forward pass simplified">
@@ -505,12 +546,20 @@ else:
 
           <p className="blog-p">the <code>return_all_tokens</code> flag is the switch between v-jepa 2 and 2.1 behavior. when False (v-jepa 2 default) it only returns predictions for the masked tokens. when True (2.1) it returns predictions for ALL tokens, both visible and hidden. this is what enables the dense predictive loss. the model gets supervised on every single token, not just the ones it had to guess.</p>
           <p className="blog-p">think about it like this. in v-jepa 2, the visible tokens just had to pass through the encoder well enough for the predictor to reconstruct the hidden ones. but the encoder was never directly told "hey, your representation of this visible patch needs to be accurate." so it took shortcuts. it could be sloppy about spatial details in visible patches because nobody was checking. v-jepa 2.1 checks everything.</p>
+
+          <Fig cap="the difference is dramatic. top row: original images. middle: V-JEPA 2 PCA features are noisy garbage. bottom: adding the context loss produces clean, semantically coherent feature maps. dog heads map to the same color, car wheels map to the same color. source: arxiv:2603.14482">
+            <PaperFig src="/diagrams/paper/fig3-context-loss-crop.png" alt="Effect of context loss on feature map quality" />
+          </Fig>
         </section>
 
         {/* ====== 05 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">the loss function</h2>
           <p className="blog-p">the actual loss is in <code>app/vjepa/train.py</code> and its dead simple. its an L1 loss (or generalized Lp loss) between the predicted embeddings and the target embeddings. nothing fancy.</p>
+
+          <Fig cap="the complete training loop. 4 steps repeated for 800 epochs: target encoder on full video, encoder+predictor on masked, loss computation, EMA update.">
+            <img src="/diagrams/vjepa21-training-loop.svg" alt="V-JEPA 2.1 training loop" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+          </Fig>
 
           <CodeBlock file="app/vjepa/train.py: the full training step">
 {`def train_step():
@@ -602,7 +651,7 @@ for clips, labels in data_loader:
           <p className="blog-p">the robot stuff uses a separate action-conditioned predictor (<code>VisionTransformerPredictorAC</code>) thats post-trained on the DROID dataset. this is where it gets wild.</p>
 
           <Fig cap="robot planning pipeline. frozen encoder + action-conditioned world model">
-            <RobotArch />
+            <img src="/diagrams/vjepa21-robot-pipeline.svg" alt="Zero-shot robot control pipeline" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
           <p className="blog-p">the AC predictor is like the regular predictor but it also takes robot actions and joint states as input. at each timestep it interleaves action tokens, state tokens, and visual tokens, then uses a causal attention mask so it cant peek at future frames:</p>
@@ -648,6 +697,25 @@ for clips, labels in data_loader:
                   <Legend wrapperStyle={{ fontFamily: 'monospace', fontSize: 11 }} />
                   <Bar dataKey="prev" name="prev SOTA" fill="#666" opacity={0.5} radius={[2, 2, 0, 0]} />
                   <Bar dataKey="vjepa2" name="V-JEPA 2" fill="#79c0ff" opacity={0.6} radius={[2, 2, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Fig>
+
+          <p className="blog-p">each innovation in the 2.1 training recipe adds measurable gains. heres the ablation from ViT-L showing how segmentation (ADE20K mIoU) and classification (SSv2 accuracy) improve as you stack each component:</p>
+
+          <Fig cap="ablation of V-JEPA 2.1 training recipe. context loss unlocks segmentation but initially hurts classification. deep self-supervision recovers it. model scaling + hi-res annealing push both to SOTA.">
+            <div style={{ padding: '22px 14px 6px' }}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={ablation} barGap={4} barCategoryGap="16%">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
+                  <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 9, fontFamily: 'monospace' }} axisLine={{ stroke: '#2a2a2a' }} tickLine={false} angle={-25} textAnchor="end" height={60} />
+                  <YAxis yAxisId="left" tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} domain={[0, 80]} label={{ value: 'mIoU', angle: -90, position: 'insideLeft', fill: '#555', fontSize: 10 }} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} domain={[50, 80]} label={{ value: 'Acc %', angle: 90, position: 'insideRight', fill: '#555', fontSize: 10 }} />
+                  <Tooltip content={<CTooltip />} />
+                  <Legend wrapperStyle={{ fontFamily: 'monospace', fontSize: 11 }} />
+                  <Bar yAxisId="left" dataKey="seg" name="Segmentation (ADE20K)" fill="#79c0ff" opacity={0.5} radius={[2, 2, 0, 0]} />
+                  <Bar yAxisId="right" dataKey="cls" name="Classification (SSv2)" fill="#ffa657" opacity={0.5} radius={[2, 2, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

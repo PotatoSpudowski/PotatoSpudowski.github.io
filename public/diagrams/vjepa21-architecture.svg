@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#666" stroke-width="1.2"/></marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#7ee787" stroke-width="1.2"/></marker>
+    <marker id="ab" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#79c0ff" stroke-width="1.2"/></marker>
+    <marker id="ao" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#ffa657" stroke-width="1.2"/></marker>
+    <marker id="ap" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#d2a8ff" stroke-width="1.2"/></marker>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#ff7b72" stroke-width="1.2"/></marker>
+  </defs>
+
+  <rect width="1200" height="660" fill="#0a0a0a" rx="8"/>
+
+  <text x="600" y="30" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="700">V-JEPA 2.1 — Architecture Overview</text>
+  <text x="600" y="48" text-anchor="middle" fill="#585858" font-size="10">facebookresearch/vjepa2 · ViT-G (2B params)</text>
+
+  <!-- ========== INPUT ========== -->
+  <rect x="20" y="70" width="120" height="190" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="80" y="88" text-anchor="middle" fill="#909090" font-size="9" font-weight="700" letter-spacing="1">INPUT</text>
+
+  <rect x="38" y="102" width="34" height="26" rx="3" fill="#161616" stroke="#333" stroke-width="0.8"/>
+  <rect x="42" y="98" width="34" height="26" rx="3" fill="#161616" stroke="#444" stroke-width="0.8"/>
+  <rect x="46" y="94" width="34" height="26" rx="3" fill="#1c1c1c" stroke="#444" stroke-width="0.8"/>
+  <text x="100" y="108" fill="#909090" font-size="9" font-weight="600">Video</text>
+  <text x="100" y="120" fill="#585858" font-size="7" font-family="Monaco, monospace">B×3×T×H×W</text>
+
+  <text x="55" y="140" fill="#585858" font-size="8">or</text>
+
+  <rect x="46" y="148" width="34" height="34" rx="3" fill="#1c1c1c" stroke="#444" stroke-width="0.8"/>
+  <text x="100" y="162" fill="#909090" font-size="9" font-weight="600">Image</text>
+  <text x="100" y="174" fill="#585858" font-size="7" font-family="Monaco, monospace">B×3×H×W</text>
+
+  <text x="80" y="206" text-anchor="middle" fill="#585858" font-size="7">+ modality embed</text>
+  <text x="80" y="218" text-anchor="middle" fill="#585858" font-size="7">+ 3D RoPE</text>
+  <text x="80" y="248" text-anchor="middle" fill="#909090" font-size="8" font-family="Monaco, monospace">8192 × 1408d</text>
+
+  <!-- ========== TOKENIZER ========== -->
+  <rect x="168" y="70" width="110" height="190" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="223" y="88" text-anchor="middle" fill="#909090" font-size="9" font-weight="700" letter-spacing="1">TOKENIZER</text>
+
+  <rect x="180" y="104" width="86" height="36" rx="4" fill="#161616" stroke="#79c0ff" stroke-width="1"/>
+  <text x="223" y="120" text-anchor="middle" fill="#79c0ff" font-size="9" font-family="Monaco, monospace">Conv3d</text>
+  <text x="223" y="132" text-anchor="middle" fill="#79c0ff" font-size="7" font-family="Monaco, monospace">k=(2,16,16)</text>
+
+  <rect x="180" y="150" width="86" height="36" rx="4" fill="#161616" stroke="#79c0ff" stroke-width="1"/>
+  <text x="223" y="166" text-anchor="middle" fill="#79c0ff" font-size="9" font-family="Monaco, monospace">Conv2d</text>
+  <text x="223" y="178" text-anchor="middle" fill="#79c0ff" font-size="7" font-family="Monaco, monospace">k=(16,16)</text>
+
+  <text x="223" y="206" text-anchor="middle" fill="#585858" font-size="7">PatchEmbed3D / PatchEmbed</text>
+  <text x="223" y="218" text-anchor="middle" fill="#585858" font-size="7">vision_transformer.py</text>
+
+  <!-- ========== MASKING ========== -->
+  <rect x="306" y="70" width="110" height="190" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="361" y="88" text-anchor="middle" fill="#909090" font-size="9" font-weight="700" letter-spacing="1">MASKING</text>
+
+  <g transform="translate(320, 102)">
+    <rect x="0"  y="0"  width="12" height="12" rx="1" fill="#7ee787" stroke="none"/>
+    <rect x="14" y="0"  width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="28" y="0"  width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="42" y="0"  width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="56" y="0"  width="12" height="12" rx="1" fill="#7ee787" stroke="none"/>
+    <rect x="70" y="0"  width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="0"  y="14" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="14" y="14" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="28" y="14" width="12" height="12" rx="1" fill="#7ee787" stroke="none"/>
+    <rect x="42" y="14" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="56" y="14" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="70" y="14" width="12" height="12" rx="1" fill="#7ee787" stroke="none"/>
+    <rect x="0"  y="28" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="14" y="28" width="12" height="12" rx="1" fill="#7ee787" stroke="none"/>
+    <rect x="28" y="28" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="42" y="28" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="56" y="28" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+    <rect x="70" y="28" width="12" height="12" rx="1" fill="#1c1c1c" stroke="none"/>
+  </g>
+
+  <text x="361" y="158" text-anchor="middle" fill="#7ee787" font-size="8">visible ~25%</text>
+  <text x="361" y="172" text-anchor="middle" fill="#585858" font-size="8">masked ~75%</text>
+  <text x="361" y="194" text-anchor="middle" fill="#585858" font-size="7">8 small blocks (15%)</text>
+  <text x="361" y="206" text-anchor="middle" fill="#585858" font-size="7">2 large blocks (70%)</text>
+
+  <!-- ========== x-ENCODER ========== -->
+  <rect x="445" y="65" width="215" height="390" rx="6" fill="#111" stroke="#7ee787" stroke-width="1.5"/>
+  <text x="552" y="86" text-anchor="middle" fill="#7ee787" font-size="13" font-weight="700">x-Encoder</text>
+  <text x="552" y="100" text-anchor="middle" fill="#585858" font-size="8">ViT-G · dim=1408 · depth=40 · heads=22</text>
+
+  <!-- Layer stack -->
+  <rect x="460" y="114" width="186" height="16" rx="3" fill="#161616" stroke="#7ee787" stroke-width="0.8"/>
+  <text x="553" y="125" text-anchor="middle" fill="#7ee787" font-size="7">Self-Attn (22h, RoPE) + SiLU MLP</text>
+
+  <rect x="460" y="134" width="186" height="10" rx="2" fill="#161616" stroke="#333" stroke-width="0.6"/>
+  <rect x="460" y="148" width="186" height="10" rx="2" fill="#161616" stroke="#333" stroke-width="0.6"/>
+  <text x="553" y="172" text-anchor="middle" fill="#585858" font-size="9">...</text>
+
+  <!-- Layer 24 tap -->
+  <rect x="460" y="182" width="186" height="16" rx="3" fill="#161616" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="553" y="193" text-anchor="middle" fill="#d2a8ff" font-size="8">Block 24 → tap 1</text>
+
+  <text x="553" y="213" text-anchor="middle" fill="#585858" font-size="9">...</text>
+
+  <!-- Layer 32 tap -->
+  <rect x="460" y="222" width="186" height="16" rx="3" fill="#161616" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="553" y="233" text-anchor="middle" fill="#d2a8ff" font-size="8">Block 32 → tap 2</text>
+
+  <text x="553" y="253" text-anchor="middle" fill="#585858" font-size="9">...</text>
+
+  <!-- Layer 40 tap -->
+  <rect x="460" y="262" width="186" height="16" rx="3" fill="#161616" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="553" y="273" text-anchor="middle" fill="#d2a8ff" font-size="8">Block 40 → tap 3</text>
+
+  <!-- Block detail -->
+  <rect x="460" y="290" width="186" height="36" rx="3" fill="#0a0a0a" stroke="#333" stroke-width="0.6"/>
+  <text x="470" y="303" fill="#585858" font-size="7">Each block:</text>
+  <text x="470" y="314" fill="#585858" font-size="6.5">LN → Attn(22h,RoPE) → +res → LN → SiLU MLP → +res</text>
+
+  <!-- Concat + fusion -->
+  <rect x="460" y="338" width="186" height="18" rx="3" fill="#161616" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="553" y="350" text-anchor="middle" fill="#d2a8ff" font-size="8">Concat [tap1, tap2, tap3] → 4224d</text>
+
+  <rect x="460" y="362" width="186" height="18" rx="3" fill="#161616" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="553" y="374" text-anchor="middle" fill="#d2a8ff" font-size="8">MLP Fusion: 4224 → 1408</text>
+
+  <text x="553" y="402" text-anchor="middle" fill="#7ee787" font-size="8" font-family="Monaco, monospace">context [B, N_vis, 1408]</text>
+  <text x="553" y="418" text-anchor="middle" fill="#585858" font-size="7">vision_transformer.py</text>
+
+  <!-- Deep supervision label -->
+  <text x="656" y="202" fill="#d2a8ff" font-size="7" font-weight="600">DEEP</text>
+  <text x="656" y="212" fill="#d2a8ff" font-size="7" font-weight="600">SELF-SUP</text>
+
+  <!-- ========== PREDICTOR ========== -->
+  <rect x="705" y="65" width="215" height="390" rx="6" fill="#111" stroke="#79c0ff" stroke-width="1.5"/>
+  <text x="812" y="86" text-anchor="middle" fill="#79c0ff" font-size="13" font-weight="700">Predictor</text>
+  <text x="812" y="100" text-anchor="middle" fill="#585858" font-size="8">depth=12 · dim=384 · heads=12</text>
+
+  <rect x="720" y="114" width="186" height="16" rx="3" fill="#161616" stroke="#79c0ff" stroke-width="0.8"/>
+  <text x="813" y="125" text-anchor="middle" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">Linear(1408 → 384)</text>
+
+  <rect x="720" y="138" width="186" height="14" rx="3" fill="#161616" stroke="#333" stroke-width="0.8"/>
+  <text x="813" y="148" text-anchor="middle" fill="#585858" font-size="7.5">+ predictor_pos_embed</text>
+
+  <rect x="720" y="160" width="186" height="30" rx="3" fill="#161616" stroke="#ffa657" stroke-width="0.8"/>
+  <text x="813" y="174" text-anchor="middle" fill="#ffa657" font-size="8">Learnable mask tokens</text>
+  <text x="813" y="185" text-anchor="middle" fill="#585858" font-size="7">ParameterList · (1,1,384)</text>
+
+  <rect x="720" y="198" width="186" height="22" rx="3" fill="#161616" stroke="#79c0ff" stroke-width="0.8"/>
+  <text x="813" y="209" text-anchor="middle" fill="#79c0ff" font-size="8">Concat [ctx, mask] → argsort</text>
+  <text x="813" y="218" text-anchor="middle" fill="#585858" font-size="6.5">[B, N_ctx+N_mask, 384]</text>
+
+  <!-- Predictor transformer stack -->
+  <rect x="720" y="230" width="186" height="14" rx="3" fill="#161616" stroke="#79c0ff" stroke-width="0.6"/>
+  <text x="813" y="240" text-anchor="middle" fill="#79c0ff" font-size="7.5">Self-Attn (12h) + MLP</text>
+
+  <rect x="720" y="248" width="186" height="10" rx="2" fill="#161616" stroke="#333" stroke-width="0.5"/>
+  <rect x="720" y="262" width="186" height="10" rx="2" fill="#161616" stroke="#333" stroke-width="0.5"/>
+  <text x="813" y="286" text-anchor="middle" fill="#585858" font-size="8">... x 12 blocks</text>
+
+  <rect x="720" y="296" width="186" height="14" rx="3" fill="#161616" stroke="#79c0ff" stroke-width="0.6"/>
+  <text x="813" y="306" text-anchor="middle" fill="#79c0ff" font-size="7.5">Block 12</text>
+
+  <rect x="720" y="320" width="186" height="16" rx="3" fill="#161616" stroke="#79c0ff" stroke-width="0.8"/>
+  <text x="813" y="331" text-anchor="middle" fill="#79c0ff" font-size="8">Reverse argsort · extract</text>
+
+  <rect x="720" y="344" width="186" height="16" rx="3" fill="#161616" stroke="#79c0ff" stroke-width="0.8"/>
+  <text x="813" y="355" text-anchor="middle" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">Linear(384 → 1408)</text>
+
+  <rect x="720" y="368" width="186" height="14" rx="3" fill="#161616" stroke="#333" stroke-width="0.8"/>
+  <text x="813" y="378" text-anchor="middle" fill="#585858" font-size="7.5">Multi-level predictions (per tap)</text>
+
+  <!-- Predictor outputs -->
+  <text x="813" y="402" text-anchor="middle" fill="#ff7b72" font-size="8" font-family="Monaco, monospace">z_masked [B, N_mask, 1408]</text>
+  <text x="813" y="416" text-anchor="middle" fill="#d2a8ff" font-size="8" font-family="Monaco, monospace">z_context [B, N_vis, 1408]</text>
+  <text x="813" y="432" text-anchor="middle" fill="#585858" font-size="7">return_all_tokens=True (2.1)</text>
+  <text x="813" y="445" text-anchor="middle" fill="#585858" font-size="7">predictor.py</text>
+
+  <!-- ========== y-ENCODER ========== -->
+  <rect x="445" y="490" width="215" height="150" rx="6" fill="#111" stroke="#ffa657" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <text x="552" y="512" text-anchor="middle" fill="#ffa657" font-size="13" font-weight="700">y-Encoder (EMA)</text>
+  <text x="552" y="526" text-anchor="middle" fill="#585858" font-size="8">NO GRADIENTS · torch.no_grad()</text>
+
+  <rect x="460" y="540" width="186" height="14" rx="3" fill="#161616" stroke="#ffa657" stroke-width="0.6"/>
+  <text x="553" y="550" text-anchor="middle" fill="#ffa657" font-size="7.5">Same architecture as x-Encoder</text>
+
+  <rect x="460" y="558" width="186" height="8" rx="2" fill="#161616" stroke="#333" stroke-width="0.5"/>
+  <text x="553" y="578" text-anchor="middle" fill="#585858" font-size="8">... 40 blocks ...</text>
+  <rect x="460" y="586" width="186" height="8" rx="2" fill="#161616" stroke="#333" stroke-width="0.5"/>
+
+  <rect x="460" y="604" width="186" height="16" rx="3" fill="#161616" stroke="#ffa657" stroke-width="0.8"/>
+  <text x="553" y="615" text-anchor="middle" fill="#ffa657" font-size="8" font-family="Monaco, monospace">m=0.99925 · slow EMA</text>
+
+  <text x="553" y="636" text-anchor="middle" fill="#ffa657" font-size="8">Full unmasked input → target h</text>
+
+  <!-- ========== LOSSES ========== -->
+  <rect x="705" y="490" width="215" height="150" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="812" y="510" text-anchor="middle" fill="#909090" font-size="9" font-weight="700" letter-spacing="1">LOSSES</text>
+
+  <rect x="720" y="522" width="186" height="36" rx="4" fill="#161616" stroke="#ff7b72" stroke-width="1"/>
+  <text x="813" y="537" text-anchor="middle" fill="#ff7b72" font-size="9" font-weight="600">L_predict</text>
+  <text x="813" y="550" text-anchor="middle" fill="#ff7b72" font-size="7">L1 on masked tokens: mean(|z - sg(h)|)</text>
+
+  <rect x="720" y="566" width="186" height="36" rx="4" fill="#161616" stroke="#d2a8ff" stroke-width="1"/>
+  <text x="813" y="581" text-anchor="middle" fill="#d2a8ff" font-size="9" font-weight="600">L_context</text>
+  <text x="813" y="594" text-anchor="middle" fill="#d2a8ff" font-size="6.5">Weighted L1 on context: lambda/sqrt(d)</text>
+
+  <rect x="720" y="610" width="186" height="16" rx="3" fill="#1c1c1c" stroke="#444" stroke-width="0.8"/>
+  <text x="813" y="621" text-anchor="middle" fill="#e0e0e0" font-size="8">L = L_predict + L_context</text>
+
+  <text x="813" y="638" text-anchor="middle" fill="#585858" font-size="7">app/vjepa/train.py</text>
+
+  <!-- ========== CONNECTING ARROWS ========== -->
+  <line x1="140" y1="165" x2="168" y2="165" stroke="#666" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="278" y1="165" x2="306" y2="165" stroke="#79c0ff" stroke-width="1.5" marker-end="url(#ab)"/>
+  <line x1="416" y1="145" x2="445" y2="145" stroke="#7ee787" stroke-width="1.5" marker-end="url(#ag)"/>
+  <text x="430" y="138" text-anchor="middle" fill="#7ee787" font-size="7">visible</text>
+
+  <!-- x-Encoder → Predictor -->
+  <line x1="660" y1="370" x2="705" y2="370" stroke="#d2a8ff" stroke-width="1.5" marker-end="url(#ap)"/>
+  <text x="682" y="363" text-anchor="middle" fill="#d2a8ff" font-size="7">multi-level</text>
+
+  <!-- Input → y-Encoder -->
+  <path d="M80,260 L80,565 L445,565" fill="none" stroke="#ffa657" stroke-width="1.2" stroke-dasharray="6 3" marker-end="url(#ao)"/>
+  <text x="110" y="420" fill="#ffa657" font-size="7" transform="rotate(-90, 110, 420)">full input (no mask)</text>
+
+  <!-- EMA arrow -->
+  <line x1="552" y1="455" x2="552" y2="490" stroke="#ffa657" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ao)"/>
+  <text x="566" y="476" fill="#ffa657" font-size="7">EMA</text>
+
+  <!-- y-Encoder → Losses -->
+  <line x1="660" y1="565" x2="705" y2="565" stroke="#ffa657" stroke-width="1.2" stroke-dasharray="6 3" marker-end="url(#ao)"/>
+  <text x="682" y="558" text-anchor="middle" fill="#ffa657" font-size="7">target h</text>
+
+  <!-- Predictor → Losses -->
+  <line x1="812" y1="455" x2="812" y2="490" stroke="#79c0ff" stroke-width="1.2" marker-end="url(#ab)"/>
+  <text x="826" y="476" fill="#79c0ff" font-size="7">pred z</text>
+
+  <!-- ========== KEY INNOVATIONS ========== -->
+  <rect x="950" y="65" width="230" height="240" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="1065" y="84" text-anchor="middle" fill="#909090" font-size="9" font-weight="700" letter-spacing="1">KEY INNOVATIONS (2.1)</text>
+
+  <rect x="962" y="98" width="206" height="30" rx="4" fill="#161616" stroke="#ff7b72" stroke-width="0.8"/>
+  <text x="972" y="112" fill="#ff7b72" font-size="8" font-weight="600">1. Dense Prediction Loss</text>
+  <text x="972" y="122" fill="#909090" font-size="7">Supervise ALL tokens, not just masked</text>
+
+  <rect x="962" y="134" width="206" height="30" rx="4" fill="#161616" stroke="#d2a8ff" stroke-width="0.8"/>
+  <text x="972" y="148" fill="#d2a8ff" font-size="8" font-weight="600">2. Deep Self-Supervision</text>
+  <text x="972" y="158" fill="#909090" font-size="7">Tap encoder at layers 24, 32, 40</text>
+
+  <rect x="962" y="170" width="206" height="30" rx="4" fill="#161616" stroke="#79c0ff" stroke-width="0.8"/>
+  <text x="972" y="184" fill="#79c0ff" font-size="8" font-weight="600">3. Multi-Modal Tokenizer</text>
+  <text x="972" y="194" fill="#909090" font-size="7">Separate Conv3d / Conv2d paths</text>
+
+  <rect x="962" y="206" width="206" height="30" rx="4" fill="#161616" stroke="#ffa657" stroke-width="0.8"/>
+  <text x="972" y="220" fill="#ffa657" font-size="8" font-weight="600">4. Distance-Weighted Context Loss</text>
+  <text x="972" y="230" fill="#909090" font-size="7">lambda / sqrt(d_min) near mask edges</text>
+
+  <rect x="962" y="242" width="206" height="30" rx="4" fill="#161616" stroke="#7ee787" stroke-width="0.8"/>
+  <text x="972" y="256" fill="#7ee787" font-size="8" font-weight="600">5. VisionMix163M Dataset</text>
+  <text x="972" y="266" fill="#909090" font-size="7">142M images + 19M video clips</text>
+
+  <!-- ========== MODEL VARIANTS ========== -->
+  <rect x="950" y="320" width="230" height="120" rx="6" fill="#111" stroke="#333" stroke-width="1"/>
+  <text x="1065" y="340" text-anchor="middle" fill="#909090" font-size="9" font-weight="700" letter-spacing="1">MODEL VARIANTS</text>
+
+  <text x="966" y="358" fill="#585858" font-size="7" font-weight="600">Model   Params  dim   depth heads</text>
+  <text x="966" y="372" fill="#585858" font-size="7" font-family="Monaco, monospace">ViT-B    80M   768    12    12</text>
+  <text x="966" y="386" fill="#585858" font-size="7" font-family="Monaco, monospace">ViT-L   300M  1024    24    16</text>
+  <text x="966" y="400" fill="#585858" font-size="7" font-family="Monaco, monospace">ViT-g    1B   1408    40    16</text>
+
+  <rect x="960" y="406" width="212" height="16" rx="2" fill="#1c1c1c" stroke="#7ee787" stroke-width="0.8"/>
+  <text x="966" y="418" fill="#7ee787" font-size="7" font-family="Monaco, monospace" font-weight="600">ViT-G    2B   1408    40    22</text>
+
+  <text x="1065" y="436" text-anchor="middle" fill="#585858" font-size="7">128 GPUs · batch 3072 · AdamW · 800 epochs</text>
+
+  <!-- Source -->
+  <text x="1065" y="648" text-anchor="middle" fill="#444" font-size="7">arxiv:2603.14482 · github.com/facebookresearch/vjepa2</text>
+</svg>

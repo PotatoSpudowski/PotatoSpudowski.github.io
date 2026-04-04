@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="ab" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#79c0ff" stroke-width="1.2"/></marker>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#666" stroke-width="1.2"/></marker>
+  </defs>
+
+  <rect width="800" height="440" fill="#0a0a0a" rx="8"/>
+
+  <text x="400" y="28" text-anchor="middle" fill="#e0e0e0" font-size="14" font-weight="700">Predictor Forward Pass — Step by Step</text>
+  <text x="400" y="44" text-anchor="middle" fill="#585858" font-size="9">src/models/predictor.py · VisionTransformerPredictor.forward()</text>
+
+  <!-- Step 1 -->
+  <rect x="30" y="64" width="220" height="80" rx="5" fill="#111" stroke="#79c0ff" stroke-width="1"/>
+  <text x="40" y="82" fill="#79c0ff" font-size="9" font-weight="700">1. Project Down</text>
+  <text x="40" y="98" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">x = predictor_embed(x)</text>
+  <text x="40" y="114" fill="#585858" font-size="7.5">context tokens from encoder</text>
+  <text x="40" y="128" fill="#585858" font-size="7.5">1408-dim → 384-dim (saves compute)</text>
+  <text x="40" y="140" fill="#909090" font-size="7" font-family="Monaco, monospace">[B, N_vis, 1408] → [B, N_vis, 384]</text>
+
+  <!-- Arrow -->
+  <line x1="250" y1="104" x2="280" y2="104" stroke="#79c0ff" stroke-width="1.2" marker-end="url(#ab)"/>
+
+  <!-- Step 2 -->
+  <rect x="280" y="64" width="220" height="80" rx="5" fill="#111" stroke="#79c0ff" stroke-width="1"/>
+  <text x="290" y="82" fill="#79c0ff" font-size="9" font-weight="700">2. Add Position</text>
+  <text x="290" y="98" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">x += pos_embed[masks_x]</text>
+  <text x="290" y="114" fill="#585858" font-size="7.5">apply_masks extracts positions</text>
+  <text x="290" y="128" fill="#585858" font-size="7.5">matching the visible token indices</text>
+  <text x="290" y="140" fill="#909090" font-size="7" font-family="Monaco, monospace">[B, N_vis, 384] (now positioned)</text>
+
+  <!-- Arrow -->
+  <line x1="500" y1="104" x2="530" y2="104" stroke="#79c0ff" stroke-width="1.2" marker-end="url(#ab)"/>
+
+  <!-- Step 3 -->
+  <rect x="530" y="64" width="240" height="80" rx="5" fill="#111" stroke="#ffa657" stroke-width="1"/>
+  <text x="540" y="82" fill="#ffa657" font-size="9" font-weight="700">3. Create Mask Tokens</text>
+  <text x="540" y="98" fill="#ffa657" font-size="8" font-family="Monaco, monospace">pred = mask_tokens[idx]</text>
+  <text x="540" y="114" fill="#585858" font-size="7">ParameterList of learnable (1,1,384) vectors</text>
+  <text x="540" y="128" fill="#585858" font-size="7.5">repeat to B x N_mask, add pos_embed</text>
+  <text x="540" y="140" fill="#909090" font-size="7" font-family="Monaco, monospace">[B, N_mask, 384] (mask tokens ready)</text>
+
+  <!-- Arrow down -->
+  <line x1="650" y1="144" x2="650" y2="170" stroke="#79c0ff" stroke-width="1.2" marker-end="url(#ab)"/>
+
+  <!-- Step 4 -->
+  <rect x="530" y="170" width="240" height="72" rx="5" fill="#111" stroke="#79c0ff" stroke-width="1"/>
+  <text x="540" y="188" fill="#79c0ff" font-size="9" font-weight="700">4. Concat + Sort</text>
+  <text x="540" y="204" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">x = cat([ctx, mask], dim=1)</text>
+  <text x="540" y="218" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">x = x[argsort(masks)]</text>
+  <text x="540" y="234" fill="#585858" font-size="7">spatial order for coherent sequence</text>
+
+  <!-- Arrow down -->
+  <line x1="650" y1="242" x2="650" y2="262" stroke="#79c0ff" stroke-width="1.2" marker-end="url(#ab)"/>
+
+  <!-- Step 5: Transformer blocks -->
+  <rect x="280" y="262" width="490" height="60" rx="5" fill="#111" stroke="#79c0ff" stroke-width="1.2"/>
+  <text x="290" y="280" fill="#79c0ff" font-size="9" font-weight="700">5. Predictor Transformer</text>
+  <text x="290" y="296" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">for blk in predictor_blocks: x = blk(x)</text>
+  <text x="290" y="312" fill="#585858" font-size="7">12 blocks (ViT-G) · Self-Attn (12 heads) + MLP · dim=384</text>
+
+  <!-- Token vis -->
+  <g transform="translate(600, 270)">
+    <rect x="0"  y="0" width="16" height="12" rx="2" fill="#7ee787" stroke="none"/>
+    <rect x="18" y="0" width="16" height="12" rx="2" fill="#1c1c1c" stroke="none"/>
+    <rect x="36" y="0" width="16" height="12" rx="2" fill="#7ee787" stroke="none"/>
+    <rect x="54" y="0" width="16" height="12" rx="2" fill="#1c1c1c" stroke="none"/>
+    <rect x="72" y="0" width="16" height="12" rx="2" fill="#1c1c1c" stroke="none"/>
+    <rect x="90" y="0" width="16" height="12" rx="2" fill="#7ee787" stroke="none"/>
+    <rect x="108" y="0" width="16" height="12" rx="2" fill="#1c1c1c" stroke="none"/>
+    <text x="0" y="26" fill="#7ee787" font-size="6">ctx</text>
+    <text x="18" y="26" fill="#585858" font-size="6">mask</text>
+    <text x="36" y="26" fill="#7ee787" font-size="6">ctx</text>
+    <text x="54" y="26" fill="#585858" font-size="6">mask</text>
+    <text x="72" y="26" fill="#585858" font-size="6">mask</text>
+    <text x="90" y="26" fill="#7ee787" font-size="6">ctx</text>
+    <text x="108" y="26" fill="#585858" font-size="6">mask</text>
+  </g>
+
+  <!-- Arrow down -->
+  <line x1="525" y1="322" x2="525" y2="340" stroke="#79c0ff" stroke-width="1.2" marker-end="url(#ab)"/>
+
+  <!-- Step 6 -->
+  <rect x="280" y="340" width="240" height="80" rx="5" fill="#111" stroke="#79c0ff" stroke-width="1"/>
+  <text x="290" y="358" fill="#79c0ff" font-size="9" font-weight="700">6. Extract + Project Up</text>
+  <text x="290" y="374" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">x = reverse_argsort(x)</text>
+  <text x="290" y="388" fill="#79c0ff" font-size="8" font-family="Monaco, monospace">x = predictor_proj(norm(x))</text>
+  <text x="290" y="404" fill="#585858" font-size="7.5">384-dim → 1408-dim projection back up</text>
+  <text x="290" y="416" fill="#909090" font-size="7" font-family="Monaco, monospace">[B, N_ctx+N_mask, 1408]</text>
+
+  <!-- Output labels -->
+  <rect x="540" y="340" width="230" height="80" rx="5" fill="#111" stroke="#333" stroke-width="0.8"/>
+  <text x="550" y="358" fill="#909090" font-size="8" font-weight="600">Output (return_all_tokens=True):</text>
+  <text x="550" y="378" fill="#ff7b72" font-size="8" font-family="Monaco, monospace">z_masked  [B, N_mask, 1408]</text>
+  <text x="550" y="392" fill="#585858" font-size="7">→ compared to target h (L_predict)</text>
+  <text x="550" y="410" fill="#d2a8ff" font-size="8" font-family="Monaco, monospace">z_context [B, N_vis, 1408]</text>
+  <text x="550" y="424" fill="#585858" font-size="7">→ compared to target h (L_context) — NEW in 2.1</text>
+
+  <!-- Input label at top-left -->
+  <rect x="30" y="170" width="220" height="54" rx="5" fill="#111" stroke="#333" stroke-width="0.8"/>
+  <text x="40" y="188" fill="#909090" font-size="8" font-weight="600">Inputs:</text>
+  <text x="40" y="204" fill="#7ee787" font-size="8" font-family="Monaco, monospace">x = encoder output [B, N_vis, 1408]</text>
+  <text x="40" y="218" fill="#ffa657" font-size="8" font-family="Monaco, monospace">masks_x, masks_y = index tensors</text>
+</svg>

@@ -942,7 +942,7 @@ pre code {
    BLOG — V-JEPA and future articles
    ========================================== */
 .blog-main {
-    max-width: 840px;
+    max-width: 1060px;
 }
 
 .blog-hero {
@@ -970,7 +970,7 @@ pre code {
 }
 
 .blog-body {
-    max-width: 840px;
+    max-width: 1060px;
 }
 
 .blog-section {
@@ -1054,9 +1054,13 @@ pre code {
     background: var(--bg-secondary);
     border-radius: 8px;
     border: 1px solid var(--border);
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+}
+
+.blog-fig-inner img {
+    margin: 0;
+    width: 100%;
+    display: block;
 }
 
 .blog-fig-cap {
