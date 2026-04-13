@@ -106,7 +106,7 @@ const CTooltip = ({ active, payload, label }) => {
 
 // ============ BLOG ============
 
-export default function MurmurBlog() {
+export default function RadioBlog() {
   return (
     <main className="main blog-main">
       <Link to="/articles" className="back-link">&larr; Back to articles</Link>
@@ -135,7 +135,7 @@ export default function MurmurBlog() {
           <p className="blog-p">my testbed uses ESP-NOW across 13 WiFi channels. TX sends 5 packets per channel (100ms dwell at 50Hz) then hops. both sides compute the same PRNG-seeded sequence so they hop in lockstep.</p>
 
           <Fig cap="FHSS hopping across 13 WiFi channels. TX sends 5 packets per dwell then hops. RX tracks via SYNC packets.">
-            <img src="/diagrams/murmur-fhss.svg" alt="FHSS channel hopping visualization" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+            <img src="/diagrams/radio-fhss.svg" alt="FHSS channel hopping visualization" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
           <p className="blog-p">the hard part isnt generating the sequence. its keeping TX and RX synchronized. what happens when the RX misses packets and loses track of which channel the TX is on? TX periodically sends SYNC packets carrying the current hop index and slot phase. RX uses these to recalibrate its timer. if RX loses sync entirely it enters scan mode, dwells on each channel for 50ms until it hears the TX again.</p>
@@ -183,7 +183,7 @@ export default function MurmurBlog() {
           <p className="blog-p">the fix is straightforward. replace xorshift32 with AES-128 in ECB counter mode. encrypt sequential counter values with a 128-bit key. predicting the next hop now requires breaking AES-128. same concept, wildly different security.</p>
 
           <Fig cap="xorshift32 (cracked in 8 minutes) vs AES-CTR CSPRNG (cracked at heat death of the universe).">
-            <img src="/diagrams/murmur-csprng.svg" alt="PRNG comparison: xorshift32 vs AES-CTR" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+            <img src="/diagrams/radio-csprng.svg" alt="PRNG comparison: xorshift32 vs AES-CTR" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
           <CodeBlock file="src/main.cpp: cryptographic PRNG for hop sequence">
@@ -231,7 +231,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
           <p className="blog-p">my packet has 3 sections. the header (12 bytes) is the AAD. authenticated so nobody can tamper with it but readable in the clear so the radio stack can see FHSS sync info without decrypting. the payload (8 bytes, 4 RC channels) gets encrypted. then an 8-byte GCM tag proves the whole thing is genuine.</p>
 
           <Fig cap="packet layout. header is readable but tamper-proof. payload is encrypted. tag proves integrity of both.">
-            <img src="/diagrams/murmur-packet.svg" alt="AEAD packet structure" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+            <img src="/diagrams/radio-packet.svg" alt="AEAD packet structure" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
           <CodeBlock file="src/main.cpp: AEAD encrypt in-place">
@@ -270,7 +270,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
           <p className="blog-p">TX generates a random session key with the hardware RNG, encrypts it with the master key using GCM, sends it as a KEY_OFFER. RX decrypts, verifies the tag, installs the key, sends back an authenticated KEY_ACK. 3 states: NONE, OFFERED, ACTIVE.</p>
 
           <Fig cap="key exchange. both sides derive master_key from bind phrase. TX generates session key, encrypts and sends. no data flows until both confirm.">
-            <img src="/diagrams/murmur-key-exchange.svg" alt="Key exchange handshake" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+            <img src="/diagrams/radio-key-exchange.svg" alt="Key exchange handshake" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
           <p className="blog-p">the critical thing: the link is fail-closed. zero data packets until key exchange completes. if someone jams the key exchange the link stays dead instead of falling back to plaintext. this sounds obvious but its the kind of thing you only think about after you build the wrong version first.</p>
@@ -284,7 +284,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
           <p className="blog-p">the fix is a sliding window bitmap. 64-bit integer. track the highest accepted seq, check incoming against the bitmap. duplicates rejected. old packets rejected. 20 lines of code.</p>
 
           <Fig cap="64-slot sliding window. green = accepted, empty = not yet seen, red = too old.">
-            <img src="/diagrams/murmur-replay.svg" alt="Anti-replay sliding window" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
+            <img src="/diagrams/radio-replay.svg" alt="Anti-replay sliding window" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
           <CodeBlock file="src/main.cpp: anti-replay">
