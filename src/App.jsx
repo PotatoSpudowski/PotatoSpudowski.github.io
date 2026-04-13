@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Articles from './pages/Articles'
 import Article from './pages/Article'
 import VJEPABlog from './pages/VJEPABlog'
+import MurmurBlog from './pages/MurmurBlog'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/articles" element={<Articles />} />
+        <Route path="/articles/radio-security-from-scratch" element={<MurmurBlog />} />
         <Route path="/articles/vjepa2-deep-dive" element={<VJEPABlog />} />
         <Route path="/articles/:slug" element={<Article />} />
       </Routes>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <rect width="800" height="260" fill="#0a0a0a" rx="8"/>
+
+  <text x="400" y="28" fill="#e0e0e0" font-size="13" font-weight="600" text-anchor="middle">Data Packet: AES-128-GCM AEAD</text>
+
+  <!-- AAD section (green) -->
+  <rect x="30" y="50" width="370" height="80" rx="6" fill="none" stroke="#7ee787" stroke-width="1.5"/>
+  <text x="215" y="68" fill="#7ee787" font-size="11" font-weight="600" text-anchor="middle">AAD (Authenticated Additional Data)</text>
+  <text x="215" y="82" fill="#585858" font-size="9" text-anchor="middle">authenticated but NOT encrypted, readable in clear</text>
+
+  <!-- AAD fields -->
+  <g font-family="Monaco,Menlo,monospace" font-size="9">
+    <rect x="40" y="92" width="62" height="28" rx="3" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+    <text x="71" y="103" fill="#7ee787" text-anchor="middle">seq</text>
+    <text x="71" y="115" fill="#585858" text-anchor="middle">4B</text>
+
+    <rect x="108" y="92" width="80" height="28" rx="3" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+    <text x="148" y="103" fill="#7ee787" text-anchor="middle">timestamp</text>
+    <text x="148" y="115" fill="#585858" text-anchor="middle">4B</text>
+
+    <rect x="194" y="92" width="46" height="28" rx="3" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+    <text x="217" y="103" fill="#7ee787" text-anchor="middle">ch</text>
+    <text x="217" y="115" fill="#585858" text-anchor="middle">1B</text>
+
+    <rect x="246" y="92" width="52" height="28" rx="3" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+    <text x="272" y="103" fill="#7ee787" text-anchor="middle">hop</text>
+    <text x="272" y="115" fill="#585858" text-anchor="middle">1B</text>
+
+    <rect x="304" y="92" width="44" height="28" rx="3" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+    <text x="326" y="103" fill="#7ee787" text-anchor="middle">slot</text>
+    <text x="326" y="115" fill="#585858" text-anchor="middle">1B</text>
+
+    <rect x="354" y="92" width="38" height="28" rx="3" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+    <text x="373" y="103" fill="#7ee787" text-anchor="middle">flg</text>
+    <text x="373" y="115" fill="#585858" text-anchor="middle">1B</text>
+  </g>
+
+  <!-- Encrypted section (blue) -->
+  <rect x="410" y="50" width="200" height="80" rx="6" fill="none" stroke="#79c0ff" stroke-width="1.5"/>
+  <text x="510" y="68" fill="#79c0ff" font-size="11" font-weight="600" text-anchor="middle">Encrypted Payload</text>
+  <text x="510" y="82" fill="#585858" font-size="9" text-anchor="middle">encrypted + authenticated</text>
+
+  <rect x="420" y="92" width="180" height="28" rx="3" fill="#79c0ff12" stroke="#79c0ff30" stroke-width="1"/>
+  <text x="510" y="103" fill="#79c0ff" font-size="9" text-anchor="middle" font-family="Monaco,Menlo,monospace">rc_channels[4]</text>
+  <text x="510" y="115" fill="#585858" font-size="9" text-anchor="middle" font-family="Monaco,Menlo,monospace">8 bytes (4 × int16)</text>
+
+  <!-- GCM Tag (purple) -->
+  <rect x="620" y="50" width="150" height="80" rx="6" fill="none" stroke="#d2a8ff" stroke-width="1.5"/>
+  <text x="695" y="68" fill="#d2a8ff" font-size="11" font-weight="600" text-anchor="middle">GCM Tag</text>
+  <text x="695" y="82" fill="#585858" font-size="9" text-anchor="middle">integrity proof</text>
+
+  <rect x="630" y="92" width="130" height="28" rx="3" fill="#d2a8ff12" stroke="#d2a8ff30" stroke-width="1"/>
+  <text x="695" y="103" fill="#d2a8ff" font-size="9" text-anchor="middle" font-family="Monaco,Menlo,monospace">tag[8]</text>
+  <text x="695" y="115" fill="#585858" font-size="9" text-anchor="middle" font-family="Monaco,Menlo,monospace">8 bytes (truncated)</text>
+
+  <!-- Total size -->
+  <line x1="30" y1="145" x2="770" y2="145" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="400" y="160" fill="#909090" font-size="10" text-anchor="middle">total: 28 bytes (12B AAD + 8B payload + 8B tag)</text>
+
+  <!-- Nonce construction -->
+  <rect x="30" y="175" width="740" height="70" rx="6" fill="#111" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="50" y="195" fill="#ffa657" font-size="11" font-weight="600">GCM Nonce (12 bytes)</text>
+  <g font-family="Monaco,Menlo,monospace" font-size="9">
+    <rect x="50" y="205" width="90" height="24" rx="3" fill="#ffa65712" stroke="#ffa65730" stroke-width="1"/>
+    <text x="95" y="220" fill="#ffa657" text-anchor="middle">nonce_base</text>
+    <text x="155" y="220" fill="#585858">+</text>
+    <rect x="170" y="205" width="70" height="24" rx="3" fill="#ffa65712" stroke="#ffa65730" stroke-width="1"/>
+    <text x="205" y="220" fill="#ffa657" text-anchor="middle">seq</text>
+    <text x="255" y="220" fill="#585858">+</text>
+    <rect x="270" y="205" width="70" height="24" rx="3" fill="#ffa65712" stroke="#ffa65730" stroke-width="1"/>
+    <text x="305" y="220" fill="#ffa657" text-anchor="middle">hop_idx</text>
+    <text x="355" y="220" fill="#585858">+</text>
+    <rect x="370" y="205" width="60" height="24" rx="3" fill="#ffa65712" stroke="#ffa65730" stroke-width="1"/>
+    <text x="400" y="220" fill="#ffa657" text-anchor="middle">0x00</text>
+    <text x="470" y="220" fill="#585858">→ unique per packet, never repeats</text>
+  </g>
+</svg>

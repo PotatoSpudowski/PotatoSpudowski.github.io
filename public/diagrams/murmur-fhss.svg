@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <rect width="800" height="340" fill="#0a0a0a" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="28" fill="#e0e0e0" font-size="13" font-weight="600" text-anchor="middle">FHSS Channel Hopping: TX and RX synchronized</text>
+
+  <!-- Y-axis: Channels -->
+  <text x="22" y="60" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">ch13</text>
+  <text x="22" y="82" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">ch11</text>
+  <text x="22" y="104" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">ch9</text>
+  <text x="22" y="126" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">ch7</text>
+  <text x="22" y="148" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">ch5</text>
+  <text x="22" y="170" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">ch3</text>
+  <text x="22" y="192" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">ch1</text>
+
+  <!-- Grid lines -->
+  <g stroke="#1a1a1a" stroke-width="0.5">
+    <line x1="55" y1="55" x2="780" y2="55"/>
+    <line x1="55" y1="77" x2="780" y2="77"/>
+    <line x1="55" y1="99" x2="780" y2="99"/>
+    <line x1="55" y1="121" x2="780" y2="121"/>
+    <line x1="55" y1="143" x2="780" y2="143"/>
+    <line x1="55" y1="165" x2="780" y2="165"/>
+    <line x1="55" y1="187" x2="780" y2="187"/>
+  </g>
+
+  <!-- TX hops (green blocks), pseudo-random sequence -->
+  <g opacity="0.7">
+    <!-- Dwell 1: ch7, 5 packets -->
+    <rect x="60" y="116" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="95" y="127" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 2: ch3 -->
+    <rect x="140" y="160" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="175" y="171" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 3: ch11 -->
+    <rect x="220" y="72" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="255" y="83" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 4: ch1 -->
+    <rect x="300" y="182" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="335" y="193" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 5: ch9 -->
+    <rect x="380" y="94" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="415" y="105" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 6: ch5 -->
+    <rect x="460" y="138" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="495" y="149" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 7: ch13 -->
+    <rect x="540" y="50" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="575" y="61" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 8: ch7 -->
+    <rect x="620" y="116" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="655" y="127" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+    <!-- Dwell 9: ch9 -->
+    <rect x="700" y="94" width="70" height="14" rx="3" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+    <text x="735" y="105" fill="#7ee787" font-size="8" text-anchor="middle" font-family="Monaco,Menlo,monospace">5 pkts</text>
+  </g>
+
+  <!-- Hop arrows (dashed) -->
+  <g stroke="#7ee787" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.4">
+    <path d="M130,123 L140,167"/>
+    <path d="M210,167 L220,79"/>
+    <path d="M290,79 L300,189"/>
+    <path d="M370,189 L380,101"/>
+    <path d="M450,101 L460,145"/>
+    <path d="M530,145 L540,57"/>
+    <path d="M610,57 L620,123"/>
+    <path d="M690,123 L700,101"/>
+  </g>
+
+  <!-- X-axis label -->
+  <text x="400" y="215" fill="#585858" font-size="10" text-anchor="middle">time (100ms dwell per channel, 20ms per packet)</text>
+
+  <!-- Legend -->
+  <rect x="60" y="235" width="720" height="90" rx="6" fill="#111" stroke="#2a2a2a" stroke-width="1"/>
+
+  <rect x="80" y="252" width="12" height="12" rx="2" fill="#7ee787" opacity="0.3" stroke="#7ee787" stroke-width="1"/>
+  <text x="100" y="262" fill="#909090" font-size="10">TX transmits 5 packets per channel dwell (100ms), then hops</text>
+
+  <text x="80" y="282" fill="#909090" font-size="10">RX tracks TX via SYNC packets carrying hop_idx + slot_phase</text>
+
+  <text x="80" y="302" fill="#79c0ff" font-size="10">sequence generated by AES-CTR CSPRNG. predicting the next hop = breaking AES-128</text>
+
+  <text x="80" y="318" fill="#585858" font-size="9" font-family="Monaco,Menlo,monospace">FHSS_NUM_CHANNELS=13  FHSS_HOP_EVERY_N=5  LINK_RATE=50Hz  FHSS_SEQ_LEN=64</text>
+</svg>

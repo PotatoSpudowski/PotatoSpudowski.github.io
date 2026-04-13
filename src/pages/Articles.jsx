@@ -2,6 +2,13 @@ import { Link } from 'react-router-dom'
 
 const ARTICLES = [
   {
+    slug: 'radio-security-from-scratch',
+    title: 'your drone radio has zero encryption',
+    date: 'April 2026',
+    readtime: '20 min read',
+    excerpt: '',
+  },
+  {
     slug: 'vjepa2-deep-dive',
     title: 'what the fuck is a JEPA?',
     date: 'March 2026',

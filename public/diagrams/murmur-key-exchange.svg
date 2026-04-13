@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <rect width="800" height="420" fill="#0a0a0a" rx="8"/>
+
+  <text x="400" y="28" fill="#e0e0e0" font-size="13" font-weight="600" text-anchor="middle">Key Exchange: Fail-Closed, Authenticated</text>
+
+  <!-- TX column -->
+  <rect x="60" y="50" width="180" height="30" rx="6" fill="#7ee78715" stroke="#7ee787" stroke-width="1.5"/>
+  <text x="150" y="70" fill="#7ee787" font-size="13" font-weight="600" text-anchor="middle">TX (Transmitter)</text>
+  <line x1="150" y1="80" x2="150" y2="395" stroke="#7ee78740" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- RX column -->
+  <rect x="560" y="50" width="180" height="30" rx="6" fill="#79c0ff15" stroke="#79c0ff" stroke-width="1.5"/>
+  <text x="650" y="70" fill="#79c0ff" font-size="13" font-weight="600" text-anchor="middle">RX (Receiver)</text>
+  <line x1="650" y1="80" x2="650" y2="395" stroke="#79c0ff40" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Step 1: PBKDF2 -->
+  <rect x="55" y="95" width="190" height="40" rx="4" fill="#111" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="150" y="112" fill="#ffa657" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">PBKDF2(bind_phrase)</text>
+  <text x="150" y="126" fill="#585858" font-size="9" text-anchor="middle">10K iterations → master_key</text>
+
+  <rect x="555" y="95" width="190" height="40" rx="4" fill="#111" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="650" y="112" fill="#ffa657" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">PBKDF2(bind_phrase)</text>
+  <text x="650" y="126" fill="#585858" font-size="9" text-anchor="middle">same phrase → same master_key</text>
+
+  <!-- Step 2: Generate session key -->
+  <rect x="55" y="150" width="190" height="35" rx="4" fill="#111" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="150" y="165" fill="#7ee787" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">esp_random() × 4</text>
+  <text x="150" y="178" fill="#585858" font-size="9" text-anchor="middle">128-bit session key + nonce</text>
+
+  <!-- Step 3: KEY_OFFER arrow -->
+  <line x1="150" y1="200" x2="650" y2="230" stroke="#d2a8ff" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
+  <rect x="280" y="200" width="240" height="40" rx="4" fill="#d2a8ff12" stroke="#d2a8ff40" stroke-width="1"/>
+  <text x="400" y="215" fill="#d2a8ff" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">KEY_OFFER (GCM encrypted)</text>
+  <text x="400" y="232" fill="#585858" font-size="9" text-anchor="middle">session_key + nonce encrypted with master_key</text>
+
+  <!-- RX decrypts -->
+  <rect x="555" y="250" width="190" height="40" rx="4" fill="#111" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="650" y="265" fill="#79c0ff" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">GCM decrypt + verify</text>
+  <text x="650" y="280" fill="#585858" font-size="9" text-anchor="middle">install session key if valid</text>
+
+  <!-- Step 4: KEY_ACK arrow -->
+  <line x1="650" y1="300" x2="150" y2="330" stroke="#d2a8ff" stroke-width="1.5" marker-end="url(#arrowPurple)"/>
+  <rect x="280" y="300" width="240" height="35" rx="4" fill="#d2a8ff12" stroke="#d2a8ff40" stroke-width="1"/>
+  <text x="400" y="315" fill="#d2a8ff" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">KEY_ACK (GCM authenticated)</text>
+  <text x="400" y="328" fill="#585858" font-size="9" text-anchor="middle">confirmation encrypted with master_key</text>
+
+  <!-- Both sides active -->
+  <rect x="55" y="350" width="190" height="35" rx="4" fill="#7ee78715" stroke="#7ee787" stroke-width="1"/>
+  <text x="150" y="372" fill="#7ee787" font-size="11" font-weight="600" text-anchor="middle">KEY_ACTIVE / LINK LIVE</text>
+
+  <rect x="555" y="350" width="190" height="35" rx="4" fill="#79c0ff15" stroke="#79c0ff" stroke-width="1"/>
+  <text x="650" y="372" fill="#79c0ff" font-size="11" font-weight="600" text-anchor="middle">KEY_ACTIVE / LINK LIVE</text>
+
+  <!-- Fail-closed label -->
+  <rect x="270" y="370" width="260" height="30" rx="4" fill="#ff7b7215" stroke="#ff7b72" stroke-width="1"/>
+  <text x="400" y="389" fill="#ff7b72" font-size="10" text-anchor="middle">FAIL-CLOSED: zero data packets until this completes</text>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#d2a8ff" stroke-width="1.5"/>
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <rect width="800" height="300" fill="#0a0a0a" rx="8"/>
+
+  <text x="400" y="24" fill="#e0e0e0" font-size="13" font-weight="600" text-anchor="middle">FHSS Sequence Generation: xorshift32 vs AES-CTR CSPRNG</text>
+
+  <!-- Left: xorshift32 (bad) -->
+  <rect x="20" y="42" width="370" height="240" rx="6" fill="#111" stroke="#ff7b7240" stroke-width="1"/>
+  <text x="205" y="62" fill="#ff7b72" font-size="12" font-weight="600" text-anchor="middle">v1: xorshift32 (BROKEN)</text>
+
+  <rect x="40" y="78" width="140" height="30" rx="4" fill="#ff7b7212" stroke="#ff7b7230" stroke-width="1"/>
+  <text x="110" y="97" fill="#ff7b72" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">seed (32-bit)</text>
+
+  <text x="195" y="97" fill="#585858" font-size="14">→</text>
+
+  <rect x="210" y="78" width="160" height="30" rx="4" fill="#ff7b7212" stroke="#ff7b7230" stroke-width="1"/>
+  <text x="290" y="97" fill="#ff7b72" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">xorshift32(state)</text>
+
+  <text x="290" y="127" fill="#585858" font-size="14">↓</text>
+
+  <rect x="210" y="135" width="160" height="25" rx="4" fill="#ff7b7212" stroke="#ff7b7230" stroke-width="1"/>
+  <text x="290" y="152" fill="#ff7b72" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">hop = state % 13</text>
+
+  <text x="110" y="185" fill="#585858" font-size="10" text-anchor="middle">attack: observe 4 hops</text>
+  <text x="110" y="197" fill="#585858" font-size="10" text-anchor="middle">→ brute-force 2^32 seeds</text>
+  <text x="110" y="209" fill="#585858" font-size="10" text-anchor="middle">→ match observed sequence</text>
+
+  <rect x="40" y="222" width="330" height="42" rx="4" fill="#ff7b7215" stroke="#ff7b72" stroke-width="1"/>
+  <text x="205" y="240" fill="#ff7b72" font-size="11" font-weight="600" text-anchor="middle">CRACKED in ~8 minutes (CPU)</text>
+  <text x="205" y="255" fill="#ff7b72" font-size="10" text-anchor="middle">GPU: seconds. full sequence predicted.</text>
+
+  <!-- Right: AES-CTR CSPRNG (good) -->
+  <rect x="410" y="42" width="370" height="240" rx="6" fill="#111" stroke="#7ee78740" stroke-width="1"/>
+  <text x="595" y="62" fill="#7ee787" font-size="12" font-weight="600" text-anchor="middle">v2: AES-128-ECB Counter (SECURE)</text>
+
+  <rect x="430" y="78" width="160" height="30" rx="4" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+  <text x="510" y="97" fill="#7ee787" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">fhss_key (128-bit)</text>
+
+  <text x="605" y="97" fill="#585858" font-size="14">→</text>
+
+  <rect x="620" y="78" width="140" height="30" rx="4" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+  <text x="690" y="97" fill="#7ee787" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">AES_ECB(ctr)</text>
+
+  <text x="690" y="127" fill="#585858" font-size="14">↓</text>
+
+  <rect x="620" y="135" width="140" height="25" rx="4" fill="#7ee78712" stroke="#7ee78730" stroke-width="1"/>
+  <text x="690" y="152" fill="#7ee787" font-size="10" text-anchor="middle" font-family="Monaco,Menlo,monospace">hop = out[0]</text>
+
+  <text x="510" y="185" fill="#585858" font-size="10" text-anchor="middle">key derived from master via</text>
+  <text x="510" y="197" fill="#585858" font-size="10" text-anchor="middle">AES-ECB domain separation</text>
+  <text x="510" y="209" fill="#585858" font-size="10" text-anchor="middle">predicting hops = breaking AES</text>
+
+  <rect x="430" y="222" width="330" height="42" rx="4" fill="#7ee78715" stroke="#7ee787" stroke-width="1"/>
+  <text x="595" y="240" fill="#7ee787" font-size="11" font-weight="600" text-anchor="middle">PREDICTION = breaking AES-128</text>
+  <text x="595" y="255" fill="#7ee787" font-size="10" text-anchor="middle">~10^24 years at 10 GHz ASIC</text>
+</svg>
