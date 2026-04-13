@@ -114,7 +114,7 @@ export default function MurmurBlog() {
       {/* hero */}
       <div className="blog-hero">
         <Fade>
-          <h1 className="blog-title">your drone radio has zero encryption</h1>
+          <h1 className="blog-title">building a secure radio link on two esp32s</h1>
         </Fade>
       </div>
 

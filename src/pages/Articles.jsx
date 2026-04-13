@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 const ARTICLES = [
   {
     slug: 'radio-security-from-scratch',
-    title: 'your drone radio has zero encryption',
+    title: 'building a secure radio link on two esp32s',
     date: 'April 2026',
     readtime: '20 min read',
     excerpt: '',
