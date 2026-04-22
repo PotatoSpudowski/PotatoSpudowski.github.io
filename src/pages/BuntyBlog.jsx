@@ -80,7 +80,7 @@ export default function BuntyBlog() {
           <p className="blog-p">nobody is coming to save you. you knew this at 16. you know it now. youll know it at 40. theres no mentor, no investor, no Lois waiting in the next chapter to tell you youre going to be great and then insist on it until you believe her.</p>
           <p className="blog-p">if you want that voice you have to be that voice.</p>
           <p className="blog-p">hold your own bar. call your own bluff when youre pretending you dont want what you actually want. refuse the easy path even when its right there and nobody would blame you for taking it. look yourself in the eye and refuse to let yourself off the hook.</p>
-          <p className="blog-p">thats harder than having someone do it for you. its also the only thing that actually works for people like us. a Lois can lose faith. a Lois can die. a Lois can be wrong. the voice you build inside yourself from years of watching yourself clear bars that werent supposed to be clearable. that voice doesnt leave. its built on evidence. the evidence is already there. you just forget sometimes.</p>
+          <p className="blog-p">thats harder than having someone do it for you. its also the only thing that actually works for people like us. the voice you build inside yourself from years of watching yourself clear bars that werent supposed to be clearable. that voice doesnt leave. its built on evidence. the evidence is already there. you just forget sometimes.</p>
         </section>
 
         <section className="blog-section blog-section--last">
