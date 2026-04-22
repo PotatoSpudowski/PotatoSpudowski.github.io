@@ -1,4 +1,4 @@
-import Timeline from '../components/Timeline'
+// import Timeline from '../components/Timeline'
 
 export default function Home() {
   return (
@@ -27,7 +27,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <Timeline />
+      {/* <Timeline /> */}
     </main>
   )
 }
