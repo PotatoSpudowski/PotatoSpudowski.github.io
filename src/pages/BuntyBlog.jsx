@@ -36,7 +36,7 @@ export default function BuntyBlog() {
       <div className="blog-body">
 
         <section className="blog-section">
-          <p className="blog-p">if youre reading this youre tired. read it anyway. its going to sting.</p>
+          <p className="blog-p">you wrote this for the nights when you forget who you are. this is one of those nights.</p>
         </section>
 
         <section className="blog-section">
