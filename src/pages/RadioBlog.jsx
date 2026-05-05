@@ -123,7 +123,7 @@ export default function RadioBlog() {
         {/* ====== 01 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">the problem</h2>
-          <p className="blog-p">most drone radio links send your stick commands in plaintext. no encryption. someone within range with a $20 SDR can read every channel value going to your quad. they can inject fake commands. they can predict your frequency hopping pattern and follow you across the spectrum.</p>
+          <p className="blog-p">most radio links send commands in plaintext. no encryption. someone within range with a $20 SDR can read every packet. they can inject fake commands. they can predict your frequency hopping pattern and follow you across the spectrum.</p>
           <p className="blog-p">i wanted to understand why and what it actually takes to fix it. not by reading about it. by building something. so i grabbed 2 ESP32 NodeMCU boards and started building a radio link from scratch over ESP-NOW. frequency hopping, encryption, key exchange, anti-replay, jam resistance. implement each one, test it, try to break it.</p>
           <p className="blog-p">this post is everything i learned about radio security by tinkering with $8 microcontrollers. all the code is <a href="https://github.com/PotatoSpudowski/esp32-radio-experiments" target="_blank" rel="noopener noreferrer">on github</a>.</p>
         </section>
@@ -131,7 +131,7 @@ export default function RadioBlog() {
         {/* ====== 02 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">frequency hopping</h2>
-          <p className="blog-p">frequency hopping spread spectrum (FHSS) is the foundation of every drone radio. instead of transmitting on one frequency you jump between many frequencies in a pseudo-random pattern that both TX and RX know. a jammer sitting on one frequency only disrupts a fraction of your packets.</p>
+          <p className="blog-p">frequency hopping spread spectrum (FHSS) is the foundation of secure radio links. instead of transmitting on one frequency you jump between many frequencies in a pseudo-random pattern that both TX and RX know. a jammer sitting on one frequency only disrupts a fraction of your packets.</p>
           <p className="blog-p">my testbed uses ESP-NOW across 13 WiFi channels. TX sends 5 packets per channel (100ms dwell at 50Hz) then hops. both sides compute the same PRNG-seeded sequence so they hop in lockstep.</p>
 
           <Fig cap="FHSS hopping across 13 WiFi channels. TX sends 5 packets per dwell then hops. RX tracks via SYNC packets.">
@@ -159,7 +159,7 @@ export default function RadioBlog() {
         <section className="blog-section">
           <h2 className="blog-section-tag">your PRNG is crackable</h2>
           <p className="blog-p">FHSS gives you jam resistance. it does not give you secrecy. if the hop sequence is predictable an attacker just follows you channel to channel and sees everything.</p>
-          <p className="blog-p">most open source drone radios use xorshift32 for their hop sequence. a simple PRNG with a 32-bit seed. i wrote an attack script to see how fast you can crack it: observe 4 consecutive hops, brute-force all 2^32 seeds, find the match. single CPU core: about 8 minutes. GPU: seconds. your "spread spectrum" is just theater.</p>
+          <p className="blog-p">most open source radio protocols use xorshift32 for their hop sequence. a simple PRNG with a 32-bit seed. i wrote an attack script to see how fast you can crack it: observe 4 consecutive hops, brute-force all 2^32 seeds, find the match. single CPU core: about 8 minutes. GPU: seconds. your "spread spectrum" is just theater.</p>
 
           <CodeBlock file="tools/attack_analysis.py: cracking the hop sequence" language="python">
 {`def attack_predict_sequence():
@@ -204,7 +204,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
         {/* ====== 04 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">encryption is free (and not enough)</h2>
-          <p className="blog-p">i tested AES-128-CTR with the ESP32 hardware accelerator and ChaCha20 in pure software. AES: 12 microseconds per packet. ChaCha20: 27 microseconds. both completely negligible versus the 20ms packet interval. less than 0.13% overhead. the performance argument against encrypted drone radios has always been bullshit.</p>
+          <p className="blog-p">i tested AES-128-CTR with the ESP32 hardware accelerator and ChaCha20 in pure software. AES: 12 microseconds per packet. ChaCha20: 27 microseconds. both completely negligible versus the 20ms packet interval. less than 0.13% overhead. the performance argument against encrypted radio links has always been bullshit.</p>
 
           <Fig>
             <div style={{ padding: '22px 14px 6px' }}>
@@ -220,7 +220,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
             </div>
           </Fig>
 
-          <p className="blog-p">but heres what took me a while to get. encryption alone doesnt cut it. AES-CTR gives you confidentiality (nobody can read your packets) but zero integrity. an attacker who knows the plaintext structure (and RC packets are very predictable: centering stick values, fixed channel order) can flip bits in the ciphertext and change RC values without knowing the key. thats called a bit-flipping attack and it works against any stream cipher in CTR mode.</p>
+          <p className="blog-p">but heres what took me a while to get. encryption alone doesnt cut it. AES-CTR gives you confidentiality (nobody can read your packets) but zero integrity. an attacker who knows the plaintext structure (and control packets are very predictable: fixed field order, known value ranges) can flip bits in the ciphertext and change values without knowing the key. thats called a bit-flipping attack and it works against any stream cipher in CTR mode.</p>
           <p className="blog-p">what you need is authenticated encryption. confidentiality (cant read it), integrity (cant modify it), authenticity (know who sent it). all in one pass. thats AES-GCM.</p>
         </section>
 
@@ -280,7 +280,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
         {/* ====== 07 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">anti-replay</h2>
-          <p className="blog-p">this one surprised me. even with authenticated encryption an attacker can capture a valid packet and retransmit it later. the tag still verifies. they could capture "full throttle" and replay it whenever they want. crypto checks out but the command is stale. still bad.</p>
+          <p className="blog-p">this one surprised me. even with authenticated encryption an attacker can capture a valid packet and retransmit it later. the tag still verifies. they could capture any command and replay it whenever they want. crypto checks out but the command is stale. still bad.</p>
           <p className="blog-p">the fix is a sliding window bitmap. 64-bit integer. track the highest accepted seq, check incoming against the bitmap. duplicates rejected. old packets rejected. 20 lines of code.</p>
 
           <Fig cap="64-slot sliding window. green = accepted, empty = not yet seen, red = too old.">
@@ -327,7 +327,7 @@ static bool replay_check_and_accept(uint32_t seq) {
         {/* ====== 09 ====== */}
         <section className="blog-section blog-section--last">
           <h2 className="blog-section-tag">what i learned</h2>
-          <p className="blog-p">encryption is free on modern microcontrollers. 12 microseconds for AES, 27 for ChaCha20, versus a 20ms packet interval. there is no performance reason for unencrypted drone radios.</p>
+          <p className="blog-p">encryption is free on modern microcontrollers. 12 microseconds for AES, 27 for ChaCha20, versus a 20ms packet interval. there is no performance reason for unencrypted radio links.</p>
           <p className="blog-p">encryption without authentication is almost as bad as no encryption. bit-flipping attacks on CTR mode are trivial if you know the plaintext structure. use AEAD (AES-GCM or ChaCha20-Poly1305). always.</p>
           <p className="blog-p">xorshift32 with a 32-bit seed is not security. its a speed bump. 8 minutes to crack on a laptop. if your FHSS uses a simple PRNG an attacker can predict your entire hop sequence from observing 4 hops.</p>
           <p className="blog-p">fail-open is a design bug. if your system falls back to plaintext when crypto fails an attacker just jams the handshake. fail-closed or nothing.</p>
