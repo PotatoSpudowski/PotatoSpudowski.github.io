@@ -2,6 +2,13 @@ import { Link } from 'react-router-dom'
 
 const ARTICLES = [
   {
+    slug: 'how-i-keep-winning',
+    title: 'how i keep winning',
+    date: 'May 2026',
+    readtime: '8 min read',
+    excerpt: '',
+  },
+  {
     slug: 'radio-security-from-scratch',
     title: 'building a secure radio link on two esp32s',
     date: 'April 2026',
