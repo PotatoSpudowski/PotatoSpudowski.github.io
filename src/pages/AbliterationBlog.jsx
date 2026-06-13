@@ -436,6 +436,63 @@ ollama run hf.co/Bahushruth/Qwen3.6-35B-A3B-abliterated-v4-GGUF:Q8_0
           <p className="blog-p">once its running you can also hit it via the Ollama API at <code>localhost:11434</code> if you want to integrate it into other tools. its fully OpenAI-compatible.</p>
         </section>
 
+        <section className="blog-section">
+          <h2 className="blog-section-tag">prior work</h2>
+          <p className="blog-p">abliteration didnt come out of nowhere. heres the lineage and what each piece contributed.</p>
+          <p className="blog-p">the foundational result is Arditi et al. "Refusal in Language Models Is Mediated by a Single Direction" (2024). they proved across 13 dense models up to 72B params that refusal lives in a 1D subspace of the residual stream. erase the direction and refusal disappears. add it and harmless prompts get refused. clean result, but only on dense architectures.</p>
+          <p className="blog-p">mlabonne took that paper and turned it into a practical notebook anyone could run. published NeuralDaredevil-8B using abliteration + DPO fine-tuning as a healing step. showed the full pipeline works end to end for consumer use.</p>
+          <p className="blog-p">grimjim (Nov 2025) figured out the norm-preserving fix. standard orthogonalization shrinks weight vectors because projecting out a component makes them shorter. across 40+ layers that compounds and the model gets dumber. grimjim's insight: rescale each row back to its original norm after projection. benchmarks stop degrading. this is the single most important improvement to the technique since the original paper.</p>
+          <p className="blog-p">Pan et al. "The Hidden Dimensions of LLM Alignment" (ICML 2025) formally proved that safety behavior is controlled by multiple orthogonal directions, not just one. they found a dominant direction governing refusal plus several smaller directions representing distinct interpretable features. this explains why single-direction abliteration sometimes fails (the model reconstructs refusal from remaining axes) and validates the multi-direction approach.</p>
+          <p className="blog-p">Zhang et al. "LLM-VA: Resolving the Jailbreak-Overrefusal Trade-off via Vector Alignment" (ACL 2026) showed you can do minimum-norm weight modifications that preserve 95.92% utility while removing refusal. different approach (SVMs to identify vectors, iterative alignment) but same underlying insight: you can surgically modify weights without destroying capabilities if you're careful about magnitudes.</p>
+          <p className="blog-p">what i added on top of all this: making it actually work on a Mixture of Experts architecture (256 experts as 3D tensors, einsum instead of matmul, hybrid linear+full attention that breaks every existing script), proving dataset diversity matters more than direction count (7356 prompts across 35 categories and 10 styles vs 520 homogeneous ones), and showing that 1 clean direction from a rich dataset beats 10 noisy directions from a small one.</p>
+        </section>
+
+        <section className="blog-section">
+          <h2 className="blog-section-tag">references</h2>
+          <ul className="blog-links-list">
+            <li>
+              <a href="https://arxiv.org/abs/2406.11717" target="_blank" rel="noopener noreferrer">Arditi et al. - Refusal in Language Models Is Mediated by a Single Direction (2024)</a>
+              <br /><span className="blog-ref-note">proved refusal is a single direction you can erase. the paper that started all of this</span>
+            </li>
+            <li>
+              <a href="https://huggingface.co/blog/mlabonne/abliteration" target="_blank" rel="noopener noreferrer">mlabonne - Uncensor any LLM with abliteration (2024)</a>
+              <br /><span className="blog-ref-note">turned the paper into a runnable notebook anyone can use in 10 minutes</span>
+            </li>
+            <li>
+              <a href="https://huggingface.co/blog/grimjim/norm-preserving-biprojected-abliteration" target="_blank" rel="noopener noreferrer">grimjim - Norm-preserving biprojected abliteration (Nov 2025)</a>
+              <br /><span className="blog-ref-note">fixed the benchmark degradation problem by preserving weight magnitudes after projection</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2502.09674" target="_blank" rel="noopener noreferrer">Pan et al. - The Hidden Dimensions of LLM Alignment (ICML 2025)</a>
+              <br /><span className="blog-ref-note">formally proved refusal is multi-dimensional, not just one direction. explains why single-direction removal sometimes fails</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2601.19487" target="_blank" rel="noopener noreferrer">Zhang et al. - LLM-VA: Resolving the Jailbreak-Overrefusal Trade-off (ACL 2026)</a>
+              <br /><span className="blog-ref-note">minimum-norm weight mods that preserve 95.92% utility. different method, same insight about careful magnitudes</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2310.01405" target="_blank" rel="noopener noreferrer">Zou et al. - Representation Engineering (2023)</a>
+              <br /><span className="blog-ref-note">the broader framework. directions in activation space control high-level behaviors. abliteration is one application of this</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2310.03693" target="_blank" rel="noopener noreferrer">Qi et al. - Fine-tuning Aligned Language Models Compromises Safety (2023)</a>
+              <br /><span className="blog-ref-note">proved safety alignment is fragile. 10 adversarial examples is enough to undo it</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2310.20624" target="_blank" rel="noopener noreferrer">Lermen et al. - LoRA Fine-tuning Efficiently Undoes Safety Training (2024)</a>
+              <br /><span className="blog-ref-note">same thing but with LoRA on Llama 2 70B for under $200</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2603.04355" target="_blank" rel="noopener noreferrer">Nanfack et al. - Efficient Refusal Ablation through Optimal Transport (2026)</a>
+              <br /><span className="blog-ref-note">uses Gaussian OT instead of direction removal. only needs 1-2 layers modified</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2504.17130" target="_blank" rel="noopener noreferrer">Cyberey &amp; Evans - Steering the CensorShip (COLM 2025)</a>
+              <br /><span className="blog-ref-note">found reasoning models have a second censorship axis: thought suppression. refusal has layers beyond just the output</span>
+            </li>
+          </ul>
+        </section>
+
       </div>
     </main>
   )
