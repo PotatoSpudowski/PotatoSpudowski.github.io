@@ -6,23 +6,21 @@ import Articles from './pages/Articles'
 import Article from './pages/Article'
 import VJEPABlog from './pages/VJEPABlog'
 import RadioBlog from './pages/RadioBlog'
-import BuntyBlog from './pages/BuntyBlog'
-import WinningBlog from './pages/WinningBlog'
+import AbliterationBlog from './pages/AbliterationBlog'
 
 export default function App() {
   return (
-    <>
+    <div className="app-layout">
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/radio-security-from-scratch" element={<RadioBlog />} />
-        <Route path="/articles/bunty" element={<BuntyBlog />} />
-        <Route path="/articles/how-i-keep-winning" element={<WinningBlog />} />
+        <Route path="/articles/abliteration" element={<AbliterationBlog />} />
         <Route path="/articles/vjepa2-deep-dive" element={<VJEPABlog />} />
         <Route path="/articles/:slug" element={<Article />} />
       </Routes>
       <Footer />
-    </>
+    </div>
   )
 }

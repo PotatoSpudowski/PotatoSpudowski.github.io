@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
 import { Highlight } from 'prism-react-renderer'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -390,7 +389,6 @@ const robot = [
 export default function VJEPABlog() {
   return (
     <main className="main blog-main">
-      <Link to="/articles" className="back-link">&larr; Back to articles</Link>
 
       {/* hero */}
       <div className="blog-hero">

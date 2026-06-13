@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 export default function Nav() {
   const { pathname } = useLocation()
+
   return (
     <nav className="nav">
       <div className="nav-container">
@@ -13,7 +14,7 @@ export default function Nav() {
             to="/articles"
             className={`nav-link${pathname.startsWith('/articles') ? ' active' : ''}`}
           >
-            Articles
+            Blog
           </Link>
         </div>
       </div>
