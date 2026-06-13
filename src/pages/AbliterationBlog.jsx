@@ -432,7 +432,6 @@ ollama run hf.co/Bahushruth/Qwen3.6-35B-A3B-abliterated-v4-GGUF:Q5_K_M
 ollama run hf.co/Bahushruth/Qwen3.6-35B-A3B-abliterated-v4-GGUF:Q8_0
           `}</CodeBlock>
           <p className="blog-p">once its running you can also hit it via the Ollama API at <code>localhost:11434</code> if you want to integrate it into other tools. its fully OpenAI-compatible.</p>
-          <p className="blog-p">the dataset is at <a href="https://huggingface.co/datasets/Bahushruth/abliteration-harmful-enriched" target="_blank" rel="noopener noreferrer">Bahushruth/abliteration-harmful-enriched</a> if you want to run this technique on a different model. the quality of that dataset is what makes the whole thing work. the refusal direction is only as good as the distribution of prompts you use to compute it. diverse styles, categories, and languages means the direction genuinely captures the refusal mechanism rather than superficial text features that happen to correlate with it.</p>
         </section>
 
       </div>
