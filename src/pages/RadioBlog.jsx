@@ -1,87 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
-import { Highlight } from 'prism-react-renderer'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts'
-
-// ============ SHARED COMPONENTS ============
-
-function Fade({ children }) {
-  const r = useRef(null)
-  const [v, setV] = useState(false)
-  useEffect(() => {
-    const o = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) setV(true)
-    }, { threshold: 0.08 })
-    if (r.current) o.observe(r.current)
-    return () => o.disconnect()
-  }, [])
-  return (
-    <div
-      ref={r}
-      style={{
-        opacity: v ? 1 : 0,
-        transform: v ? 'translateY(0)' : 'translateY(20px)',
-        transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-const siteTheme = {
-  plain: {
-    color: '#e6edf3',
-    backgroundColor: '#0a0a0a',
-  },
-  styles: [
-    { types: ['comment', 'prolog', 'doctype', 'cdata'], style: { color: '#8b949e', fontStyle: 'italic' } },
-    { types: ['keyword', 'operator', 'boolean'], style: { color: '#ff7b72' } },
-    { types: ['string', 'char', 'attr-value'], style: { color: '#a5d6ff' } },
-    { types: ['function', 'class-name'], style: { color: '#d2a8ff' } },
-    { types: ['number'], style: { color: '#79c0ff' } },
-    { types: ['property', 'constant', 'symbol'], style: { color: '#7ee787' } },
-    { types: ['builtin', 'tag'], style: { color: '#ff7b72' } },
-    { types: ['attr-name'], style: { color: '#79c0ff' } },
-    { types: ['punctuation'], style: { color: '#8b949e' } },
-    { types: ['decorator', 'annotation'], style: { color: '#ffa657' } },
-    { types: ['variable', 'parameter'], style: { color: '#ffa657' } },
-  ],
-}
-
-function CodeBlock({ file, children, language = 'cpp' }) {
-  const code = typeof children === 'string' ? children.trim() : String(children).trim()
-  return (
-    <div className="blog-code-block">
-      {file && <div className="blog-code-file">{file}</div>}
-      <Highlight theme={siteTheme} code={code} language={language}>
-        {({ style, tokens, getLineProps, getTokenProps }) => (
-          <pre className="blog-code-pre" style={{ ...style, backgroundColor: 'transparent' }}>
-            <code>
-              {tokens.map((line, i) => (
-                <div key={i} {...getLineProps({ line })}>
-                  {line.map((token, key) => (
-                    <span key={key} {...getTokenProps({ token })} />
-                  ))}
-                </div>
-              ))}
-            </code>
-          </pre>
-        )}
-      </Highlight>
-    </div>
-  )
-}
-
-function Fig({ children, cap }) {
-  return (
-    <div className="blog-fig">
-      <div className="blog-fig-inner">{children}</div>
-      {cap && <div className="blog-fig-cap">{cap}</div>}
-    </div>
-  )
-}
+import { Fade, CodeBlock, Fig } from '../components/BlogPrimitives'
 
 // ============ CHART DATA ============
 
@@ -110,9 +30,12 @@ export default function RadioBlog() {
     <main className="main blog-main">
 
       {/* hero */}
-      <div className="blog-hero">
+      <div className="blog-hero blog-hero-split">
         <Fade>
-          <h1 className="blog-title">building a secure radio link on two esp32s</h1>
+          <div className="blog-hero-layout">
+            <img src="/radio-hero.png" alt="" className="blog-hero-img" />
+            <h1 className="blog-title">building a secure radio link on two esp32s</h1>
+          </div>
         </Fade>
       </div>
 
@@ -121,9 +44,9 @@ export default function RadioBlog() {
         {/* ====== 01 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">the problem</h2>
-          <p className="blog-p">most radio links send commands in plaintext. no encryption. someone within range with a $20 SDR can read every packet. they can inject fake commands. they can predict your frequency hopping pattern and follow you across the spectrum.</p>
-          <p className="blog-p">i wanted to understand why and what it actually takes to fix it. not by reading about it. by building something. so i grabbed 2 ESP32 NodeMCU boards and started building a radio link from scratch over ESP-NOW. frequency hopping, encryption, key exchange, anti-replay, jam resistance. implement each one, test it, try to break it.</p>
-          <p className="blog-p">this post is everything i learned about radio security by tinkering with $8 microcontrollers. all the code is <a href="https://github.com/PotatoSpudowski/esp32-radio-experiments" target="_blank" rel="noopener noreferrer">on github</a>.</p>
+          <p className="blog-p">most radio links send commands in plaintext. no encryption. someone within range with a $20 SDR can read every packet. inject fake commands. predict your frequency hopping pattern and follow you across the spectrum.</p>
+          <p className="blog-p">this is a from-scratch radio link over ESP-NOW on 2 ESP32 boards. frequency hopping, encryption, key exchange, anti-replay, jam resistance. each layer built, tested, attacked.</p>
+          <p className="blog-p">all the code is <a href="https://github.com/PotatoSpudowski/esp32-radio-experiments" target="_blank" rel="noopener noreferrer">on github</a>.</p>
         </section>
 
         {/* ====== 02 ====== */}
@@ -137,9 +60,9 @@ export default function RadioBlog() {
           </Fig>
 
           <p className="blog-p">the hard part isnt generating the sequence. its keeping TX and RX synchronized. what happens when the RX misses packets and loses track of which channel the TX is on? TX periodically sends SYNC packets carrying the current hop index and slot phase. RX uses these to recalibrate its timer. if RX loses sync entirely it enters scan mode, dwells on each channel for 50ms until it hears the TX again.</p>
-          <p className="blog-p">one thing i learned the hard way: hop on a timer, not on packet count. if you hop after N packets sent and one gets lost the TX and RX disagree on the count and desync. timer-based hopping means both sides hop at the same wall-clock cadence regardless of packet loss. sounds obvious. had to debug a desynced link at 2am to figure it out.</p>
+          <p className="blog-p">important: hop on a timer, not on packet count. if you hop after N packets sent and one gets lost the TX and RX disagree on the count and desync permanently. timer-based hopping means both sides hop at the same wall-clock cadence regardless of packet loss.</p>
 
-          <CodeBlock file="src/main.cpp: timer-based hop sync on RX">
+          <CodeBlock language="cpp">
 {`if (rx_sync_received) {
     rx_sync_received = false;
     fhss_idx = rx_pending_hop_idx % FHSS_SEQ_LEN;
@@ -159,7 +82,7 @@ export default function RadioBlog() {
           <p className="blog-p">FHSS gives you jam resistance. it does not give you secrecy. if the hop sequence is predictable an attacker just follows you channel to channel and sees everything.</p>
           <p className="blog-p">most open source radio protocols use xorshift32 for their hop sequence. a simple PRNG with a 32-bit seed. i wrote an attack script to see how fast you can crack it: observe 4 consecutive hops, brute-force all 2^32 seeds, find the match. single CPU core: about 8 minutes. GPU: seconds. your "spread spectrum" is just theater.</p>
 
-          <CodeBlock file="tools/attack_analysis.py: cracking the hop sequence" language="python">
+          <CodeBlock language="python">
 {`def attack_predict_sequence():
     real_seed = 0xDEADBEEF
     real_seq = generate_hop_sequence(real_seed)
@@ -184,7 +107,7 @@ export default function RadioBlog() {
             <img src="/diagrams/radio-csprng.svg" alt="PRNG comparison: xorshift32 vs AES-CTR" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
-          <CodeBlock file="src/main.cpp: cryptographic PRNG for hop sequence">
+          <CodeBlock language="cpp">
 {`// generate one pseudo-random byte from counter
 static uint8_t fhss_csprng_byte(uint32_t counter) {
     uint8_t in[16] = {0}, out[16];
@@ -202,7 +125,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
         {/* ====== 04 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">encryption is free (and not enough)</h2>
-          <p className="blog-p">i tested AES-128-CTR with the ESP32 hardware accelerator and ChaCha20 in pure software. AES: 12 microseconds per packet. ChaCha20: 27 microseconds. both completely negligible versus the 20ms packet interval. less than 0.13% overhead. the performance argument against encrypted radio links has always been bullshit.</p>
+          <p className="blog-p">AES-128-CTR with the ESP32 hardware accelerator: 12 microseconds per packet. ChaCha20 in pure software: 27 microseconds. both negligible versus the 20ms packet interval. less than 0.13% overhead. the performance argument against encrypted radio links is bullshit.</p>
 
           <Fig>
             <div style={{ padding: '22px 14px 6px' }}>
@@ -218,7 +141,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
             </div>
           </Fig>
 
-          <p className="blog-p">but heres what took me a while to get. encryption alone doesnt cut it. AES-CTR gives you confidentiality (nobody can read your packets) but zero integrity. an attacker who knows the plaintext structure (and control packets are very predictable: fixed field order, known value ranges) can flip bits in the ciphertext and change values without knowing the key. thats called a bit-flipping attack and it works against any stream cipher in CTR mode.</p>
+          <p className="blog-p">encryption alone doesnt cut it though. AES-CTR gives you confidentiality (nobody can read your packets) but zero integrity. an attacker who knows the plaintext structure (control packets are very predictable: fixed field order, known value ranges) can flip bits in the ciphertext and change values without knowing the key. bit-flipping attack. works against any stream cipher in CTR mode.</p>
           <p className="blog-p">what you need is authenticated encryption. confidentiality (cant read it), integrity (cant modify it), authenticity (know who sent it). all in one pass. thats AES-GCM.</p>
         </section>
 
@@ -232,7 +155,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
             <img src="/diagrams/radio-packet.svg" alt="AEAD packet structure" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
-          <CodeBlock file="src/main.cpp: AEAD encrypt in-place">
+          <CodeBlock language="cpp">
 {`static bool aead_encrypt_data(data_packet_t *pkt) {
     if (!session_key_active) return false;
     uint8_t nonce[12];
@@ -271,21 +194,21 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
             <img src="/diagrams/radio-key-exchange.svg" alt="Key exchange handshake" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
-          <p className="blog-p">the critical thing: the link is fail-closed. zero data packets until key exchange completes. if someone jams the key exchange the link stays dead instead of falling back to plaintext. this sounds obvious but its the kind of thing you only think about after you build the wrong version first.</p>
+          <p className="blog-p">the link is fail-closed. zero data packets until key exchange completes. if someone jams the key exchange the link stays dead instead of falling back to plaintext.</p>
           <p className="blog-p">TX keeps offering at 100ms initially then 1/sec for late joiners. re-keys every 60 seconds. old keys explicitly zeroed.</p>
         </section>
 
         {/* ====== 07 ====== */}
         <section className="blog-section">
           <h2 className="blog-section-tag">anti-replay</h2>
-          <p className="blog-p">this one surprised me. even with authenticated encryption an attacker can capture a valid packet and retransmit it later. the tag still verifies. they could capture any command and replay it whenever they want. crypto checks out but the command is stale. still bad.</p>
+          <p className="blog-p">even with authenticated encryption an attacker can capture a valid packet and retransmit it later. the tag still verifies. they capture a command and replay it whenever they want. crypto checks out but the command is stale.</p>
           <p className="blog-p">the fix is a sliding window bitmap. 64-bit integer. track the highest accepted seq, check incoming against the bitmap. duplicates rejected. old packets rejected. 20 lines of code.</p>
 
           <Fig cap="64-slot sliding window. green = accepted, empty = not yet seen, red = too old.">
             <img src="/diagrams/radio-replay.svg" alt="Anti-replay sliding window" style={{ width: '100%', borderRadius: 6, display: 'block' }} />
           </Fig>
 
-          <CodeBlock file="src/main.cpp: anti-replay">
+          <CodeBlock language="cpp">
 {`static uint32_t replay_window_top = 0;
 static uint64_t replay_bitmap = 0;
 
@@ -319,18 +242,18 @@ static bool replay_check_and_accept(uint32_t seq) {
           <h2 className="blog-section-tag">jam resistance</h2>
           <p className="blog-p">FHSS spreads you across channels. jammer on one channel only hits ~8% of packets. but smart jammers sweep multiple channels.</p>
           <p className="blog-p">my approach: track per-channel loss with exponential decay. channels exceeding 60% loss get blacklisted. both sides skip them. TX broadcasts the blacklist to RX every 5 seconds. max 6 blacklisted so at least 7 channels always remain.</p>
-          <p className="blog-p">i built a jammer firmware for a 3rd ESP32. when i jam one channel the blacklist kicks in within 5 seconds and the link routes around it. sweep-jam 3 channels and the link degrades but stays alive on the remaining 10. watching it heal around a jammer is genuinely satisfying ngl.</p>
+          <p className="blog-p">testing with a jammer firmware on a 3rd ESP32: jam one channel and the blacklist kicks in within 5 seconds, link routes around it. sweep-jam 3 channels and the link degrades but stays alive on the remaining 10.</p>
         </section>
 
         {/* ====== 09 ====== */}
         <section className="blog-section blog-section--last">
           <h2 className="blog-section-tag">what i learned</h2>
-          <p className="blog-p">encryption is free on modern microcontrollers. 12 microseconds for AES, 27 for ChaCha20, versus a 20ms packet interval. there is no performance reason for unencrypted radio links.</p>
-          <p className="blog-p">encryption without authentication is almost as bad as no encryption. bit-flipping attacks on CTR mode are trivial if you know the plaintext structure. use AEAD (AES-GCM or ChaCha20-Poly1305). always.</p>
-          <p className="blog-p">xorshift32 with a 32-bit seed is not security. its a speed bump. 8 minutes to crack on a laptop. if your FHSS uses a simple PRNG an attacker can predict your entire hop sequence from observing 4 hops.</p>
-          <p className="blog-p">fail-open is a design bug. if your system falls back to plaintext when crypto fails an attacker just jams the handshake. fail-closed or nothing.</p>
-          <p className="blog-p">anti-replay is 20 lines. no excuse for not having it.</p>
-          <p className="blog-p">the gap between "i added encryption" and "this is actually secure" is fucking enormous. key derivation, key exchange, authenticated encryption, replay protection, failure modes. miss any one and the whole thing falls apart. build it, then try to break it. thats where you actually learn.</p>
+          <p className="blog-p">encryption is free on modern microcontrollers. 12 microseconds for AES, 27 for ChaCha20, versus a 20ms packet interval. no performance excuse for plaintext radio.</p>
+          <p className="blog-p">encryption without authentication is almost as bad as no encryption. bit-flipping on CTR mode is trivial if you know the plaintext structure. AEAD or nothing.</p>
+          <p className="blog-p">xorshift32 with a 32-bit seed is not security. 8 minutes to crack. if your FHSS uses a simple PRNG an attacker predicts your entire hop sequence from 4 observed hops.</p>
+          <p className="blog-p">fail-open is a design bug. system falls back to plaintext when crypto fails? attacker just jams the handshake. fail-closed or nothing.</p>
+          <p className="blog-p">anti-replay is 20 lines and a uint64. no excuse.</p>
+          <p className="blog-p">the gap between "added encryption" and "actually secure" is enormous. key derivation, key exchange, authenticated encryption, replay protection, failure modes. miss any one and the whole thing falls apart.</p>
           <p className="blog-p">all the code: <a href="https://github.com/PotatoSpudowski/esp32-radio-experiments" target="_blank" rel="noopener noreferrer">github.com/PotatoSpudowski/esp32-radio-experiments</a></p>
         </section>
 

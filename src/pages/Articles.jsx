@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom'
 const ARTICLES = [
   {
     slug: 'abliteration',
-    title: 'how to surgically remove the ability of LLMs to refuse',
+    title: 'surgically removing refusal tendencies in LLMs',
     date: 'May 2026',
     readtime: '30 min read',
     tags: ['ml', 'llm', 'research'],
+    image: '/abliteration-hero.jpg',
   },
   {
     slug: 'radio-security-from-scratch',
@@ -15,6 +16,7 @@ const ARTICLES = [
     date: 'April 2026',
     readtime: '20 min read',
     tags: ['hardware', 'security', 'esp32'],
+    image: '/radio-hero.png',
   },
   {
     slug: 'vjepa2-deep-dive',
@@ -22,6 +24,7 @@ const ARTICLES = [
     date: 'March 2026',
     readtime: '25 min read',
     tags: ['ai', 'research', 'computer-vision'],
+    image: '/vjepa-hero.jpg',
   },
 ]
 
@@ -79,12 +82,15 @@ export default function Articles() {
           filtered.map(a => (
             <article key={a.slug} className="article-item">
               <Link to={`/articles/${a.slug}`} className="article-link">
-                <h2 className="article-title">{a.title}</h2>
-                <p className="article-meta">{a.date} &middot; {a.readtime}</p>
-                <div className="article-tags-inline">
-                  {a.tags.map(t => (
-                    <span key={t} className="article-tag-chip">{t}</span>
-                  ))}
+                {a.image && <img src={a.image} alt="" className="article-thumb" />}
+                <div className="article-text">
+                  <h2 className="article-title">{a.title}</h2>
+                  <p className="article-meta">{a.date} &middot; {a.readtime}</p>
+                  <div className="article-tags-inline">
+                    {a.tags.map(t => (
+                      <span key={t} className="article-tag-chip">{t}</span>
+                    ))}
+                  </div>
                 </div>
               </Link>
             </article>

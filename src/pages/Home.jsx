@@ -1,29 +1,4 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-
-const ROLES = ['ML Engineer', 'Ex founder', 'FPV drone pilot']
-
-function CyclingRole() {
-  const [idx, setIdx] = useState(0)
-  const [visible, setVisible] = useState(true)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisible(false)
-      setTimeout(() => {
-        setIdx(i => (i + 1) % ROLES.length)
-        setVisible(true)
-      }, 200)
-    }, 2400)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <span style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.2s ease' }}>
-      {ROLES[idx]}
-    </span>
-  )
-}
 
 const GithubIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -46,36 +21,51 @@ const LinkedinIcon = () => (
 const PINNED = [
   {
     slug: 'abliteration',
-    title: 'how to surgically remove the ability of LLMs to refuse',
+    title: 'surgically removing refusal tendencies in LLMs',
     date: 'May 2026',
     readtime: '30 min read',
+    image: '/abliteration-hero.jpg',
   },
   {
     slug: 'radio-security-from-scratch',
     title: 'building a secure radio link on two esp32s',
     date: 'April 2026',
     readtime: '20 min read',
+    image: '/radio-hero.png',
   },
   {
     slug: 'vjepa2-deep-dive',
     title: 'what the fuck is a JEPA?',
     date: 'March 2026',
     readtime: '25 min read',
+    image: '/vjepa-hero.jpg',
   },
 ]
 
 export default function Home() {
   return (
     <main className="main home-main">
-      <div className="home-hero">
-        <div className="home-hero-text">
-          <h1 className="home-heading">Hi, my name is Bahushruth</h1>
-          <p className="home-roles"><CyclingRole /></p>
-
-          <p className="home-bio">
-            i build ML systems that ship. not demos, not research prototypes — things that run at scale and keep running when you stop looking. spent years doing MLOps for millions of users, did research at IBM, built a YC-backed startup from scratch. now running Cassian, trying to fix the part of commercial lending that still runs on faxes and spreadsheets. when im not doing that im flying FPV through gaps that probably should have hurt more than they did.
-          </p>
-
+      <div className="home-hero home-dict">
+        <div className="home-dict-entry">
+          <div className="home-dict-header">
+            <p className="home-dict-word">Ba·hu·shruth</p>
+            <button className="home-dict-speak" onClick={() => new Audio('/bahushruth.mp3').play()} title="Listen to pronunciation">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></svg>
+            </button>
+          </div>
+          <p className="home-dict-phonetic">/bɑː.huː.ʃruːt/</p>
+          <p className="home-dict-pos">noun, Sanskrit</p>
+          <div className="home-dict-defs">
+            <div className="home-dict-def">
+              <span className="home-dict-num">1.</span> a person of wide-ranging knowledge or learning; a polymath. <span className="home-dict-etym">[Skt. <i>bahu</i> many, much + <i>śruta</i> heard, learned. lit. "one who has heard much."]</span>
+            </div>
+            <div className="home-dict-def">
+              <span className="home-dict-num">2.</span> <span className="home-dict-informal">informal</span> see <span className="home-dict-aka">Bunty</span>
+            </div>
+            <div className="home-dict-def">
+              <span className="home-dict-num">3.</span> ML Engineer. Ex Founder. FPV Drone Pilot.
+            </div>
+          </div>
           <div className="home-socials">
             <a href="https://github.com/bahushruth" target="_blank" rel="noreferrer" className="home-social" title="GitHub">
               <GithubIcon />
@@ -88,10 +78,6 @@ export default function Home() {
             </a>
           </div>
         </div>
-
-        <div className="home-hero-photo">
-          <img src="/profile.jpg" alt="Bahushruth" className="home-photo" />
-        </div>
       </div>
 
       <div className="home-pinned">
@@ -99,8 +85,11 @@ export default function Home() {
         <div className="home-pinned-list">
           {PINNED.map(post => (
             <Link key={post.slug} to={`/articles/${post.slug}`} className="home-pinned-card">
-              <span className="home-pinned-title">{post.title}</span>
-              <span className="home-pinned-meta">{post.date} &middot; {post.readtime}</span>
+              {post.image && <img src={post.image} alt="" className="home-pinned-img" />}
+              <div className="home-pinned-text">
+                <span className="home-pinned-title">{post.title}</span>
+                <span className="home-pinned-meta">{post.date} &middot; {post.readtime}</span>
+              </div>
             </Link>
           ))}
         </div>
