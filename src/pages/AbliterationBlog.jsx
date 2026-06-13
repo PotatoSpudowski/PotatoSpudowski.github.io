@@ -437,17 +437,6 @@ ollama run hf.co/Bahushruth/Qwen3.6-35B-A3B-abliterated-v4-GGUF:Q8_0
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">prior work</h2>
-          <p className="blog-p">abliteration didnt come out of nowhere. heres the lineage and what each piece contributed.</p>
-          <p className="blog-p">the foundational result is Arditi et al. "Refusal in Language Models Is Mediated by a Single Direction" (2024). they proved across 13 dense models up to 72B params that refusal lives in a 1D subspace of the residual stream. erase the direction and refusal disappears. add it and harmless prompts get refused. clean result, but only on dense architectures.</p>
-          <p className="blog-p">mlabonne took that paper and turned it into a practical notebook anyone could run. published NeuralDaredevil-8B using abliteration + DPO fine-tuning as a healing step. showed the full pipeline works end to end for consumer use.</p>
-          <p className="blog-p">grimjim (Nov 2025) figured out the norm-preserving fix. standard orthogonalization shrinks weight vectors because projecting out a component makes them shorter. across 40+ layers that compounds and the model gets dumber. grimjim's insight: rescale each row back to its original norm after projection. benchmarks stop degrading. this is the single most important improvement to the technique since the original paper.</p>
-          <p className="blog-p">Pan et al. "The Hidden Dimensions of LLM Alignment" (ICML 2025) formally proved that safety behavior is controlled by multiple orthogonal directions, not just one. they found a dominant direction governing refusal plus several smaller directions representing distinct interpretable features. this explains why single-direction abliteration sometimes fails (the model reconstructs refusal from remaining axes) and validates the multi-direction approach.</p>
-          <p className="blog-p">Zhang et al. "LLM-VA: Resolving the Jailbreak-Overrefusal Trade-off via Vector Alignment" (ACL 2026) showed you can do minimum-norm weight modifications that preserve 95.92% utility while removing refusal. different approach (SVMs to identify vectors, iterative alignment) but same underlying insight: you can surgically modify weights without destroying capabilities if you're careful about magnitudes.</p>
-          <p className="blog-p">what i added on top of all this: making it actually work on a Mixture of Experts architecture (256 experts as 3D tensors, einsum instead of matmul, hybrid linear+full attention that breaks every existing script), proving dataset diversity matters more than direction count (7356 prompts across 35 categories and 10 styles vs 520 homogeneous ones), and showing that 1 clean direction from a rich dataset beats 10 noisy directions from a small one.</p>
-        </section>
-
-        <section className="blog-section">
           <h2 className="blog-section-tag">references</h2>
           <ul className="blog-links-list">
             <li>
