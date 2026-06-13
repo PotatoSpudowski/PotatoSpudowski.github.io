@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
-import { Fade, CodeBlock } from '../components/BlogPrimitives'
+import { Fade, CodeBlock, YouTube } from '../components/BlogPrimitives'
 
 function M({ children, block }) {
   const html = (() => {
@@ -190,6 +190,8 @@ export default function AbliterationBlog() {
       </div>
 
       <div className="blog-body">
+
+        <YouTube id="sKBhqKYcDos" />
 
         <section className="blog-section">
           <h2 className="blog-section-tag">refusal is not a filter</h2>
