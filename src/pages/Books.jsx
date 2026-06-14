@@ -43,13 +43,14 @@ const BOOKS = [
     review: 'explains why successful companies fail. they do everything right by listening to customers and investing in sustaining innovations, but then get blindsided by disruptive technologies that start out worse but eventually take over. disk drive industry is the main case study. the framework applies to a lot of industries.',
   },
   {
-    title: 'The Hard Thing About Hard Things',
-    author: 'Ben Horowitz',
-    cover: '/books/hard-thing.jpg',
-    tags: ['startups', 'leadership', 'business'],
-    slug: 'the-hard-thing-about-hard-things',
-    review: 'ben horowitz built opsware and sold it to HP for 1.6B. this book is about the messy parts of running a company that business books dont talk about. firing friends, managing layoffs, keeping morale up when everything is on fire. no frameworks or formulas, just war stories and honest advice.',
+    title: 'Diary of a Wimpy Kid: Rodrick Rules',
+    author: 'Jeff Kinney',
+    cover: '/books/rodrick-rules.jpg',
+    tags: ['fiction', 'comedy', 'ya'],
+    slug: 'rodrick-rules',
+    review: 'greg heffley is stuck with his older brother rodrick who knows his biggest secret. rodrick is a terrible drummer but thinks hes a rock star. the party scene where rodrick locks greg in the basement is peak comedy. honestly the best book in the series and i will die on that hill.',
   },
+]
 ]
 
 const SORTED_BOOKS = [...BOOKS].sort((a, b) => a.title.localeCompare(b.title))
