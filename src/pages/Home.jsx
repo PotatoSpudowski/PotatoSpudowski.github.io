@@ -42,6 +42,27 @@ const PINNED = [
   },
 ]
 
+const RECOMMENDED_BOOKS = [
+  {
+    title: 'Thinking in Bets',
+    author: 'Annie Duke',
+    cover: '/books/thinking-in-bets.jpg',
+    slug: 'thinking-in-bets',
+  },
+  {
+    title: 'The Art of Doing Science and Engineering',
+    author: 'Richard Hamming',
+    cover: '/books/hamming.jpg',
+    slug: 'the-art-of-doing-science-and-engineering',
+  },
+  {
+    title: 'The Innovator\'s Dilemma',
+    author: 'Clayton Christensen',
+    cover: '/books/innovators-dilemma.jpg',
+    slug: 'the-innovators-dilemma',
+  },
+]
+
 export default function Home() {
   return (
     <main className="main home-main">
@@ -89,6 +110,21 @@ export default function Home() {
               <div className="home-pinned-text">
                 <span className="home-pinned-title">{post.title}</span>
                 <span className="home-pinned-meta">{post.date} &middot; {post.readtime}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="home-books">
+        <p className="home-pinned-label">recommended books</p>
+        <div className="home-pinned-list">
+          {RECOMMENDED_BOOKS.map(book => (
+            <Link key={book.title} to={`/books?highlight=${book.slug}`} className="home-pinned-card home-book-card">
+              {book.cover && <img src={book.cover} alt="" className="home-book-img" />}
+              <div className="home-pinned-text">
+                <span className="home-pinned-title">{book.title}</span>
+                <span className="home-pinned-meta">{book.author}</span>
               </div>
             </Link>
           ))}

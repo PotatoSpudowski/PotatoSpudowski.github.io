@@ -1795,6 +1795,115 @@ pre code {
 .abl-vtable-note { color: var(--text-muted); }
 .abl-zero { color: #7ee787; font-weight: 600; }
 
+/* ==========================================
+   BOOKS PAGE
+   ========================================== */
+.home-books {
+    border-top: 1px solid var(--border);
+    padding-top: 2.5rem;
+    margin-top: 2.5rem;
+}
+
+.home-book-card {
+    align-items: center;
+}
+
+.home-book-img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+}
+
+.books-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.book-card {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.15s ease;
+}
+
+.book-card:hover {
+    border-color: var(--text-muted);
+}
+
+.book-cover-wrap {
+    flex-shrink: 0;
+    width: 120px;
+}
+
+.book-cover {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+    display: block;
+    margin: 0;
+}
+
+.book-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.book-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.book-author {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.book-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.book-review {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.book-goodreads {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.book-goodreads:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+.book-highlighted {
+    border-color: var(--text-primary);
+    box-shadow: 0 0 0 1px var(--text-muted);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .nav {
@@ -1850,6 +1959,21 @@ pre code {
 
     .home-pinned-list {
         grid-template-columns: 1fr;
+    }
+
+    .book-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .book-cover-wrap {
+        width: 100%;
+    }
+
+    .book-cover {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
     }
 
     .article-title-large {

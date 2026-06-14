@@ -16,6 +16,12 @@ export default function Nav() {
           >
             Blog
           </Link>
+          <Link
+            to="/books"
+            className={`nav-link${pathname.startsWith('/books') ? ' active' : ''}`}
+          >
+            Books
+          </Link>
         </div>
       </div>
     </nav>
