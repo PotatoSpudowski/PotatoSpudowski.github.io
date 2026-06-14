@@ -51,7 +51,6 @@ const BOOKS = [
     review: 'greg heffley is stuck with his older brother rodrick who knows his biggest secret. rodrick is a terrible drummer but thinks hes a rock star. the party scene where rodrick locks greg in the basement is peak comedy. honestly the best book in the series and i will die on that hill.',
   },
 ]
-]
 
 const SORTED_BOOKS = [...BOOKS].sort((a, b) => a.title.localeCompare(b.title))
 const ALL_TAGS = [...new Set(BOOKS.flatMap(b => b.tags))].sort()
