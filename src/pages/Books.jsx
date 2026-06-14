@@ -48,7 +48,7 @@ const BOOKS = [
     cover: '/books/rodrick-rules.jpg',
     tags: ['fiction', 'comedy', 'ya'],
     slug: 'rodrick-rules',
-    review: 'greg heffley is stuck with his older brother rodrick who knows his biggest secret. rodrick is a terrible drummer but thinks hes a rock star. the party scene where rodrick locks greg in the basement is peak comedy. honestly the best book in the series and i will die on that hill.',
+    review: 'honestly the best book in the series and i will die on that hill.',
   },
 ]
 
