@@ -114,6 +114,7 @@ export default function Home() {
             </Link>
           ))}
         </div>
+        <Link to="/articles" className="view-all">view all articles</Link>
       </div>
 
       <div className="home-books">
@@ -129,6 +130,7 @@ export default function Home() {
             </Link>
           ))}
         </div>
+        <Link to="/books" className="view-all">view all books</Link>
       </div>
     </main>
   )
