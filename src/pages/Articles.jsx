@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const ARTICLES = [
   {
     slug: 'kaiba-techno-optimism',
-    title: 'seto kaiba is the greatest techno-optimist in fiction',
+    title: 'seto kaiba is the most unhinged techno-optimist in fiction',
     date: 'June 2026',
     readtime: '8 min read',
     tags: ['anime', 'tech', 'culture'],
