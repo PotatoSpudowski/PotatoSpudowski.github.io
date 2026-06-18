@@ -27,12 +27,28 @@ const BOOKS = [
     review: 'short book on how to talk to customers. the core lesson is that everyone lies to you, especially your mom. you should never tell people about your idea, only ask about their life and problems. good rules for conducting customer interviews without leading the witness.',
   },
   {
+    title: 'Neuromancer',
+    author: 'William Gibson',
+    cover: '/books/neuromancer.png',
+    tags: ['science-fiction', 'cyberpunk', 'technology'],
+    slug: 'neuromancer',
+    review: 'the book that invented cyberpunk. case is a washed-up console cowboy (hacker) who gets one last job to pull off the ultimate hack. gibson wrote this in 1984 and somehow predicted the internet, virtual reality, and corporate-dominated megacities. the writing is dense and poetic, not your typical sci-fi. if you only read one cyberpunk novel make it this one.',
+  },
+  {
     title: 'Blue Ocean Strategy',
     author: 'W. Chan Kim & Renée Mauborgne',
     cover: '/books/blue-ocean.jpg',
     tags: ['strategy', 'business', 'startups'],
     slug: 'blue-ocean-strategy',
     review: 'the idea is that instead of competing in existing markets (red oceans full of sharks), you should create new market spaces where theres no competition (blue oceans). uses examples like cirque du soleil and southwest airlines. the framework is simple but the book is padded out. worth skimming.',
+  },
+  {
+    title: 'Chip War',
+    author: 'Chris Miller',
+    cover: '/books/chip-war.png',
+    tags: ['technology', 'geopolitics', 'semiconductors'],
+    slug: 'chip-war',
+    review: 'the history of semiconductors and why chips are the most critical technology on the planet. traces the industry from the transistor to taiwans tsmc dominance and the us-china chip war. makes you realize how fragile the global supply chain is and why a tiny island in the pacific controls the future of everything.',
   },
   {
     title: 'The Innovator\'s Dilemma',
