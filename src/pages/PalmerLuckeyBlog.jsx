@@ -8,7 +8,7 @@ export default function PalmerLuckeyBlog() {
         <Fade>
           <div className="blog-hero-layout">
             <img src="/kaiba-hero.jpg" alt="" className="blog-hero-img" />
-            <h1 className="blog-title">seto kaiba is the most unhinged techno-optimist in fiction</h1>
+            <h1 className="blog-title">this man turned a weapons company into a card game company and nobody questions it</h1>
           </div>
         </Fade>
       </div>
@@ -18,44 +18,42 @@ export default function PalmerLuckeyBlog() {
         <YouTube id="NN7IArsbBJQ" />
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">the weapons to games arc</h2>
-          <p className="blog-p">kaiba corp is one of the largest weapons manufacturers in the yu-gi-oh universe. military contracts, defense systems, the works. seto kaiba inherits the whole thing when his adoptive father dies. hes 16.</p>
-          <p className="blog-p">what he does next is genuinely insane. he takes the entire weapons empire and pivots it into entertainment technology. holographic displays. virtual reality battle systems. a trading card game so sophisticated that the monsters become physically real.</p>
-          <p className="blog-p">this is not a side project. not a charitable foundation. not diversification. he looked at an entire defense contractor and said: im going to turn this into a gaming company. and he did it in about 2 years.</p>
-          <p className="blog-p">most people in fiction who inherit evil empires either become the villain or try to redeem themselves. kaiba does neither. he takes the money, builds something he actually wants to exist, and dares anyone to stop him. the morality of it never crosses his mind because hes too busy building.</p>
+          <h2 className="blog-section-tag">the inheritance</h2>
+          <p className="blog-p">seto kaiba gets adopted by a billionaire who runs a weapons manufacturer. the adoptive father is a monster. treats kaiba like property. kaiba outsmarts him so badly the old man literally dies of a heart attack. kaiba is 16 at this point.</p>
+          <p className="blog-p">normal response: grieve, maybe go to therapy, figure out what to do with your life.</p>
+          <p className="blog-p">kaiba response: inherit the entire weapons empire and pivot it into a gaming company. not gradually. not as a side hustle. he takes an entire defense contractor that builds things that explode and says: we make card games now.</p>
+          <p className="blog-p">his employees must have been so confused. one day youre working on missile guidance systems. the next day your boss walks in and says "we need holographic projectors that can simulate dragons. also youre fired if you think this is weird."</p>
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">the engineering is real</h2>
-          <p className="blog-p">heres what makes kaiba interesting as a tech character: his technology works. its not magic. its not hand-waved. kaiba builds actual systems that do actual things.</p>
-          <p className="blog-p">the holographic technology in duelist kingdom can project 3D monsters that interact with the physical environment. they respond to touch, have weight, can cause real damage. kaiba designed this system from scratch. when yugis grandpa gets his cards stolen and his heart gets attacked, its because kaibas holographic system is powerful enough to physically harm people through the card interface.</p>
-          <p className="blog-p">the battle city tournament turns an entire city into a game board. every duelist has a device that tracks their cards, manages their life points, and interfaces with the holographic system. kaiba built a city-wide networked system in the early 2000s that predates anything like that in reality by 15 years.</p>
-          <p className="blog-p">the virtual world he creates in season 5 is a fully immersive digital environment. people get trapped inside it. the physics are real. the creatures are real. kaiba built a matrix-level simulation and he built it to play card games.</p>
-          <p className="blog-p">none of this is played for laughs. kaiba is not a mad scientist who happens to be rich. hes a genuinely gifted engineer who uses his engineering talent to build the thing he cares about most: the perfect game.</p>
+          <h2 className="blog-section-tag">the technology actually works</h2>
+          <p className="blog-p">the thing about kaiba is that hes not just rich. hes a genuine engineering genius. the technology he builds is insane and it all works.</p>
+          <p className="blog-p">the duelist kingdom arena: a massive holographic system that projects 3D monsters so real they can physically interact with people. these things have weight. they can cause damage. kaiba designed this from scratch. when yugis grandpa gets his heart attacked through a card game its because kaibas holographic system is powerful enough to physically harm people. through card games. thats the level of engineering we're talking about.</p>
+          <p className="blog-p">battle city: he turns an entire city into a game board. every duelist has a device that tracks cards, manages life points, and interfaces with the holographic network. this is a city-wide IoT system from the early 2000s. google was still figuring out search. kaiba had already built a smart city for children to fight each other with cardboard.</p>
+          <p className="blog-p">the virtual world in season 5: a fully immersive digital environment. people get trapped inside. the physics are real. the creatures are real. kaiba built the matrix and he built it to play card games. not to solve world hunger. not to advance human knowledge. to play card games. and he did it because he could.</p>
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">the "tech has no limits" thing</h2>
-          <p className="blog-p">kaiba says "you said tech has limits. wrong." and he means it literally. not as motivation. not as philosophy. as engineering observation.</p>
-          <p className="blog-p">every single time someone tells kaiba something is impossible, he builds it anyway. holographic monsters that can physically interact with people? built it. a city-wide networked gaming system? built it. a virtual world so realistic people forget theyre in it? built it. technology to cheat death itself? trying.</p>
-          <p className="blog-p">this is not optimism in the silicon valley sense. kaiba doesnt think technology will make the world a better place. he thinks technology will let him do whatever he wants. the distinction matters. kaiba is not building for humanity. hes building for himself. and hes right that his engineering works.</p>
-          <p className="blog-p">when yugi tells him that some things cant be achieved through technology, kaiba just stares at him. because kaiba has never encountered a technical problem he couldnt solve. his adoptive father built weapons. kaiba builds experiences. the technology is the same. the application is different.</p>
+          <h2 className="blog-section-tag">the "limits dont apply to me" thing</h2>
+          <p className="blog-p">kaiba says "you said tech has limits. wrong." and hes not being dramatic. hes giving you a factual update about reality.</p>
+          <p className="blog-p">every single time someone tells kaiba something is impossible, he builds it anyway and then never brings it up again because why would he. holographic monsters that physically interact with people? built it. a city-wide networked gaming system? built it. a virtual world so realistic people forget theyre in it? built it. technology to cheat death itself? currently working on it.</p>
+          <p className="blog-p">the confidence is almost alarming. when yugi tells him that some things cant be achieved through technology, kaiba just stares at him like yugi just told him water isnt wet. kaiba has never encountered a technical problem he couldnt solve. not once. in his entire life. and hes like 18.</p>
+          <p className="blog-p">most people who talk like this are delusional. kaiba is not most people. when kaiba says something is possible, it becomes possible, because hes already building it while youre still talking.</p>
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">morality is an afterthought</h2>
-          <p className="blog-p">kaiba cheats at games. blackmails opponents. forces people into duels they cant refuse. once trapped yugi inside a virtual world and tried to kill him with holographic monsters. hes not a good person.</p>
-          <p className="blog-p">but none of his technology is evil. the holograms work. the card game works. the virtual reality system works. kaiba built real things that do what theyre supposed to do. his crime is using them for selfish purposes, not for building them in the first place.</p>
-          <p className="blog-p">this is the uncomfortable thing about kaiba as a character. you cant dismiss him as a mad scientist because his technology actually works. you cant dismiss him as evil because he genuinely made the world more interesting. you can hate what he does with his power while respecting that he has power in the first place.</p>
+          <h2 className="blog-section-tag">morality is someone elses problem</h2>
+          <p className="blog-p">kaiba cheats at games. blackmails opponents. forces people into duels they cant refuse. once trapped yugi inside a virtual world and tried to kill him with holographic monsters. none of this is good.</p>
+          <p className="blog-p">but none of his technology is evil either. the holograms work. the card game works. the virtual reality system works. kaiba built real things that do what theyre supposed to do. the morality of how he uses them never crosses his mind because hes too busy building the next thing.</p>
+          <p className="blog-p">this is the uncomfortable truth about kaiba. you cant dismiss him as a mad scientist because his technology actually works. you cant dismiss him as evil because he genuinely made the world more interesting. you can hate what he does with his power while respecting that he has power in the first place.</p>
           <p className="blog-p">most anime villains are either delusional or misunderstood. kaiba is neither. hes a genius who knows hes a genius, builds incredible things, and uses them for his own amusement. thats more honest than most protagonists.</p>
         </section>
 
         <section className="blog-section blog-section--last">
-          <h2 className="blog-section-tag">why he matters</h2>
-          <p className="blog-p">seto kaiba is the most realistic portrayal of a tech founder in fiction. not the type who pretends to care about design and humanity. not the type who memes about mars while his companies run on 80 hour weeks. kaiba is the honest version.</p>
-          <p className="blog-p">he wants power. he uses technology to get it. he doesnt pretend his products are for the greater good. kaibacorp exists to make money and to prove that seto kaiba is the smartest person in any room. thats it. no mission statement about making the world a better place.</p>
-          <p className="blog-p">his techno-optimism is genuine but selfish. he truly believes technology can solve problems. he built a virtual world that works. his engineering is real. but he uses it for his own ego and profit, not for humanity.</p>
-          <p className="blog-p">thats more honest than most real tech founders. at least kaiba is upfront about being a villain.</p>
+          <h2 className="blog-section-tag">bottom line</h2>
+          <p className="blog-p">seto kaiba took a weapons manufacturer and turned it into a company that makes holographic card games. he did this because he wanted to. not because it was right. not because it would help anyone. because he wanted to play card games with real dragons and he had the engineering talent to make it happen.</p>
+          <p className="blog-p">his techno-optimism is the dangerous kind. not "technology will save us." more like "technology will let me do whatever i want." kaiba doesnt wait for permission. he builds the future he wants and dares anyone to stop him.</p>
+          <p className="blog-p">thats either inspiring or terrifying depending on whether youre watching a cartoon or reading the news.</p>
         </section>
 
       </div>
