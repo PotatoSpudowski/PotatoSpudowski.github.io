@@ -27,11 +27,11 @@ const PINNED = [
     image: '/abliteration-hero.jpg',
   },
   {
-    slug: 'radio-security-from-scratch',
-    title: 'building a secure radio link on two esp32s',
-    date: 'April 2026',
-    readtime: '20 min read',
-    image: '/radio-hero.png',
+    slug: 'kaiba-techno-optimism',
+    title: 'seto kaiba is the most unhinged techno-optimist in fiction',
+    date: 'June 2026',
+    readtime: '8 min read',
+    image: '/kaiba-hero.jpg',
   },
   {
     slug: 'vjepa2-deep-dive',
@@ -56,10 +56,10 @@ const RECOMMENDED_BOOKS = [
     slug: 'the-art-of-doing-science-and-engineering',
   },
   {
-    title: 'The Innovator\'s Dilemma',
-    author: 'Clayton Christensen',
-    cover: '/books/innovators-dilemma.jpg',
-    slug: 'the-innovators-dilemma',
+    title: 'Neuromancer',
+    author: 'William Gibson',
+    cover: '/books/neuromancer.png',
+    slug: 'neuromancer',
   },
 ]
 

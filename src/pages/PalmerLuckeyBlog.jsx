@@ -1,4 +1,4 @@
-import { Fade } from '../components/BlogPrimitives'
+import { Fade, YouTube } from '../components/BlogPrimitives'
 
 export default function PalmerLuckeyBlog() {
   return (
@@ -14,6 +14,8 @@ export default function PalmerLuckeyBlog() {
       </div>
 
       <div className="blog-body">
+
+        <YouTube id="NN7IArsbBJQ" />
 
         <section className="blog-section">
           <h2 className="blog-section-tag">the weapons to games arc</h2>
