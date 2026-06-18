@@ -35,6 +35,14 @@ const BOOKS = [
     review: 'the book that invented cyberpunk. case is a washed-up console cowboy (hacker) who gets one last job to pull off the ultimate hack. gibson wrote this in 1984 and somehow predicted the internet, virtual reality, and corporate-dominated megacities. the writing is dense and poetic, not your typical sci-fi. if you only read one cyberpunk novel make it this one.',
   },
   {
+    title: 'Snow Crash',
+    author: 'Neal Stephenson',
+    cover: '/books/snow-crash.jpg',
+    tags: ['science-fiction', 'cyberpunk', 'technology'],
+    slug: 'snow-crash',
+    review: 'hiro protagonist delivers pizza and hacks the metaverse. neal stephenson wrote this in 1992 and basically coined the term metaverse. its a satire of corporate america, religion, and language theory wrapped in a ridiculous action plot. the first half is some of the best sci-fi ever written. the second half gets weird but who cares.',
+  },
+  {
     title: 'Blue Ocean Strategy',
     author: 'W. Chan Kim & Renée Mauborgne',
     cover: '/books/blue-ocean.jpg',
