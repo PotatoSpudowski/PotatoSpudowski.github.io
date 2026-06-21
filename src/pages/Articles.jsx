@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import SortBar from '../components/SortBar'
 
 const ARTICLES = [
   {
     slug: 'abliteration',
     title: 'surgically removing refusal tendencies in LLMs',
-    date: 'June 2026',
+    date: 'June 13, 2026',
+    dateObj: new Date(2026, 5, 13),
     readtime: '30 min read',
     tags: ['ml', 'llm', 'research'],
     image: '/abliteration-hero.jpg',
@@ -13,7 +15,8 @@ const ARTICLES = [
   {
     slug: 'radio-security-from-scratch',
     title: 'building a secure radio link on two esp32s',
-    date: 'April 2026',
+    date: 'April 13, 2026',
+    dateObj: new Date(2026, 3, 13),
     readtime: '20 min read',
     tags: ['hardware', 'security', 'esp32'],
     image: '/radio-hero.png',
@@ -21,7 +24,8 @@ const ARTICLES = [
   {
     slug: 'vjepa2-deep-dive',
     title: 'what the fuck is a JEPA?',
-    date: 'March 2026',
+    date: 'March 26, 2026',
+    dateObj: new Date(2026, 2, 26),
     readtime: '25 min read',
     tags: ['ai', 'research', 'computer-vision'],
     image: '/vjepa-hero.jpg',
@@ -29,7 +33,8 @@ const ARTICLES = [
   {
     slug: 'cosfly-track',
     title: 'training drones to track things without crashing',
-    date: 'June 2026',
+    date: 'June 21, 2026',
+    dateObj: new Date(2026, 5, 21),
     readtime: '15 min read',
     tags: ['ai', 'drones', 'research', 'computer-vision'],
     image: '/cosfly-hero.jpg',
@@ -38,19 +43,37 @@ const ARTICLES = [
 
 const ALL_TAGS = [...new Set(ARTICLES.flatMap(a => a.tags))].sort()
 
+const SORT_OPTIONS = [
+  { value: 'date-desc', label: 'newest' },
+  { value: 'date-asc', label: 'oldest' },
+  { value: 'title-asc', label: 'a → z' },
+]
+
 export default function Articles() {
   const [search, setSearch] = useState('')
   const [activeTag, setActiveTag] = useState(null)
+  const [sort, setSort] = useState('date-desc')
 
   const filtered = useMemo(() => {
-    return ARTICLES.filter(a => {
+    const result = ARTICLES.filter(a => {
       const matchesSearch = !search ||
         a.title.toLowerCase().includes(search.toLowerCase()) ||
         a.tags.some(t => t.includes(search.toLowerCase()))
       const matchesTag = !activeTag || a.tags.includes(activeTag)
       return matchesSearch && matchesTag
     })
-  }, [search, activeTag])
+
+    result.sort((a, b) => {
+      switch (sort) {
+        case 'date-desc': return b.dateObj - a.dateObj
+        case 'date-asc': return a.dateObj - b.dateObj
+        case 'title-asc': return a.title.localeCompare(b.title)
+        default: return 0
+      }
+    })
+
+    return result
+  }, [search, activeTag, sort])
 
   return (
     <main className="main">
@@ -71,6 +94,7 @@ export default function Articles() {
               onChange={e => setSearch(e.target.value)}
             />
           </div>
+          <SortBar options={SORT_OPTIONS} active={sort} onChange={setSort} />
         </div>
         <div className="blog-tags">
           <button

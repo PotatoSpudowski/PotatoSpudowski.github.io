@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import SortBar from '../components/SortBar'
 
 const BOOKS = [
   {
@@ -79,15 +80,22 @@ const BOOKS = [
 const SORTED_BOOKS = [...BOOKS].sort((a, b) => a.title.localeCompare(b.title))
 const ALL_TAGS = [...new Set(BOOKS.flatMap(b => b.tags))].sort()
 
+const SORT_OPTIONS = [
+  { value: 'title-asc', label: 'a → z' },
+  { value: 'title-desc', label: 'z → a' },
+  { value: 'author-asc', label: 'author' },
+]
+
 export default function Books() {
   const [search, setSearch] = useState('')
   const [activeTag, setActiveTag] = useState(null)
+  const [sort, setSort] = useState('title-asc')
   const [searchParams] = useSearchParams()
   const highlight = searchParams.get('highlight')
   const highlightRef = useRef(null)
 
   const filtered = useMemo(() => {
-    return SORTED_BOOKS.filter(b => {
+    const result = SORTED_BOOKS.filter(b => {
       const matchesSearch = !search ||
         b.title.toLowerCase().includes(search.toLowerCase()) ||
         b.author.toLowerCase().includes(search.toLowerCase()) ||
@@ -95,7 +103,18 @@ export default function Books() {
       const matchesTag = !activeTag || b.tags.includes(activeTag)
       return matchesSearch && matchesTag
     })
-  }, [search, activeTag])
+
+    result.sort((a, b) => {
+      switch (sort) {
+        case 'title-asc': return a.title.localeCompare(b.title)
+        case 'title-desc': return b.title.localeCompare(a.title)
+        case 'author-asc': return a.author.localeCompare(b.author)
+        default: return 0
+      }
+    })
+
+    return result
+  }, [search, activeTag, sort])
 
   useEffect(() => {
     if (highlightRef.current) {
@@ -122,6 +141,7 @@ export default function Books() {
               onChange={e => setSearch(e.target.value)}
             />
           </div>
+          <SortBar options={SORT_OPTIONS} active={sort} onChange={setSort} />
         </div>
         <div className="blog-tags">
           <button
