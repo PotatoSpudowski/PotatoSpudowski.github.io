@@ -1267,8 +1267,8 @@ pre code {
 
 .blog-hero-layout {
     display: flex;
-    align-items: center;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .blog-hero-layout .blog-title {
@@ -1276,9 +1276,8 @@ pre code {
 }
 
 .blog-hero-img {
-    width: 320px;
+    width: 100%;
     aspect-ratio: 16 / 9;
-    flex-shrink: 0;
     border-radius: 8px;
     object-fit: cover;
 }
