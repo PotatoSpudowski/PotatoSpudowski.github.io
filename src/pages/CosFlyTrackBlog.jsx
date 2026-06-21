@@ -1,25 +1,28 @@
 import { Fade } from '../components/BlogPrimitives'
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
-} from 'recharts'
 
 // ============ CHART DATA ============
 
 const ablation = [
-  { name: 'pose + bbox\n+ rgb', sr: 77.6, fde: 1.25 },
-  { name: 'bbox + rgb\n(no pose)', sr: 16.8, fde: 3.82 },
-  { name: 'rgb only', sr: 18.2, fde: 3.61 },
-  { name: 'pose only', sr: 73.1, fde: 1.41 },
+  { name: 'pose + bbox + rgb', sr: 77.6, color: '#7ee787' },
+  { name: 'pose only', sr: 73.1, color: '#d2a8ff' },
+  { name: 'rgb only', sr: 18.2, color: '#ffa657' },
+  { name: 'bbox + rgb (no pose)', sr: 16.8, color: '#ff7b72' },
 ]
 
-const CTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null
+function CSSBarChart({ data, maxValue = 100, label = '' }) {
   return (
-    <div className="blog-chart-tooltip">
-      <div style={{ color: '#fff', marginBottom: 4 }}>{label}</div>
-      {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color }}>
-          {p.name}: {p.name === 'SR@1m' ? `${p.value}%` : `${p.value} m`}
+    <div className="css-chart">
+      {label && <div className="css-chart-label">{label}</div>}
+      {data.map((d, i) => (
+        <div key={i} className="css-chart-row">
+          <span className="css-chart-name">{d.name}</span>
+          <div className="css-chart-bar-wrap">
+            <div
+              className="css-chart-bar"
+              style={{ width: `${(d.sr / maxValue) * 100}%`, background: d.color }}
+            />
+            <span className="css-chart-value">{d.sr}%</span>
+          </div>
         </div>
       ))}
     </div>
@@ -80,17 +83,7 @@ export default function CosFlyTrackBlog() {
           <p className="blog-p">the model table is most useful as a warning about inputs. after fine-tuning, Qwen3.5-9B reaches 95.60% SR@1m, GLM-4.6V-Flash reaches 95.48%, and Qwen3-VL-8B reaches 95.22%. Gemma-4-E4B is lower at 78.34%.</p>
           <p className="blog-p">pose history does most of the work in this benchmark. removing it makes final displacement error jump from about 1.25 m to more than 3.8 m, and SR@1m drops from 77.6% to roughly 16-18%. bounding boxes matter for target prediction. RGB adds only a small gain once pose and bbox history are already present.</p>
 
-          <div className="blog-chart-wrap">
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={ablation} barGap={6} barCategoryGap="30%">
-                <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
-                <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 10, fontFamily: 'monospace' }} axisLine={{ stroke: '#2a2a2a' }} tickLine={false} />
-                <YAxis tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CTooltip />} />
-                <Bar dataKey="sr" name="SR@1m" fill="#79c0ff" opacity={0.6} radius={[2, 2, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <CSSBarChart data={ablation} label="SR@1m (%)" />
 
           <p className="blog-p">i would not read that as a claim that vision is optional. the benchmark still leans heavily on structured state. in rougher field conditions visual cues may carry more of the burden in occlusion, pedestrian motion, traffic, glare, weather, and camera artifacts.</p>
         </section>

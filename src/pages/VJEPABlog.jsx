@@ -1,6 +1,3 @@
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
-} from 'recharts'
 import { Fade, CodeBlock, Fig, PaperFig } from '../components/BlogPrimitives'
 
 // ============ DIAGRAM BUILDING BLOCKS ============
@@ -259,13 +256,33 @@ function RobotArch() {
   )
 }
 
-const CTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null
+function CSSGroupedChart({ data, series, nameKey = 'name', maxValue = 100, label = '' }) {
   return (
-    <div className="blog-chart-tooltip">
-      <div style={{ color: '#fff', marginBottom: 4 }}>{label}</div>
-      {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color }}>{p.name}: {p.value}%</div>
+    <div className="css-chart">
+      {label && <div className="css-chart-label">{label}</div>}
+      <div className="css-chart-legend">
+        {series.map(s => (
+          <span key={s.key} className="css-chart-legend-item">
+            <span className="css-chart-legend-dot" style={{ background: s.color }} />
+            {s.name}
+          </span>
+        ))}
+      </div>
+      {data.map((d, i) => (
+        <div key={i} className="css-chart-group">
+          <span className="css-chart-name">{d[nameKey]}</span>
+          <div className="css-chart-bars">
+            {series.map(s => (
+              <div key={s.key} className="css-chart-bar-wrap">
+                <div
+                  className="css-chart-bar"
+                  style={{ width: `${(d[s.key] / maxValue) * 100}%`, background: s.color }}
+                />
+                <span className="css-chart-value">{d[s.key]}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
       ))}
     </div>
   )
@@ -598,60 +615,36 @@ for clips, labels in data_loader:
           <h2 className="blog-section-tag">the numbers</h2>
           <p className="blog-p">official results from the repo. v-jepa 2 vs previous SOTA on video understanding benchmarks (frozen encoder + attentive probes):</p>
 
-          <Fig>
-            <div style={{ padding: '22px 14px 6px' }}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={bench} barGap={6} barCategoryGap="22%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
-                  <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 11, fontFamily: 'monospace' }} axisLine={{ stroke: '#2a2a2a' }} tickLine={false} />
-                  <YAxis tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<CTooltip />} />
-                  <Legend wrapperStyle={{ fontFamily: 'monospace', fontSize: 11 }} />
-                  <Bar dataKey="prev" name="prev SOTA" fill="#666" opacity={0.5} radius={[2, 2, 0, 0]} />
-                  <Bar dataKey="vjepa2" name="V-JEPA 2" fill="#79c0ff" opacity={0.6} radius={[2, 2, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Fig>
+          <CSSGroupedChart
+            data={bench}
+            series={[
+              { key: 'prev', name: 'prev SOTA', color: '#666' },
+              { key: 'vjepa2', name: 'V-JEPA 2', color: '#79c0ff' },
+            ]}
+          />
 
           <p className="blog-p">each innovation in the 2.1 training recipe adds measurable gains. heres the ablation from ViT-L showing how segmentation (ADE20K mIoU) and classification (SSv2 accuracy) improve as you stack each component:</p>
 
-          <Fig cap="ablation of V-JEPA 2.1 training recipe. context loss unlocks segmentation but initially hurts classification. deep self-supervision recovers it. model scaling + hi-res annealing push both to SOTA.">
-            <div style={{ padding: '22px 14px 6px' }}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={ablation} barGap={4} barCategoryGap="16%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
-                  <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 9, fontFamily: 'monospace' }} axisLine={{ stroke: '#2a2a2a' }} tickLine={false} angle={-25} textAnchor="end" height={60} />
-                  <YAxis yAxisId="left" tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} domain={[0, 80]} label={{ value: 'mIoU', angle: -90, position: 'insideLeft', fill: '#555', fontSize: 10 }} />
-                  <YAxis yAxisId="right" orientation="right" tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} domain={[50, 80]} label={{ value: 'Acc %', angle: 90, position: 'insideRight', fill: '#555', fontSize: 10 }} />
-                  <Tooltip content={<CTooltip />} />
-                  <Legend wrapperStyle={{ fontFamily: 'monospace', fontSize: 11 }} />
-                  <Bar yAxisId="left" dataKey="seg" name="Segmentation (ADE20K)" fill="#79c0ff" opacity={0.5} radius={[2, 2, 0, 0]} />
-                  <Bar yAxisId="right" dataKey="cls" name="Classification (SSv2)" fill="#ffa657" opacity={0.5} radius={[2, 2, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Fig>
+          <CSSGroupedChart
+            data={ablation}
+            series={[
+              { key: 'seg', name: 'Segmentation (ADE20K mIoU)', color: '#79c0ff' },
+              { key: 'cls', name: 'Classification (SSv2 %)', color: '#ffa657' },
+            ]}
+          />
 
           <p className="blog-p">the EK100 number is insane: 39.7% vs 27.6% previous best. thats the "predict what the human does 1 second from now" task. 12 point absolute improvement on egocentric action anticipation. directly relevant for AR headsets.</p>
           <p className="blog-p">robot manipulation zero-shot:</p>
 
-          <Fig>
-            <div style={{ padding: '22px 14px 6px' }}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={robot} barGap={4} barCategoryGap="18%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
-                  <XAxis dataKey="task" tick={{ fill: '#666', fontSize: 10, fontFamily: 'monospace' }} axisLine={{ stroke: '#2a2a2a' }} tickLine={false} />
-                  <YAxis tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} domain={[0, 100]} unit="%" />
-                  <Tooltip content={<CTooltip />} />
-                  <Legend wrapperStyle={{ fontFamily: 'monospace', fontSize: 11 }} />
-                  <Bar dataKey="octo" name="Octo" fill="#666" opacity={0.4} radius={[2, 2, 0, 0]} />
-                  <Bar dataKey="cosmos" name="Cosmos" fill="#ffa657" opacity={0.4} radius={[2, 2, 0, 0]} />
-                  <Bar dataKey="vjepa" name="V-JEPA 2-AC" fill="#7ee787" opacity={0.6} radius={[2, 2, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Fig>
+          <CSSGroupedChart
+            data={robot}
+            nameKey="task"
+            series={[
+              { key: 'octo', name: 'Octo', color: '#666' },
+              { key: 'cosmos', name: 'Cosmos', color: '#ffa657' },
+              { key: 'vjepa', name: 'V-JEPA 2-AC', color: '#7ee787' },
+            ]}
+          />
 
           <p className="blog-p">pick and place cup: 80% vs 10% (Octo) vs 0% (Cosmos). these are real robot arms picking up real objects theyve never seen before. no fine-tuning on specific objects.</p>
         </section>

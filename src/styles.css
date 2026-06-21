@@ -523,10 +523,114 @@ body {
 }
 
 .blog-chart-wrap {
-    padding: 22px 14px 6px;
-    background: var(--bg-code);
-    border-radius: 4px;
+    padding: 1rem 0.5rem 0.25rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     margin-bottom: 1.5rem;
+}
+
+/* CSS Bar Chart */
+.css-chart {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.css-chart-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.875rem;
+}
+
+.css-chart-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.css-chart-row:last-child {
+    margin-bottom: 0;
+}
+
+.css-chart-name {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+    width: 140px;
+    flex-shrink: 0;
+}
+
+.css-chart-bar-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 24px;
+}
+
+.css-chart-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+.css-chart-value {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.css-chart-legend {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.css-chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+}
+
+.css-chart-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.css-chart-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.css-chart-group:last-child {
+    margin-bottom: 0;
+}
+
+.css-chart-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.css-chart-bars .css-chart-bar-wrap {
+    height: 18px;
 }
 
 .article-tags-inline {
@@ -1387,7 +1491,7 @@ pre code {
 
 .blog-body {
     max-width: 1060px;
-    overflow-x: hidden;
+    width: 100%;
 }
 
 .blog-section {
@@ -1741,6 +1845,7 @@ pre code {
     padding: 1.25rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
+    border-radius: var(--radius);
 }
 
 .abl-layer-caption {
@@ -1748,6 +1853,35 @@ pre code {
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-bottom: 1rem;
+}
+
+.abl-layer-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 140px;
+}
+
+.abl-layer-col {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.abl-layer-bar {
+    width: 100%;
+    border-radius: 2px 2px 0 0;
+    transition: height 0.3s ease;
+}
+
+.abl-layer-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--text-muted);
 }
 
 /* Ortho demo */
@@ -2232,13 +2366,30 @@ pre code {
     }
 
     .blog-chart-wrap {
-        padding: 12px 8px 4px;
+        padding: 0.75rem 0.25rem 0.25rem;
         margin-bottom: 1rem;
-        overflow-x: auto;
     }
 
-    .blog-chart-wrap .recharts-responsive-container {
-        min-height: 200px;
+    .css-chart-name {
+        width: 100px;
+        font-size: 0.5625rem;
+    }
+
+    .css-chart-row {
+        gap: 0.5rem;
+    }
+
+    .css-chart-bar-wrap {
+        height: 20px;
+    }
+
+    .css-chart-group {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .css-chart-bars .css-chart-bar-wrap {
+        height: 16px;
     }
 
     .article-list {

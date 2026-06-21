@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import { Fade, CodeBlock, YouTube } from '../components/BlogPrimitives'
@@ -23,30 +22,28 @@ const LAYER_SCORES = Array.from({ length: 32 }, (_, i) => {
 const TOP_LAYER = LAYER_SCORES.reduce((best, d) => d.score > best.score ? d : best, LAYER_SCORES[0])
 
 function LayerChart() {
-  const CustomTooltip = ({ active, payload }) => {
-    if (!active || !payload?.length) return null
-    return (
-      <div className="blog-chart-tooltip">
-        <div>layer {payload[0].payload.layer}</div>
-        <div style={{ color: '#7ee787' }}>score {payload[0].value.toFixed(5)}</div>
-      </div>
-    )
-  }
+  const maxScore = Math.max(...LAYER_SCORES.map(d => d.score))
   return (
     <div className="abl-layer-viz">
       <p className="abl-layer-caption">refusal direction score per layer. peak at layer {TOP_LAYER.layer}</p>
-      <ResponsiveContainer width="100%" height={180}>
-        <BarChart data={LAYER_SCORES} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
-          <XAxis dataKey="layer" tick={{ fill: '#585858', fontSize: 10 }} tickLine={false} axisLine={false} />
-          <YAxis hide />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-          <Bar dataKey="score" radius={0}>
-            {LAYER_SCORES.map((entry) => (
-              <Cell key={entry.layer} fill={entry.layer === TOP_LAYER.layer ? '#7ee787' : '#2a2a2a'} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="abl-layer-bars">
+        {LAYER_SCORES.map(d => (
+          <div key={d.layer} className="abl-layer-col" title={`layer ${d.layer}: ${d.score.toFixed(5)}`}>
+            <div
+              className="abl-layer-bar"
+              style={{
+                height: `${(d.score / maxScore) * 100}%`,
+                background: d.layer === TOP_LAYER.layer ? '#7ee787' : '#2a2a2a',
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="abl-layer-axis">
+        {LAYER_SCORES.filter((_, i) => i % 4 === 0).map(d => (
+          <span key={d.layer}>{d.layer}</span>
+        ))}
+      </div>
     </div>
   )
 }

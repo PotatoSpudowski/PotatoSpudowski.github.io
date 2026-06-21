@@ -1,23 +1,29 @@
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
-} from 'recharts'
 import { Fade, CodeBlock, Fig } from '../components/BlogPrimitives'
 
 // ============ CHART DATA ============
 
 const encOverhead = [
-  { name: 'AES-128-CTR\n(HW accel)', time: 12 },
-  { name: 'ChaCha20\n(software)', time: 27 },
-  { name: 'AES-128-GCM\n(HW accel)', time: 65 },
+  { name: 'AES-128-CTR (HW)', sr: 12, color: '#7ee787' },
+  { name: 'ChaCha20 (software)', sr: 27, color: '#ffa657' },
+  { name: 'AES-128-GCM (HW)', sr: 65, color: '#ff7b72' },
 ]
 
-const CTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null
+function CSSBarChart({ data, maxValue, label = '', unit = '' }) {
+  const max = maxValue || Math.max(...data.map(d => d.sr))
   return (
-    <div className="blog-chart-tooltip">
-      <div style={{ color: '#fff', marginBottom: 4 }}>{label}</div>
-      {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color }}>{p.name}: {p.value} us</div>
+    <div className="css-chart">
+      {label && <div className="css-chart-label">{label}</div>}
+      {data.map((d, i) => (
+        <div key={i} className="css-chart-row">
+          <span className="css-chart-name">{d.name}</span>
+          <div className="css-chart-bar-wrap">
+            <div
+              className="css-chart-bar"
+              style={{ width: `${(d.sr / max) * 100}%`, background: d.color }}
+            />
+            <span className="css-chart-value">{d.sr}{unit}</span>
+          </div>
+        </div>
       ))}
     </div>
   )
@@ -127,19 +133,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
           <h2 className="blog-section-tag">encryption is free (and not enough)</h2>
           <p className="blog-p">AES-128-CTR with the ESP32 hardware accelerator: 12 microseconds per packet. ChaCha20 in pure software: 27 microseconds. both negligible versus the 20ms packet interval. less than 0.13% overhead. the performance argument against encrypted radio links is bullshit.</p>
 
-          <Fig>
-            <div className="blog-chart-wrap">
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={encOverhead} barGap={6} barCategoryGap="30%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
-                  <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 10, fontFamily: 'monospace' }} axisLine={{ stroke: '#2a2a2a' }} tickLine={false} />
-                  <YAxis tick={{ fill: '#444', fontSize: 10, fontFamily: 'monospace' }} axisLine={false} tickLine={false} unit=" us" />
-                  <Tooltip content={<CTooltip />} />
-                  <Bar dataKey="time" name="per-packet overhead" fill="#79c0ff" opacity={0.6} radius={[2, 2, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Fig>
+          <CSSBarChart data={encOverhead} label="per-packet overhead" unit=" μs" />
 
           <p className="blog-p">encryption alone doesnt cut it though. AES-CTR gives you confidentiality (nobody can read your packets) but zero integrity. an attacker who knows the plaintext structure (control packets are very predictable: fixed field order, known value ranges) can flip bits in the ciphertext and change values without knowing the key. bit-flipping attack. works against any stream cipher in CTR mode.</p>
           <p className="blog-p">what you need is authenticated encryption. confidentiality (cant read it), integrity (cant modify it), authenticity (know who sent it). all in one pass. thats AES-GCM.</p>
