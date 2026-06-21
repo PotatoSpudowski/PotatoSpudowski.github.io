@@ -82,7 +82,6 @@ const ALL_TAGS = [...new Set(BOOKS.flatMap(b => b.tags))].sort()
 export default function Books() {
   const [search, setSearch] = useState('')
   const [activeTag, setActiveTag] = useState(null)
-  const [showTags, setShowTags] = useState(false)
   const [searchParams] = useSearchParams()
   const highlight = searchParams.get('highlight')
   const highlightRef = useRef(null)
@@ -123,35 +122,24 @@ export default function Books() {
               onChange={e => setSearch(e.target.value)}
             />
           </div>
-          <button
-            className={`blog-filter-toggle${showTags ? ' active' : ''}`}
-            onClick={() => setShowTags(!showTags)}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
-            filter
-          </button>
         </div>
-        {showTags && (
-          <div className="blog-tags">
+        <div className="blog-tags">
+          <button
+            className={`blog-tag-btn${!activeTag ? ' active' : ''}`}
+            onClick={() => setActiveTag(null)}
+          >
+            all
+          </button>
+          {ALL_TAGS.map(t => (
             <button
-              className={`blog-tag-btn${!activeTag ? ' active' : ''}`}
-              onClick={() => setActiveTag(null)}
+              key={t}
+              className={`blog-tag-btn${activeTag === t ? ' active' : ''}`}
+              onClick={() => setActiveTag(activeTag === t ? null : t)}
             >
-              all
+              {t}
             </button>
-            {ALL_TAGS.map(t => (
-              <button
-                key={t}
-                className={`blog-tag-btn${activeTag === t ? ' active' : ''}`}
-                onClick={() => setActiveTag(activeTag === t ? null : t)}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
       <div className="books-list">
