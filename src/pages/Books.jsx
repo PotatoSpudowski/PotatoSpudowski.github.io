@@ -9,7 +9,7 @@ const BOOKS = [
     cover: '/books/thinking-in-bets.jpg',
     tags: ['decision-making', 'psychology', 'poker'],
     slug: 'thinking-in-bets',
-    review: 'annie duke is a professional poker player and this book is about making decisions when you dont have all the information. the core idea is that life is more like poker than chess. result quality and decision quality arent the same thing. good framework for thinking about uncertainty.',
+    review: 'life is poker not chess. good decisions can have bad outcomes and thats fine. changed how i think about uncertainty.',
   },
   {
     title: 'The Art of Doing Science and Engineering',
@@ -17,7 +17,7 @@ const BOOKS = [
     cover: '/books/hamming.jpg',
     tags: ['science', 'engineering', 'career'],
     slug: 'the-art-of-doing-science-and-engineering',
-    review: 'hamming taught a course at the naval postgraduate school and this is basically the book version. covers how to think about research and technical work. chapters on filters, coding, simulation, and math are fine but the real value is the meta-lessons about style of thinking and what makes great work.',
+    review: 'skip the math chapters. the meta-lessons on what separates great work from good work are worth rereading every year.',
   },
   {
     title: 'The Mom Test',
@@ -25,7 +25,7 @@ const BOOKS = [
     cover: '/books/mom-test.jpg',
     tags: ['startups', 'user-research', 'product'],
     slug: 'the-mom-test',
-    review: 'short book on how to talk to customers. the core lesson is that everyone lies to you, especially your mom. you should never tell people about your idea, only ask about their life and problems. good rules for conducting customer interviews without leading the witness.',
+    review: 'never tell people your idea. only ask about their problems. everyone lies to you otherwise, especially your mom.',
   },
   {
     title: 'Neuromancer',
@@ -33,7 +33,7 @@ const BOOKS = [
     cover: '/books/neuromancer.png',
     tags: ['science-fiction', 'cyberpunk', 'technology'],
     slug: 'neuromancer',
-    review: 'the book that invented cyberpunk. case is a washed-up console cowboy (hacker) who gets one last job to pull off the ultimate hack. gibson wrote this in 1984 and somehow predicted the internet, virtual reality, and corporate-dominated megacities. the writing is dense and poetic, not your typical sci-fi. if you only read one cyberpunk novel make it this one.',
+    review: 'invented cyberpunk in 1984. predicted the internet, VR, corporate megacities. dense poetic writing. read this one first.',
   },
   {
     title: 'Snow Crash',
@@ -41,7 +41,7 @@ const BOOKS = [
     cover: '/books/snow-crash.jpg',
     tags: ['science-fiction', 'cyberpunk', 'technology'],
     slug: 'snow-crash',
-    review: 'hiro protagonist delivers pizza and hacks the metaverse. neal stephenson wrote this in 1992 and basically coined the term metaverse. its a satire of corporate america, religion, and language theory wrapped in a ridiculous action plot. the first half is some of the best sci-fi ever written. the second half gets weird but who cares.',
+    review: 'coined the metaverse. first half is some of the best sci-fi ever written. second half gets weird but who cares.',
   },
   {
     title: 'Blue Ocean Strategy',
@@ -49,7 +49,7 @@ const BOOKS = [
     cover: '/books/blue-ocean.jpg',
     tags: ['strategy', 'business', 'startups'],
     slug: 'blue-ocean-strategy',
-    review: 'the idea is that instead of competing in existing markets (red oceans full of sharks), you should create new market spaces where theres no competition (blue oceans). uses examples like cirque du soleil and southwest airlines. the framework is simple but the book is padded out. worth skimming.',
+    review: 'dont compete, create new markets. framework is simple. book is padded. worth skimming not reading cover to cover.',
   },
   {
     title: 'Chip War',
@@ -57,7 +57,7 @@ const BOOKS = [
     cover: '/books/chip-war.png',
     tags: ['technology', 'geopolitics', 'semiconductors'],
     slug: 'chip-war',
-    review: 'the history of semiconductors and why chips are the most critical technology on the planet. traces the industry from the transistor to taiwans tsmc dominance and the us-china chip war. makes you realize how fragile the global supply chain is and why a tiny island in the pacific controls the future of everything.',
+    review: 'a tiny island controls the future of everything. makes you realize how fragile the global chip supply chain actually is.',
   },
   {
     title: 'The Innovator\'s Dilemma',
@@ -65,7 +65,7 @@ const BOOKS = [
     cover: '/books/innovators-dilemma.jpg',
     tags: ['innovation', 'business', 'strategy'],
     slug: 'the-innovators-dilemma',
-    review: 'explains why successful companies fail. they do everything right by listening to customers and investing in sustaining innovations, but then get blindsided by disruptive technologies that start out worse but eventually take over. disk drive industry is the main case study. the framework applies to a lot of industries.',
+    review: 'why good companies die. they listen to customers too well and miss the shitty-but-disruptive thing that eats them.',
   },
   {
     title: 'Diary of a Wimpy Kid: Rodrick Rules',
@@ -73,7 +73,7 @@ const BOOKS = [
     cover: '/books/rodrick-rules.jpg',
     tags: ['fiction', 'comedy', 'ya'],
     slug: 'rodrick-rules',
-    review: 'honestly the best book in the series and i will die on that hill.',
+    review: 'best book in the series and i will die on that hill.',
   },
 ]
 

@@ -24,6 +24,7 @@ const PINNED = [
     title: 'surgically removing refusal tendencies in LLMs',
     date: 'June 13, 2026',
     readtime: '30 min read',
+    tags: ['ml', 'llm', 'research'],
     image: '/abliteration-hero.jpg',
   },
   {
@@ -31,6 +32,7 @@ const PINNED = [
     title: 'building a secure radio link on two esp32s',
     date: 'April 13, 2026',
     readtime: '20 min read',
+    tags: ['hardware', 'security', 'esp32'],
     image: '/radio-hero.png',
   },
   {
@@ -38,6 +40,7 @@ const PINNED = [
     title: 'what the fuck is a JEPA?',
     date: 'March 26, 2026',
     readtime: '25 min read',
+    tags: ['ai', 'research', 'computer-vision'],
     image: '/vjepa-hero.jpg',
   },
 ]
@@ -48,18 +51,24 @@ const RECOMMENDED_BOOKS = [
     author: 'Annie Duke',
     cover: '/books/thinking-in-bets.jpg',
     slug: 'thinking-in-bets',
+    tags: ['decision-making', 'psychology'],
+    review: 'life is poker not chess. good decisions can have bad outcomes and thats fine. changed how i think about uncertainty.',
   },
   {
     title: 'The Art of Doing Science and Engineering',
     author: 'Richard Hamming',
     cover: '/books/hamming.jpg',
     slug: 'the-art-of-doing-science-and-engineering',
+    tags: ['science', 'engineering'],
+    review: 'skip the math chapters. the meta-lessons on what separates great work from good work are worth rereading every year.',
   },
   {
     title: 'Neuromancer',
     author: 'William Gibson',
     cover: '/books/neuromancer.png',
     slug: 'neuromancer',
+    tags: ['sci-fi', 'cyberpunk'],
+    review: 'invented cyberpunk in 1984. predicted the internet, VR, corporate megacities. dense poetic writing. read this one first.',
   },
 ]
 
@@ -101,31 +110,46 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="home-pinned">
-        <p className="home-pinned-label">recommended read</p>
-        <div className="home-pinned-list">
+      <div className="home-section">
+        <p className="home-section-label">recommended read</p>
+        <div className="article-list home-article-list">
           {PINNED.map(post => (
-            <Link key={post.slug} to={`/articles/${post.slug}`} className="home-pinned-card">
-              {post.image && <img src={post.image} alt="" className="home-pinned-img" />}
-              <div className="home-pinned-text">
-                <span className="home-pinned-title">{post.title}</span>
-                <span className="home-pinned-meta">{post.date} &middot; {post.readtime}</span>
-              </div>
-            </Link>
+            <article key={post.slug} className="article-item">
+              <Link to={`/articles/${post.slug}`} className="article-link">
+                {post.image && <img src={post.image} alt="" className="article-thumb" />}
+                <div className="article-text">
+                  <h2 className="article-title">{post.title}</h2>
+                  <p className="article-meta">{post.date} &middot; {post.readtime}</p>
+                  <div className="article-tags-inline">
+                    {post.tags.map(t => (
+                      <span key={t} className="article-tag-chip">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            </article>
           ))}
         </div>
         <Link to="/articles" className="view-all">view all articles</Link>
       </div>
 
-      <div className="home-books">
-        <p className="home-pinned-label">recommended books</p>
-        <div className="home-pinned-list">
+      <div className="home-section">
+        <p className="home-section-label">recommended books</p>
+        <div className="books-list home-books-list">
           {RECOMMENDED_BOOKS.map(book => (
-            <Link key={book.title} to={`/books?highlight=${book.slug}`} className="home-pinned-card home-book-card">
-              {book.cover && <img src={book.cover} alt="" className="home-book-img" />}
-              <div className="home-pinned-text">
-                <span className="home-pinned-title">{book.title}</span>
-                <span className="home-pinned-meta">{book.author}</span>
+            <Link key={book.title} to={`/books?highlight=${book.slug}`} className="book-card home-book-link">
+              <div className="book-cover-wrap">
+                <img src={book.cover} alt="" className="book-cover" />
+              </div>
+              <div className="book-info">
+                <h2 className="book-title">{book.title}</h2>
+                <p className="book-author">{book.author}</p>
+                <div className="book-tags">
+                  {book.tags.map(t => (
+                    <span key={t} className="article-tag-chip">{t}</span>
+                  ))}
+                </div>
+                <p className="book-review">{book.review}</p>
               </div>
             </Link>
           ))}
