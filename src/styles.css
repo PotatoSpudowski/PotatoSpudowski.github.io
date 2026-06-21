@@ -2277,6 +2277,10 @@ pre code {
         overflow-x: auto;
     }
 
+    .blog-chart-wrap .recharts-responsive-container {
+        min-height: 200px;
+    }
+
     .article-link {
         flex-direction: column;
         gap: 0.75rem;
@@ -2284,7 +2288,8 @@ pre code {
 
     .article-thumb {
         width: 100%;
-        height: 140px;
+        aspect-ratio: 16 / 9;
+        height: auto;
     }
 }
 

@@ -81,7 +81,7 @@ export default function CosFlyTrackBlog() {
           <p className="blog-p">pose history does most of the work in this benchmark. removing it makes final displacement error jump from about 1.25 m to more than 3.8 m, and SR@1m drops from 77.6% to roughly 16-18%. bounding boxes matter for target prediction. RGB adds only a small gain once pose and bbox history are already present.</p>
 
           <div className="blog-chart-wrap">
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={280}>
               <BarChart data={ablation} barGap={6} barCategoryGap="30%">
                 <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
                 <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 10, fontFamily: 'monospace' }} axisLine={{ stroke: '#2a2a2a' }} tickLine={false} />
