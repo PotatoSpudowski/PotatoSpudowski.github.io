@@ -624,6 +624,7 @@ body {
 
 .css-chart-bars {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -2388,6 +2389,14 @@ pre code {
     .css-chart-group {
         flex-direction: column;
         gap: 0.25rem;
+    }
+
+    .css-chart-group .css-chart-name {
+        width: auto;
+    }
+
+    .css-chart-bars {
+        width: 100%;
     }
 
     .css-chart-bars .css-chart-bar-wrap {
