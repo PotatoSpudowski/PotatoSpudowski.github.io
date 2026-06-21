@@ -82,6 +82,7 @@ const ALL_TAGS = [...new Set(BOOKS.flatMap(b => b.tags))].sort()
 export default function Books() {
   const [search, setSearch] = useState('')
   const [activeTag, setActiveTag] = useState(null)
+  const [showTags, setShowTags] = useState(false)
   const [searchParams] = useSearchParams()
   const highlight = searchParams.get('highlight')
   const highlightRef = useRef(null)
@@ -108,30 +109,49 @@ export default function Books() {
       <h1 className="page-title">Books</h1>
 
       <div className="blog-filters">
-        <input
-          type="text"
-          className="blog-search"
-          placeholder="search books..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        <div className="blog-tags">
+        <div className="blog-filters-row">
+          <div className="blog-search-wrap">
+            <svg className="blog-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              className="blog-search"
+              placeholder="search books..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
           <button
-            className={`blog-tag-btn${!activeTag ? ' active' : ''}`}
-            onClick={() => setActiveTag(null)}
+            className={`blog-filter-toggle${showTags ? ' active' : ''}`}
+            onClick={() => setShowTags(!showTags)}
           >
-            all
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            </svg>
+            filter
           </button>
-          {ALL_TAGS.map(t => (
-            <button
-              key={t}
-              className={`blog-tag-btn${activeTag === t ? ' active' : ''}`}
-              onClick={() => setActiveTag(activeTag === t ? null : t)}
-            >
-              {t}
-            </button>
-          ))}
         </div>
+        {showTags && (
+          <div className="blog-tags">
+            <button
+              className={`blog-tag-btn${!activeTag ? ' active' : ''}`}
+              onClick={() => setActiveTag(null)}
+            >
+              all
+            </button>
+            {ALL_TAGS.map(t => (
+              <button
+                key={t}
+                className={`blog-tag-btn${activeTag === t ? ' active' : ''}`}
+                onClick={() => setActiveTag(activeTag === t ? null : t)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="books-list">
