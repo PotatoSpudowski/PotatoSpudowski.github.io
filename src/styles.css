@@ -630,7 +630,9 @@ body {
 }
 
 .css-chart-bars .css-chart-bar-wrap {
+    flex: none;
     height: 18px;
+    width: 100%;
 }
 
 .article-tags-inline {
