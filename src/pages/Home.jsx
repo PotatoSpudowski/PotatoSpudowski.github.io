@@ -27,11 +27,11 @@ const PINNED = [
     image: '/abliteration-hero.jpg',
   },
   {
-    slug: 'kaiba-techno-optimism',
-    title: 'this man turned a weapons company into a card game company and nobody questions it',
-    date: 'June 2026',
-    readtime: '8 min read',
-    image: '/kaiba-hero.jpg',
+    slug: 'radio-security-from-scratch',
+    title: 'building a secure radio link on two esp32s',
+    date: 'April 2026',
+    readtime: '20 min read',
+    image: '/radio-hero.png',
   },
   {
     slug: 'vjepa2-deep-dive',
