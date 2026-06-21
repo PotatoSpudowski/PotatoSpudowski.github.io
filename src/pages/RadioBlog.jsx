@@ -128,7 +128,7 @@ static uint8_t fhss_csprng_byte(uint32_t counter) {
           <p className="blog-p">AES-128-CTR with the ESP32 hardware accelerator: 12 microseconds per packet. ChaCha20 in pure software: 27 microseconds. both negligible versus the 20ms packet interval. less than 0.13% overhead. the performance argument against encrypted radio links is bullshit.</p>
 
           <Fig>
-            <div style={{ padding: '22px 14px 6px' }}>
+            <div className="blog-chart-wrap">
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={encOverhead} barGap={6} barCategoryGap="30%">
                   <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />

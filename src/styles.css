@@ -552,6 +552,13 @@ body {
     padding: 2rem 0;
 }
 
+.blog-chart-wrap {
+    padding: 22px 14px 6px;
+    background: var(--bg-code);
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+}
+
 .article-tags-inline {
     display: flex;
     gap: 0.5rem;
@@ -2261,6 +2268,13 @@ pre code {
 
     .blog-hero-img {
         width: 100%;
+        aspect-ratio: 16 / 9;
+    }
+
+    .blog-chart-wrap {
+        padding: 12px 8px 4px;
+        margin-bottom: 1rem;
+        overflow-x: auto;
     }
 
     .article-link {

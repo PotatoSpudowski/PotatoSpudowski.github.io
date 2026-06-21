@@ -80,7 +80,7 @@ export default function CosFlyTrackBlog() {
           <p className="blog-p">the model table is most useful as a warning about inputs. after fine-tuning, Qwen3.5-9B reaches 95.60% SR@1m, GLM-4.6V-Flash reaches 95.48%, and Qwen3-VL-8B reaches 95.22%. Gemma-4-E4B is lower at 78.34%.</p>
           <p className="blog-p">pose history does most of the work in this benchmark. removing it makes final displacement error jump from about 1.25 m to more than 3.8 m, and SR@1m drops from 77.6% to roughly 16-18%. bounding boxes matter for target prediction. RGB adds only a small gain once pose and bbox history are already present.</p>
 
-          <div style={{ padding: '22px 14px 6px', background: 'var(--bg-code)', borderRadius: 4, marginBottom: '1.5rem' }}>
+          <div className="blog-chart-wrap">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={ablation} barGap={6} barCategoryGap="30%">
                 <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
