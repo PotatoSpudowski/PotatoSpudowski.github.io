@@ -36,7 +36,7 @@ export default function CosFlyTrackBlog() {
         <Fade>
           <div className="blog-hero-layout">
             <img src="/cosfly-hero.jpg" alt="" className="blog-hero-img" />
-            <h1 className="blog-title">training drones to follow people without crashing into things</h1>
+            <h1 className="blog-title">training drones to track things without crashing</h1>
           </div>
         </Fade>
       </div>
@@ -108,7 +108,9 @@ export default function CosFlyTrackBlog() {
           <p className="blog-p">the data comes from CARLA so sim-to-real transfer remains the big open question. the authors say real-world data is being collected for a future release. this version should be treated as a training and benchmarking resource, not proof that a model can follow people outside.</p>
           <p className="blog-p">the generation pipeline is not fully open-source because of company policy, although the paper gives algorithm detail for reimplementing the optimizer. the current release is an initial subset of about 100K multi-modal frames, with expansion planned.</p>
           <p className="blog-p">there is also the obvious dual-use issue. UAV tracking is useful for search and rescue, filming, sports analysis, wildlife monitoring, and inspection. the same capability can be misused for surveillance. the dataset license restricts unauthorized surveillance and military targeting.</p>
-          <p className="blog-p">paper: <a href="https://arxiv.org/abs/2605.17776" target="_blank" rel="noopener noreferrer">arXiv 2605.17776</a>. dataset: <a href="https://huggingface.co/datasets/AutelRobotics/CosFly" target="_blank" rel="noopener noreferrer">huggingface.co/datasets/AutelRobotics/CosFly</a>. checkpoints: <a href="https://huggingface.co/AutelRobotics/CosFly-Track" target="_blank" rel="noopener noreferrer">huggingface.co/AutelRobotics/CosFly-Track</a>.</p>
+          <p className="blog-p">paper: <a href="https://arxiv.org/abs/2605.17776" target="_blank" rel="noopener noreferrer">arXiv 2605.17776</a></p>
+          <p className="blog-p">dataset: <a href="https://huggingface.co/datasets/AutelRobotics/CosFly" target="_blank" rel="noopener noreferrer">huggingface.co/datasets/AutelRobotics/CosFly</a></p>
+          <p className="blog-p">checkpoints: <a href="https://huggingface.co/AutelRobotics/CosFly-Track" target="_blank" rel="noopener noreferrer">huggingface.co/AutelRobotics/CosFly-Track</a></p>
         </section>
 
       </div>

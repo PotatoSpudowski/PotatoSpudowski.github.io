@@ -5,7 +5,7 @@ const ARTICLES = [
   {
     slug: 'abliteration',
     title: 'surgically removing refusal tendencies in LLMs',
-    date: 'May 2026',
+    date: 'June 2026',
     readtime: '30 min read',
     tags: ['ml', 'llm', 'research'],
     image: '/abliteration-hero.jpg',
@@ -28,8 +28,8 @@ const ARTICLES = [
   },
   {
     slug: 'cosfly-track',
-    title: 'training drones to follow people without crashing into things',
-    date: 'May 2026',
+    title: 'training drones to track things without crashing',
+    date: 'June 2026',
     readtime: '15 min read',
     tags: ['ai', 'drones', 'research', 'computer-vision'],
     image: '/cosfly-hero.jpg',

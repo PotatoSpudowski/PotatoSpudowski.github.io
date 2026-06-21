@@ -22,7 +22,7 @@ const PINNED = [
   {
     slug: 'abliteration',
     title: 'surgically removing refusal tendencies in LLMs',
-    date: 'May 2026',
+    date: 'June 2026',
     readtime: '30 min read',
     image: '/abliteration-hero.jpg',
   },
@@ -42,8 +42,8 @@ const PINNED = [
   },
   {
     slug: 'cosfly-track',
-    title: 'training drones to follow people without crashing into things',
-    date: 'May 2026',
+    title: 'training drones to track things without crashing',
+    date: 'June 2026',
     readtime: '15 min read',
     image: '/cosfly-hero.jpg',
   },
