@@ -40,6 +40,13 @@ const PINNED = [
     readtime: '25 min read',
     image: '/vjepa-hero.jpg',
   },
+  {
+    slug: 'cosfly-track',
+    title: 'training drones to follow people without crashing into things',
+    date: 'May 2026',
+    readtime: '15 min read',
+    image: '/cosfly-hero.jpg',
+  },
 ]
 
 const RECOMMENDED_BOOKS = [
