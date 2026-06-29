@@ -5,7 +5,7 @@ import SortBar from '../components/SortBar'
 const ARTICLES = [
   {
     slug: 'dspark',
-    title: 'speculative decoding that actually survives production traffic',
+    title: 'DSpark: speculative decoding that actually works in prod',
     date: 'June 29, 2026',
     dateObj: new Date(2026, 5, 29),
     readtime: '20 min read',

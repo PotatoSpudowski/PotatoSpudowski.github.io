@@ -257,7 +257,7 @@ export default function DSparkBlog() {
         <Fade>
           <div className="blog-hero-layout">
             <img src="/dspark-hero.png" alt="" className="blog-hero-img" />
-            <h1 className="blog-title">speculative decoding that actually survives production traffic</h1>
+            <h1 className="blog-title">DSpark: speculative decoding that actually works in prod</h1>
           </div>
         </Fade>
       </div>
