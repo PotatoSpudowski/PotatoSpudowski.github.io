@@ -8,7 +8,6 @@ import Article from './pages/Article'
 import VJEPABlog from './pages/VJEPABlog'
 import RadioBlog from './pages/RadioBlog'
 import AbliterationBlog from './pages/AbliterationBlog'
-import CosFlyTrackBlog from './pages/CosFlyTrackBlog'
 import DSparkBlog from './pages/DSparkBlog'
 import Books from './pages/Books'
 
@@ -29,7 +28,6 @@ export default function App() {
         <Route path="/articles/radio-security-from-scratch" element={<RadioBlog />} />
         <Route path="/articles/abliteration" element={<AbliterationBlog />} />
         <Route path="/articles/vjepa2-deep-dive" element={<VJEPABlog />} />
-        <Route path="/articles/cosfly-track" element={<CosFlyTrackBlog />} />
         <Route path="/articles/dspark" element={<DSparkBlog />} />
         <Route path="/books" element={<Books />} />
         <Route path="/articles/:slug" element={<Article />} />

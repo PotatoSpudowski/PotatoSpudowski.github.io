@@ -39,15 +39,6 @@ const ARTICLES = [
     tags: ['ai', 'research', 'computer-vision'],
     image: '/vjepa-hero.jpg',
   },
-  {
-    slug: 'cosfly-track',
-    title: 'training drones to track things without crashing',
-    date: 'June 21, 2026',
-    dateObj: new Date(2026, 5, 21),
-    readtime: '15 min read',
-    tags: ['ai', 'drones', 'research', 'computer-vision'],
-    image: '/cosfly-hero.jpg',
-  },
 ]
 
 const ALL_TAGS = [...new Set(ARTICLES.flatMap(a => a.tags))].sort()
