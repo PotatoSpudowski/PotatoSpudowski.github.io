@@ -97,7 +97,7 @@ export default function Home() {
             </div>
           </div>
           <div className="home-socials">
-            <a href="https://github.com/bahushruth" target="_blank" rel="noreferrer" className="home-social" title="GitHub">
+            <a href="https://github.com/PotatoSpudowski" target="_blank" rel="noreferrer" className="home-social" title="GitHub">
               <GithubIcon />
             </a>
             <a href="https://x.com/Bahushruth" target="_blank" rel="noreferrer" className="home-social" title="X / Twitter">
