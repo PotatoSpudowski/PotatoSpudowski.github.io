@@ -4,6 +4,15 @@ import SortBar from '../components/SortBar'
 
 const ARTICLES = [
   {
+    slug: 'abliteration-2',
+    title: 'abliteration part 2: and on the eighth day, god added hella norms',
+    date: 'July 24, 2026',
+    dateObj: new Date(2026, 6, 24),
+    readtime: '20 min read',
+    tags: ['ml', 'llm', 'research'],
+    image: '/abliteration-2-hero.jpg',
+  },
+  {
     slug: 'dspark',
     title: 'DSpark: speculative decoding that actually works in prod',
     date: 'June 29, 2026',
