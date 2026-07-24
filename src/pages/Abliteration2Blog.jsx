@@ -112,7 +112,7 @@ function FortressDemo() {
 
       <p className="abl-ortho-caption">{captions[defense][tick]}</p>
 
-      <svg viewBox={`0 0 ${W} 250`} className="abl-svg" style={{ maxHeight: 250 }}>
+      <svg viewBox={`0 0 ${W} 250`} className="abl-svg-wide">
         {/* ground */}
         <line x1={0} y1={200} x2={W} y2={200} stroke="#2a2a2a" strokeWidth={2} />
 
@@ -223,7 +223,7 @@ function SearchMachineDemo() {
         trial {t.n}: peak at layer {t.pos}, width {t.dist}, strength {t.s}. {t.note}
       </p>
 
-      <svg viewBox="0 0 560 150" className="abl-svg" style={{ maxHeight: 150 }}>
+      <svg viewBox="0 0 560 150" className="abl-svg-wide">
         {/* kernel */}
         <g transform="translate(10, 14)">
           {weights.map((w, l) => {
@@ -262,12 +262,11 @@ function KernelExplorer() {
   const edited = weights.filter(w => w > 0.001).length
 
   const slider = (label, value, set, min, max, step, hint) => (
-    <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontFamily: 'monospace', color: '#585858' }}>
-      <span style={{ width: 170 }}>{label} <span style={{ color: '#333' }}>({hint})</span></span>
+    <label className="abl-slider">
+      <span className="abl-slider-label">{label} <span className="abl-slider-hint">({hint})</span></span>
       <input type="range" min={min} max={max} step={step} value={value}
-        onChange={e => set(parseFloat(e.target.value))}
-        style={{ flex: 1, accentColor: '#7ee787' }} />
-      <span style={{ width: 40, textAlign: 'right', color: '#7ee787' }}>{value}</span>
+        onChange={e => set(parseFloat(e.target.value))} />
+      <span className="abl-slider-value">{value}</span>
     </label>
   )
 
@@ -276,7 +275,7 @@ function KernelExplorer() {
       <p className="abl-layer-caption">
         fix 1 in action. green layers are edited. gray layers are untouched. currently editing {edited} of {N} layers.
       </p>
-      <svg viewBox={`0 0 ${W} ${H + 30}`} style={{ width: '100%' }}>
+      <svg viewBox={`0 0 ${W} ${H + 30}`} className="abl-svg-wide">
         {weights.map((w, l) => {
           const h = (w / 4) * H
           return <rect key={l} x={l * barW + 1} y={H - h} width={barW - 2} height={Math.max(h, 1)}
@@ -288,7 +287,7 @@ function KernelExplorer() {
         <text x={W - 30} y={H + 22} fill="#585858" fontSize={9} fontFamily="monospace">layer 34</text>
         <text x={4} y={12} fill="#585858" fontSize={9} fontFamily="monospace">edit strength →</text>
       </svg>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8 }}>
+      <div className="abl-slider-group">
         {slider('peak position', pos, setPos, 0, 34, 1, 'which layer')}
         {slider('window width', dist, setDist, 1, 30, 1, 'how many layers')}
         {slider('peak strength', maxW, setMaxW, 0, 4, 0.1, 'how hard')}

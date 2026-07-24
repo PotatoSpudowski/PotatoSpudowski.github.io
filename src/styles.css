@@ -3016,3 +3016,80 @@ pre code {
         text-align: left;
     }
 }
+
+/* Wide SVG demos (fortress, trial machine, kernel explorer) */
+.abl-svg-wide {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+/* Kernel explorer sliders */
+.abl-slider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+}
+
+.abl-slider-label {
+    width: 170px;
+    flex-shrink: 0;
+}
+
+.abl-slider-hint {
+    color: #333;
+}
+
+.abl-slider input[type="range"] {
+    flex: 1;
+    accent-color: #7ee787;
+    min-width: 60px;
+}
+
+.abl-slider-value {
+    width: 40px;
+    text-align: right;
+    color: #7ee787;
+}
+
+.abl-slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    /* wide demos: scroll horizontally instead of shrinking text to unreadable sizes */
+    .abl-svg-wide {
+        min-width: 520px;
+    }
+    .abl-ortho-demo,
+    .abl-layer-viz {
+        overflow-x: auto;
+    }
+    /* sliders: stack label above the range input */
+    .abl-slider {
+        flex-wrap: wrap;
+        row-gap: 2px;
+    }
+    .abl-slider-label {
+        width: 100%;
+    }
+    /* step buttons: keep them from stretching awkwardly */
+    .abl-ortho-steps {
+        gap: 0.3rem;
+    }
+    .abl-step-label {
+        display: none;
+    }
+    .abl-step-btn.active .abl-step-label {
+        display: inline;
+    }
+}
