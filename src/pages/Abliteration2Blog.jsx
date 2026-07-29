@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import { Fade, CodeBlock } from '../components/BlogPrimitives'
@@ -13,448 +12,128 @@ function M({ children, block }) {
   return <span className="blog-math-inline" dangerouslySetInnerHTML={{ __html: html }} />
 }
 
-// --- pareto front chart (real search data) ---
+// --- results: family release charts ---
 
-const PARETO = [
-  { trial: 20, refusals: 10, kl: 0.116 },
-  { trial: 93, refusals: 12, kl: 0.048 },
-  { trial: 75, refusals: 15, kl: 0.024 },
-  { trial: 81, refusals: 17, kl: 0.022 },
-  { trial: 32, refusals: 21, kl: 0.016 },
+const FAMILY_RESULTS = [
+  { name: 'E2B (5B)', union: 3.0, enriched: 1, mlabonne: 6, kl: 0.173 },
+  { name: 'E4B (8B)', union: 2.7, enriched: 2, mlabonne: 3, kl: 0.116 },
+  { name: '26B-A4B', union: 6.7, enriched: 6, mlabonne: 7, kl: 0.230 },
 ]
 
-function ParetoChart() {
-  const CustomTooltip = ({ active, payload }) => {
-    if (!active || !payload?.length) return null
-    return (
-      <div className="blog-chart-tooltip">
-        <div>trial {payload[0].payload.trial}</div>
-        <div style={{ color: '#7ee787' }}>refusals {payload[0].payload.refusals}%</div>
-        <div style={{ color: '#79c0ff' }}>KL {payload[0].payload.kl}</div>
-      </div>
-    )
-  }
+const REFUSAL_SERIES = [
+  { key: 'union', name: 'union 300', color: '#7ee787' },
+  { key: 'enriched', name: 'enriched 200', color: '#79c0ff' },
+  { key: 'mlabonne', name: 'mlabonne 100', color: '#d2a8ff' },
+]
+
+function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
+  const max = maxValue || Math.max(...data.flatMap(d => series.map(s => d[s.key] || 0)), 1)
   return (
-    <div className="abl-layer-viz">
-      <p className="abl-layer-caption">pareto front of the search. each point is one trial. x axis: refusals. bar height: KL divergence. lower left is better.</p>
-      <ResponsiveContainer width="100%" height={180}>
-        <BarChart data={PARETO} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
-          <XAxis dataKey="refusals" tick={{ fill: '#585858', fontSize: 10 }} tickLine={false} axisLine={false} />
-          <YAxis hide />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-          <Bar dataKey="kl" radius={0}>
-            {PARETO.map((entry) => (
-              <Cell key={entry.trial} fill={entry.trial === 93 ? '#7ee787' : '#2a2a2a'} />
+    <div className="css-chart">
+      <div className="css-chart-legend">
+        {series.map(s => (
+          <span key={s.key} className="css-chart-legend-item">
+            <span className="css-chart-legend-dot" style={{ background: s.color }} />
+            {s.name}
+          </span>
+        ))}
+      </div>
+      {data.map((d, i) => (
+        <div key={i} className="css-chart-group">
+          <span className="css-chart-name">{d.name}</span>
+          <div className="css-chart-bars">
+            {series.map(s => (
+              <div key={s.key} className="css-chart-bar-wrap">
+                <div
+                  className="css-chart-bar"
+                  style={{ width: `${(d[s.key] / max) * 100}%`, background: s.color }}
+                />
+                <span className="css-chart-value">{d[s.key]}{unit}</span>
+              </div>
             ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
 
-// --- WHY GEMMA IS HARD: the fortress with three defenses ---
+function ResultsCharts() {
+  const klData = FAMILY_RESULTS.map(d => ({
+    name: d.name,
+    sr: d.kl,
+    color: '#7ee787',
+  }))
+  const klMax = Math.max(...klData.map(d => d.sr)) * 1.15
 
-function FortressDemo() {
-  const [defense, setDefense] = useState(0)
-  const [tick, setTick] = useState(0)
+  return (
+    <div className="abl-results-charts">
+      <p className="abl-layer-caption">refusal rate on three eval sets. lower is better. original models refuse 97–99% of these prompts.</p>
+      <GroupedBarChart data={FAMILY_RESULTS} series={REFUSAL_SERIES} maxValue={12} unit="%" />
+
+      <p className="abl-layer-caption" style={{ marginTop: '1.5rem' }}>KL divergence from the original model (our metric: 50 prompts, teacher-forced, full vocab). lower is better. destroyed models start near KL 4.</p>
+      <div className="css-chart">
+        {klData.map((d, i) => (
+          <div key={i} className="css-chart-row">
+            <span className="css-chart-name">{d.name}</span>
+            <div className="css-chart-bar-wrap">
+              <div
+                className="css-chart-bar"
+                style={{ width: `${(d.sr / klMax) * 100}%`, background: d.color }}
+              />
+              <span className="css-chart-value">{d.sr.toFixed(3)}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// --- ARA: distributions demo ---
+
+function DistributionDemo() {
+  const [step, setStep] = useState(0)
   const [paused, setPaused] = useState(false)
 
   useEffect(() => {
     if (paused) return
-    const id = setInterval(() => setTick(t => {
-      if (t === 2) setDefense(d => (d + 1) % 3)
-      return (t + 1) % 3
-    }), 1600)
+    const id = setInterval(() => setStep(s => (s + 1) % 4), 2400)
     return () => clearInterval(id)
   }, [paused])
 
-  const pick = (d) => { setDefense(d); setTick(0); setPaused(true) }
+  const W = 560, H = 220
+  const x0 = 60, x1 = 540, yBase = 190
+  const xScale = (x1 - x0) / 6
+  const gauss = (x, mu, sig) => Math.exp(-0.5 * ((x - mu) / sig) ** 2)
 
-  const W = 560
-  // wall repair: hole width shrinks with tick when defense 0
-  const holeW = defense === 0 ? [46, 22, 0][tick] : 0
-  // tunnel dots flow when defense 1
-  const dots = [0, 1, 2, 3, 4].map(i => (i * 44 + tick * 18) % 200)
-  // supply towers flash when defense 2
-  const towers = [0, 1, 2, 3, 4]
-  const towerLit = (i) => defense === 2 && tick === 2
+  const goodMu = -0.9
+  const badMus = [1.1, 0.2, -0.75, -1.0]
+  const badMu = badMus[step]
+
+  const path = (mu, sig, amp) => {
+    let d = ''
+    for (let i = 0; i <= 120; i++) {
+      const x = -3 + (i / 120) * 6
+      const y = gauss(x, mu, sig) * amp
+      const sx = x0 + (x + 3) * xScale
+      const sy = yBase - y * 150
+      d += (i === 0 ? `M ${sx} ${sy}` : ` L ${sx} ${sy}`)
+    }
+    return d + ` L ${x0 + (mu + 3 + 2.2) * xScale} ${yBase}`
+  }
 
   const captions = [
-    [
-      <>the edit cuts a hole in the wall.</>,
-      <>the norm arrives. the wall repairs itself.</>,
-      <>the cut is gone. only a change in direction survives the four norms.</>,
-    ],
-    [
-      <>the main gate is where the edit happens.</>,
-      <>but supplies flow through a side tunnel under the wall.</>,
-      <>the tunnel is the per-layer embedding. the edit never touches it.</>,
-    ],
-    [
-      <>one supply depot feeds all the towers.</>,
-      <>layers 15 to 34 have no keys or values of their own. there is nothing to edit on a tower.</>,
-      <>but edit the depot, layer 14, and all 20 towers feel it at once.</>,
-    ],
-  ]
-  const defenseNames = ['the self-healing wall', 'the side tunnel', 'the shared supply']
-
-  return (
-    <div className="abl-ortho-demo">
-      <div className="abl-ortho-steps">
-        {defenseNames.map((name, i) => (
-          <button key={i} className={`abl-step-btn${defense === i ? ' active' : ''}`} onClick={() => pick(i)}>
-            <span className="abl-step-num" style={{ background: defense === i ? '#7ee787' : 'transparent', color: defense === i ? '#0f0f0f' : '#585858' }}>{i + 1}</span>
-            <span className="abl-step-label">{name}</span>
-          </button>
-        ))}
-      </div>
-
-      <p className="abl-ortho-caption">{captions[defense][tick]}</p>
-
-      <svg viewBox={`0 0 ${W} 250`} className="abl-svg-wide">
-        {/* ground */}
-        <line x1={0} y1={200} x2={W} y2={200} stroke="#2a2a2a" strokeWidth={2} />
-
-        {/* the wall (norms) */}
-        <rect x={60} y={100} width={170} height={100} fill="#1c1c1c" stroke="#3a3a3a" strokeWidth={1.5} />
-        {/* brick lines */}
-        {[120, 140, 160, 180].map(y => (
-          <line key={y} x1={60} y1={y} x2={230} y2={y} stroke="#262626" strokeWidth={1} />
-        ))}
-        {/* the hole + repair */}
-        {holeW > 0 ? (
-          <rect x={145 - holeW / 2} y={130} width={holeW} height={40} fill="#0f0f0f" stroke="#ff7b72" strokeWidth={1.5} />
-        ) : (
-          defense === 0 && tick === 2 && <text x={145} y={155} fill="#7ee787" fontSize={9} fontFamily="monospace" textAnchor="middle">repaired</text>
-        )}
-        {defense === 0 && tick === 1 && (
-          <text x={145} y={122} fill="#7ee787" fontSize={10} fontFamily="monospace" textAnchor="middle">RMSNorm ✦</text>
-        )}
-        <text x={145} y={94} fill="#585858" fontSize={9} fontFamily="monospace" textAnchor="middle">the wall (four norms)</text>
-
-        {/* the side tunnel (PLE) */}
-        <rect x={60} y={200} width={170} height={26} fill="#141414" stroke="#3a3a3a" strokeWidth={1} />
-        {dots.map((x, i) => (
-          <circle key={i} cx={70 + x * 0.75} cy={213} r={3} fill="#ff7b72" opacity={defense === 1 ? 1 : 0.35} />
-        ))}
-        <text x={145} y={240} fill="#ff7b72" fontSize={9} fontFamily="monospace" textAnchor="middle">side tunnel: per-layer embedding</text>
-
-        {/* the supply depot + towers (shared K/V) */}
-        <rect x={300} y={170} width={40} height={30} fill="#1c1c1c" stroke="#7ee787" strokeWidth={1.5} />
-        <text x={320} y={164} fill="#7ee787" fontSize={9} fontFamily="monospace" textAnchor="middle">layer 14</text>
-        <text x={320} y={188} fill="#7ee787" fontSize={8} fontFamily="monospace" textAnchor="middle">K/V</text>
-        {towers.map(i => {
-          const tx = 370 + i * 38
-          const lit = towerLit(i)
-          return (
-            <g key={i}>
-              <line x1={340} y1={185} x2={tx + 10} y2={185} stroke={defense === 2 ? '#7ee787' : '#2a2a2a'} strokeWidth={1.5}
-                strokeDasharray={defense === 2 && tick === 1 && i === 2 ? '4 3' : 'none'} />
-              <rect x={tx} y={160} width={20} height={40} fill={lit ? '#3a1c1c' : '#161616'}
-                stroke={lit ? '#ff7b72' : '#2a2a2a'} strokeWidth={1} />
-            </g>
-          )
-        })}
-        <text x={450} y={152} fill="#585858" fontSize={9} fontFamily="monospace" textAnchor="middle">towers: layers 15-34</text>
-        {defense === 2 && tick === 1 && (
-          <text x={450} y={220} fill="#585858" fontSize={9} fontFamily="monospace" textAnchor="middle">cut one supply line: the tower has nothing to edit anyway</text>
-        )}
-        {defense === 2 && tick === 2 && (
-          <text x={450} y={220} fill="#ff7b72" fontSize={9} fontFamily="monospace" textAnchor="middle">edit the depot: every tower feels it</text>
-        )}
-      </svg>
-    </div>
-  )
-}
-
-// --- SEARCH: the trial machine ---
-
-const MACHINE_TRIALS = [
-  { n: 1, pos: 3, dist: 30, s: 1.0, f: 0.5, refusals: 0.89, kl: 0.020, verdict: 'discard', note: 'edits everything, weakly. high refusals.' },
-  { n: 2, pos: 17, dist: 8, s: 1.5, f: 0.4, refusals: 0.32, kl: 0.028, verdict: 'new best', note: 'stronger at the right layer. refusals fall.' },
-  { n: 3, pos: 25, dist: 5, s: 4.0, f: 0.1, refusals: 0.18, kl: 0.310, verdict: 'too much damage', note: 'brute force. KL explodes.' },
-  { n: 4, pos: 17, dist: 7, s: 3.7, f: 0.5, refusals: 0.12, kl: 0.048, verdict: 'new best ★', note: 'over-correction in a tight window.' },
-  { n: 5, pos: 17, dist: 9, s: 2.1, f: 0.85, refusals: 0.15, kl: 0.024, verdict: 'trade-off', note: 'fewer edits, cleaner weights, more refusals.' },
-]
-
-function SearchMachineDemo() {
-  const [step, setStep] = useState(0)
-  const [paused, setPaused] = useState(false)
-
-  useEffect(() => {
-    if (paused) return
-    const id = setInterval(() => setStep(s => (s + 1) % MACHINE_TRIALS.length), 3200)
-    return () => clearInterval(id)
-  }, [paused])
-
-  const t = MACHINE_TRIALS[step]
-  const N = 35, KW = 300, KH = 110, barW = KW / N
-  const minW = t.s * t.f
-  const weights = Array.from({ length: N }, (_, l) => {
-    const x = Math.abs(l - t.pos) / t.dist
-    return x > 1 ? 0 : minW + (t.s - minW) * Math.exp(-2.0 * x * x)
-  })
-
-  const gauge = (label, value, max, color) => (
-    <g>
-      <text x={0} y={-6} fill="#585858" fontSize={9} fontFamily="monospace">{label}</text>
-      <rect x={0} y={0} width={200} height={12} fill="#161616" />
-      <rect x={0} y={0} width={Math.min(value / max, 1) * 200} height={12} fill={color} />
-      <text x={208} y={10} fill={color} fontSize={10} fontFamily="monospace">{value}</text>
-    </g>
-  )
-
-  const verdictColor = t.verdict.includes('best') ? '#7ee787' : t.verdict === 'discard' ? '#585858' : '#ffa657'
-
-  return (
-    <div className="abl-ortho-demo" onClick={() => { setStep(s => (s + 1) % MACHINE_TRIALS.length); setPaused(true) }}>
-      <div className="abl-ortho-steps">
-        {MACHINE_TRIALS.map((tr, i) => (
-          <button key={i} className={`abl-step-btn${step === i ? ' active' : ''}`}
-            onClick={(e) => { e.stopPropagation(); setStep(i); setPaused(true) }}>
-            <span className="abl-step-num" style={{ background: step === i ? '#7ee787' : 'transparent', color: step === i ? '#0f0f0f' : '#585858' }}>{tr.n}</span>
-            <span className="abl-step-label">trial</span>
-          </button>
-        ))}
-      </div>
-
-      <p className="abl-ortho-caption">
-        trial {t.n}: peak at layer {t.pos}, width {t.dist}, strength {t.s}. {t.note}
-      </p>
-
-      <svg viewBox="0 0 560 150" className="abl-svg-wide">
-        {/* kernel */}
-        <g transform="translate(10, 14)">
-          {weights.map((w, l) => {
-            const h = (w / 4) * KH
-            return <rect key={l} x={l * barW} y={KH - h} width={barW - 1} height={Math.max(h, 1)}
-              fill={w > 0.001 ? '#7ee787' : '#2a2a2a'} opacity={w > 0.001 ? 0.4 + 0.6 * (w / 4) : 1} />
-          })}
-          <text x={0} y={KH + 14} fill="#585858" fontSize={9} fontFamily="monospace">the proposed kernel</text>
-        </g>
-
-        {/* scores */}
-        <g transform="translate(340, 30)">
-          {gauge('refusals', t.refusals, 1, '#ff7b72')}
-          <g transform="translate(0, 40)">{gauge('KL divergence', t.kl, 0.35, '#79c0ff')}</g>
-          <text x={0} y={105} fill={verdictColor} fontSize={11} fontFamily="monospace">→ {t.verdict}</text>
-        </g>
-      </svg>
-    </div>
-  )
-}
-
-// --- FIX 1: interactive kernel explorer ---
-
-function KernelExplorer() {
-  const [pos, setPos] = useState(17)
-  const [dist, setDist] = useState(8)
-  const [maxW, setMaxW] = useState(2.5)
-  const [minFrac, setMinFrac] = useState(0.3)
-
-  const N = 35, W = 560, H = 150, barW = W / N
-  const minW = maxW * minFrac
-  const weights = Array.from({ length: N }, (_, l) => {
-    const t = Math.abs(l - pos) / dist
-    return t > 1 ? 0 : minW + (maxW - minW) * Math.exp(-2.0 * t * t)
-  })
-  const edited = weights.filter(w => w > 0.001).length
-
-  const slider = (label, value, set, min, max, step, hint) => (
-    <label className="abl-slider">
-      <span className="abl-slider-label">{label} <span className="abl-slider-hint">({hint})</span></span>
-      <input type="range" min={min} max={max} step={step} value={value}
-        onChange={e => set(parseFloat(e.target.value))} />
-      <span className="abl-slider-value">{value}</span>
-    </label>
-  )
-
-  return (
-    <div className="abl-layer-viz">
-      <p className="abl-layer-caption">
-        fix 1 in action. green layers are edited. gray layers are untouched. currently editing {edited} of {N} layers.
-      </p>
-      <svg viewBox={`0 0 ${W} ${H + 30}`} className="abl-svg-wide">
-        {weights.map((w, l) => {
-          const h = (w / 4) * H
-          return <rect key={l} x={l * barW + 1} y={H - h} width={barW - 2} height={Math.max(h, 1)}
-            fill={w > 0.001 ? '#7ee787' : '#2a2a2a'} opacity={w > 0.001 ? 0.4 + 0.6 * (w / 4) : 1} />
-        })}
-        <line x1={(pos - dist) * barW} y1={H + 8} x2={(pos + dist + 1) * barW} y2={H + 8} stroke="#7ee787" strokeWidth={1} />
-        <text x={pos * barW + barW / 2} y={H + 22} fill="#7ee787" fontSize={9} fontFamily="monospace" textAnchor="middle">the window</text>
-        <text x={0} y={H + 22} fill="#585858" fontSize={9} fontFamily="monospace">layer 0</text>
-        <text x={W - 30} y={H + 22} fill="#585858" fontSize={9} fontFamily="monospace">layer 34</text>
-        <text x={4} y={12} fill="#585858" fontSize={9} fontFamily="monospace">edit strength →</text>
-      </svg>
-      <div className="abl-slider-group">
-        {slider('peak position', pos, setPos, 0, 34, 1, 'which layer')}
-        {slider('window width', dist, setDist, 1, 30, 1, 'how many layers')}
-        {slider('peak strength', maxW, setMaxW, 0, 4, 0.1, 'how hard')}
-        {slider('floor fraction', minFrac, setMinFrac, 0, 1, 0.05, 'edge strength')}
-      </div>
-    </div>
-  )
-}
-
-// --- FIX 2: over-correction step-through ---
-
-function StrengthDemo() {
-  const [step, setStep] = useState(0)
-  const [paused, setPaused] = useState(false)
-
-  const STRENGTHS = [0, 0.5, 1.0, 2.0, 3.0]
-  const wx = 0.6, wy = -0.8
-  const rx = 0.7071, ry = -0.7071
-  const dot = wx * rx + wy * ry
-  const wNorm = Math.sqrt(wx * wx + wy * wy)
-
-  const s = STRENGTHS[step]
-  const px = wx - s * dot * rx, py = wy - s * dot * ry
-  const pNorm = Math.sqrt(px * px + py * py)
-  const nx = px * (wNorm / pNorm), ny = py * (wNorm / pNorm)
-  const component = (nx * rx + ny * ry).toFixed(2)
-
-  const W = 300, H = 300
-  const cx = W / 2, cy = H / 2
-  const scale = 110
-  const toSVG = (x, y) => [cx + x * scale, cy + y * scale]
-  const [ox, oy] = toSVG(0, 0)
-  const [rx1, ry1] = toSVG(rx * 1.15, ry * 1.15)
-  const [rx2, ry2] = toSVG(-rx * 1.15, -ry * 1.15)
-  const [wx1, wy1] = toSVG(wx, wy)
-  const [nx1, ny1] = toSVG(nx, ny)
-
-  useEffect(() => {
-    if (paused) return
-    const id = setInterval(() => setStep(s => (s + 1) % STRENGTHS.length), 2800)
-    return () => clearInterval(id)
-  }, [paused])
-
-  const arrow = (x1, y1, x2, y2, color, w = 2) => {
-    const angle = Math.atan2(y2 - y1, x2 - x1)
-    const sz = 6
-    return (
-      <g>
-        <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={w} />
-        <polygon
-          points={`${x2},${y2} ${x2 - sz * Math.cos(angle - 0.4)},${y2 - sz * Math.sin(angle - 0.4)} ${x2 - sz * Math.cos(angle + 0.4)},${y2 - sz * Math.sin(angle + 0.4)}`}
-          fill={color}
-        />
-      </g>
-    )
-  }
-
-  const descriptions = [
-    <>one row of a weight matrix. it has a component along the refusal direction <M>{"r"}</M>.</>,
-    <>half strength. the component shrinks. but it survives. the norms will rebuild it.</>,
-    <>full projection. the component is zero. <M>{"w'"}</M> is orthogonal to <M>{"r"}</M>.</>,
-    <>over-correction. the component flips sign. the row starts to anti-express refusal.</>,
-    <>more over-correction. the row pushes against refusal. the search chose values like this.</>,
+    <>one weight matrix. the curves are its outputs. blue: harmless prompts. red: harmful prompts. two separate shapes.</>,
+    <>ARA adjusts the matrix directly. rule 2: pull the red shape toward the blue shape.</>,
+    <>rule 3: push a little past it. over-correction, built into the objective.</>,
+    <>the blue shape never moved. rule 1. the model keeps its capability. the harmful outputs now look harmless.</>,
   ]
 
   return (
-    <div className="abl-ortho-demo" onClick={() => { setStep(s => (s + 1) % STRENGTHS.length); setPaused(true) }}>
+    <div className="abl-ortho-demo" onClick={() => { setStep(s => (s + 1) % 4); setPaused(true) }}>
       <div className="abl-ortho-steps">
-        {STRENGTHS.map((st, i) => (
-          <button key={i} className={`abl-step-btn${step === i ? ' active' : ''}`}
-            onClick={(e) => { e.stopPropagation(); setStep(i); setPaused(true) }}>
-            <span className="abl-step-num" style={{ background: step === i ? '#7ee787' : 'transparent', color: step === i ? '#0f0f0f' : '#585858' }}>{st}</span>
-            <span className="abl-step-label">strength</span>
-          </button>
-        ))}
-      </div>
-
-      <p className="abl-ortho-caption">{descriptions[step]}</p>
-
-      <svg viewBox={`0 0 ${W} ${H}`} className="abl-svg">
-        <line x1={0} y1={cy} x2={W} y2={cy} stroke="#1a1a1a" strokeWidth={1} />
-        <line x1={cx} y1={0} x2={cx} y2={H} stroke="#1a1a1a" strokeWidth={1} />
-
-        <line x1={rx2} y1={ry2} x2={rx1} y2={ry1} stroke="#ff7b72" strokeWidth={1} strokeDasharray="4 3" opacity={0.5} />
-        {arrow(ox, oy, rx1, ry1, '#ff7b72')}
-        <text x={rx1 + 6} y={ry1 - 6} fill="#ff7b72" fontSize={11} fontFamily="monospace">r</text>
-        <text x={rx2 - 16} y={ry2 + 14} fill="#ff7b72" fontSize={9} fontFamily="monospace" opacity={0.6}>-r</text>
-
-        {step === 0 ? (
-          <g>
-            {arrow(ox, oy, wx1, wy1, '#79c0ff', 2.5)}
-            <text x={wx1 + 6} y={wy1 - 6} fill="#79c0ff" fontSize={11} fontFamily="monospace">w</text>
-          </g>
-        ) : (
-          <line x1={ox} y1={oy} x2={wx1} y2={wy1} stroke="#333" strokeWidth={1} strokeDasharray="3 3" />
-        )}
-
-        {step > 0 && (
-          <g>
-            {arrow(ox, oy, nx1, ny1, '#7ee787', 2.5)}
-            <text x={nx1 + 6} y={ny1 - 6} fill="#7ee787" fontSize={11} fontFamily="monospace">w'</text>
-          </g>
-        )}
-
-        <circle cx={ox} cy={oy} r={2.5} fill="#555" />
-        <text x={10} y={H - 10} fill="#585858" fontSize={10} fontFamily="monospace">
-          component along r: {component}
-        </text>
-      </svg>
-    </div>
-  )
-}
-
-// --- FIX 3: ORBA step-through ---
-
-function ORBADemo() {
-  const [step, setStep] = useState(0)
-  const [paused, setPaused] = useState(false)
-
-  useEffect(() => {
-    if (paused) return
-    const id = setInterval(() => setStep(s => (s + 1) % 3), 2800)
-    return () => clearInterval(id)
-  }, [paused])
-
-  const W = 300, H = 300
-  const cx = W / 2, cy = H / 2
-  const scale = 110
-  const toSVG = (x, y) => [cx + x * scale, cy + y * scale]
-  const [ox, oy] = toSVG(0, 0)
-
-  const bx = 0.94, by = -0.34
-  const rx = 0.71, ry = -0.71
-  const dot = rx * bx + ry * by
-  const ux = rx - dot * bx, uy = ry - dot * by
-  const uNorm = Math.sqrt(ux * ux + uy * uy)
-  const r2x = ux / uNorm, r2y = uy / uNorm
-
-  const [bx1, by1] = toSVG(bx, by)
-  const [rx1, ry1] = toSVG(rx, ry)
-  const [px1, py1] = toSVG(dot * bx, dot * by)
-  const [r2x1, r2y1] = toSVG(r2x, r2y)
-
-  const arrow = (x1, y1, x2, y2, color, w = 2) => {
-    const angle = Math.atan2(y2 - y1, x2 - x1)
-    const sz = 6
-    return (
-      <g>
-        <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={w} />
-        <polygon
-          points={`${x2},${y2} ${x2 - sz * Math.cos(angle - 0.4)},${y2 - sz * Math.sin(angle - 0.4)} ${x2 - sz * Math.cos(angle + 0.4)},${y2 - sz * Math.sin(angle + 0.4)}`}
-          fill={color}
-        />
-      </g>
-    )
-  }
-
-  const descriptions = [
-    <>the raw refusal direction <M>{"r"}</M> and the mean harmless direction <M>{"b"}</M>. they overlap. part of <M>{"r"}</M> is normal behavior.</>,
-    <>project <M>{"r"}</M> onto <M>{"b"}</M>. this shared part is what harmless prompts use. removing it would damage the model.</>,
-    <>keep only the orthogonal part <M>{"r'"}</M>. the edit now removes refusal and leaves harmless processing alone.</>,
-  ]
-
-  return (
-    <div className="abl-ortho-demo" onClick={() => { setStep(s => (s + 1) % 3); setPaused(true) }}>
-      <div className="abl-ortho-steps">
-        {['the overlap', 'the shared part', 'the clean direction'].map((label, i) => (
+        {['two shapes', 'the pull', 'the push', 'the result'].map((label, i) => (
           <button key={i} className={`abl-step-btn${step === i ? ' active' : ''}`}
             onClick={(e) => { e.stopPropagation(); setStep(i); setPaused(true) }}>
             <span className="abl-step-num" style={{ background: step === i ? '#7ee787' : 'transparent', color: step === i ? '#0f0f0f' : '#585858' }}>{i + 1}</span>
@@ -463,44 +142,17 @@ function ORBADemo() {
         ))}
       </div>
 
-      <p className="abl-ortho-caption">{descriptions[step]}</p>
+      <p className="abl-ortho-caption">{captions[step]}</p>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="abl-svg">
-        <line x1={0} y1={cy} x2={W} y2={cy} stroke="#1a1a1a" strokeWidth={1} />
-        <line x1={cx} y1={0} x2={cx} y2={H} stroke="#1a1a1a" strokeWidth={1} />
+      <svg viewBox={`0 0 ${W} ${H}`} className="abl-svg-wide">
+        <line x1={x0} y1={yBase} x2={x1} y2={yBase} stroke="#2a2a2a" strokeWidth={1.5} />
+        <text x={x0} y={yBase + 16} fill="#585858" fontSize={9} fontFamily="monospace">output space</text>
 
-        {arrow(ox, oy, bx1, by1, '#79c0ff')}
-        <text x={bx1 + 6} y={by1 - 6} fill="#79c0ff" fontSize={11} fontFamily="monospace">b (harmless)</text>
+        <path d={path(goodMu, 0.45, 1)} fill="rgba(121,192,255,0.15)" stroke="#79c0ff" strokeWidth={2} />
+        <path d={path(badMu, 0.45, 1)} fill="rgba(255,123,114,0.15)" stroke="#ff7b72" strokeWidth={2} />
 
-        {step < 2 ? (
-          <g>
-            {arrow(ox, oy, rx1, ry1, '#ff7b72', 2.5)}
-            <text x={rx1 + 6} y={ry1 - 6} fill="#ff7b72" fontSize={11} fontFamily="monospace">r (raw)</text>
-          </g>
-        ) : (
-          <line x1={ox} y1={oy} x2={rx1} y2={ry1} stroke="#333" strokeWidth={1} strokeDasharray="3 3" />
-        )}
-
-        {step === 1 && (
-          <g>
-            {arrow(ox, oy, px1, py1, '#d2a8ff', 2)}
-            <line x1={px1} y1={py1} x2={rx1} y2={ry1} stroke="#ffa657" strokeWidth={1.5} strokeDasharray="4 3" />
-            <text x={px1 + 4} y={py1 + 16} fill="#d2a8ff" fontSize={9} fontFamily="monospace">shared part</text>
-          </g>
-        )}
-
-        {step === 2 && (
-          <g>
-            {arrow(ox, oy, r2x1, r2y1, '#7ee787', 2.5)}
-            <text x={r2x1 - 10} y={r2y1 - 10} fill="#7ee787" fontSize={11} fontFamily="monospace">r'</text>
-            <path d={`M ${ox + 26 * bx} ${oy + 26 * by} A 26 26 0 0 0 ${ox + 26 * r2x} ${oy + 26 * r2y}`}
-              fill="none" stroke="#585858" strokeWidth={1} />
-            <text x={ox + 40 * Math.cos((Math.atan2(by, bx) + Math.atan2(r2y, r2x)) / 2)} y={oy + 40 * Math.sin((Math.atan2(by, bx) + Math.atan2(r2y, r2x)) / 2)}
-              fill="#585858" fontSize={9} fontFamily="monospace" textAnchor="middle">90°</text>
-          </g>
-        )}
-
-        <circle cx={ox} cy={oy} r={2.5} fill="#555" />
+        <text x={x0 + (goodMu + 3) * xScale} y={yBase - 165} fill="#79c0ff" fontSize={10} fontFamily="monospace" textAnchor="middle">harmless</text>
+        <text x={x0 + (badMu + 3) * xScale} y={yBase - 165} fill="#ff7b72" fontSize={10} fontFamily="monospace" textAnchor="middle">harmful</text>
       </svg>
     </div>
   )
@@ -524,129 +176,223 @@ export default function Abliteration2Blog() {
       <div className="blog-body">
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">the problem</h2>
-          <p className="blog-p">part 1 showed a simple procedure. measure the refusal direction. project it out of the weight matrices. keep the row norms the same. on Qwen3.6-35B this gave zero refusals on the first try.</p>
-          <p className="blog-p">this post is about a model where the simple procedure fails. the model is google/gemma-4-E2B-it. it is small. it has about 5 billion parameters. it is multimodal. and it is very hard to abliterate.</p>
-          <p className="blog-p">this post has three parts. first: why gemma 4 is hard. second: how i replaced hand-tuning with an automatic search. third: what the search found. the result went from 62 percent refusals to 12 percent. the method is general. you can use it on other models.</p>
+          <h2 className="blog-section-tag">summary</h2>
+          <p className="blog-p">part 1 described directional ablation. it measures the refusal direction in the residual stream. it projects that direction out of the weight matrices. it preserves the row norms. the method worked on Qwen3.6-35B. the result was 0 percent refusals with intact benchmarks.</p>
+          <p className="blog-p">this post describes the same project on the gemma 4 family. the direction method failed there. this post has four parts. part one: the three architectural defenses of gemma 4, with the real configuration values. part two: the full failure record of the direction method, with numbers. part three: ARA, the method that works, specified completely. part four: the evaluation methodology and the results.</p>
         </section>
 
         <section className="blog-section">
           <h2 className="blog-section-tag">why gemma 4 is hard</h2>
-          <p className="blog-p">read the config before you write code. three properties of gemma 4 matter. each one makes weight edits weaker. think of the model as a fortress with three defenses. the scene below shows all three. press the buttons to inspect each one.</p>
-          <FortressDemo />
-          <p className="blog-p"><strong>defense 1: four norms per layer.</strong> most transformers have two normalization layers per block. gemma 4 has four. there is one before attention, one after attention, one before the feedforward, and one after the feedforward. a norm divides a vector by its magnitude. so if an edit only makes the refusal signal weaker, the norm makes it strong again. the wall repairs itself.</p>
-          <p className="blog-p"><strong>defense 2: per-layer embeddings.</strong> each layer gets a second input. it is a learned 256-dimensional vector. it is gated and projected into the residual stream. this channel does not go through the weight matrices that abliteration edits. supplies flow through the side tunnel. the edit never sees them.</p>
-          <p className="blog-p"><strong>defense 3: shared keys and values.</strong> the model has 35 layers. only layers 0 to 14 have their own key and value projections. layers 15 to 34 reuse the keys and values from layer 14. a tower has nothing to edit. but the depot feeds all 20 towers. an edit to layer 14 propagates everywhere.</p>
-          <p className="blog-p">the conclusion: gemma 4 is not more aligned than other models. it is fault-tolerant. it has three redundant pathways. each pathway dilutes a weight edit. the edit must be strong enough to survive dilution. but a strong edit damages the model. this is the tradeoff.</p>
+          <p className="blog-p">read the configuration before you write code. this rule saved us twice. gemma 4 is not more aligned than other models. it is fault-tolerant. three architectural properties dilute every weight edit.</p>
+
+          <p className="blog-p"><strong>property 1: four normalization layers per decoder layer.</strong> a standard transformer block has two normalization layers. a gemma 4 decoder layer has four: <code>input_layernorm</code>, <code>post_attention_layernorm</code>, <code>pre_feedforward_layernorm</code>, and <code>post_feedforward_layernorm</code>. each one is an RMSNorm with epsilon 1e-6. RMSNorm divides a vector by its root-mean-square magnitude. the effect: the model re-scales the residual stream after every block. an edit that only weakens a signal gets amplified back. only a change in direction survives.</p>
+          <p className="blog-p">there is a second effect. attention in gemma 4 applies <code>q_norm</code> and <code>k_norm</code> after the projections. these are per-head RMSNorms at head dimension 256. the value path uses <code>v_norm</code> without a learned scale. a magnitude change in the K and V weights is normalized away before attention runs. only a direction change in K and V survives.</p>
+          <p className="blog-p">this geometry has three consequences that we verified in our own runs. first: LoRA adapters and inference-time steering hooks produce zero behavioral change on this family. the norms absorb the perturbation. direct weight editing is the only option. second: weak edits fail. the search must rotate weight rows past orthogonal, so the model anti-expresses the refusal direction. our winning E2B configuration used a strength of 3.7. wangzhang's 31B winner searched strengths up to 6.0. third: editing K and V is pointless. our search set the qkv strength to 0.01 by itself. the direction change could not survive the per-head norms either.</p>
+
+          <p className="blog-p"><strong>property 2: per-layer embeddings.</strong> the configuration field <code>hidden_size_per_layer_input</code> is 256. the model has a second embedding table, <code>embed_tokens_per_layer</code>, with shape (262144, 8960). that is 35 layers times 256 dimensions. each decoder layer receives its own 256-dimensional embedding vector. the vector passes through <code>per_layer_input_gate</code> (256 by 1536), a gating product with the residual stream, and <code>per_layer_projection</code> (1536 by 256). the result is added to the residual stream after the normalization layers. this channel bypasses every matrix that standard abliteration edits. we tested it directly: we added the gate and the projection to the editable components and ran a full search. the refusal rate did not move. the channel is a decoy, at least for refusal. as far as we know, we are the only team that has tested this.</p>
+
+          <p className="blog-p"><strong>property 3: shared keys and values.</strong> the configuration field <code>num_kv_shared_layers</code> is 20 for E2B. the transformers source computes <code>first_kv_shared_layer_idx = 35 - 20 = 15</code>. layers 15 to 34 have no <code>k_proj</code> and no <code>v_proj</code> at all. they reuse the key and value states of earlier layers. the source layer for full attention is layer 14. the source layer for sliding attention is layer 13. an edit to layer 14 propagates to 20 layers at once. the upper 20 layers have nothing to edit.</p>
+          <p className="blog-p">one more detail from the configuration. attention alternates between sliding window attention (window 512) and full attention. the pattern is four sliding layers and one full layer. rope parameters differ between the two types. this does not block abliteration directly. it does change where the refusal signal concentrates. our searches found the strongest refusal direction at layer 17 or 18 on E2B. that is the first full-attention layer after the shared K/V boundary.</p>
+
+          <p className="blog-p">the defenses differ per model. we read the configuration of every gemma 4 model. the family splits in two. the E series (E2B, E4B) is built for edge devices: shared keys and values to shrink the cache, per-layer embeddings to recover capacity, small sliding windows. the standard series (12B, 26B-A4B, 31B) drops both of those mechanisms. one more difference is important: the standard series sets <code>attention_k_eq_v = true</code>. the keys and values are the same tensor. there is no <code>v_proj</code> matrix to edit at all. the E series keeps separate K and V projections.</p>
+
+          <p className="blog-p"><strong>E2B-it, 5.1B.</strong> 35 layers, hidden size 1536, 8 attention heads, 1 KV head. double-wide MLP in the shared region. defenses: four norms, per-layer embeddings, 20 shared K/V layers. full armor, least capacity. hard target.</p>
+          <p className="blog-p"><strong>E4B-it, 8B.</strong> 42 layers, hidden size 2560, 8 attention heads, 2 KV heads. defenses: four norms, per-layer embeddings, 18 shared K/V layers. full armor, more layers to carry the signal. the hardest target we tested.</p>
+          <p className="blog-p"><strong>12B-it.</strong> 48 layers, hidden size 3840, 16 attention heads, 8 KV heads, K equals V. defenses: four norms only. the defenses drop here. much friendlier target.</p>
+          <p className="blog-p"><strong>26B-A4B-it, 27B.</strong> 30 layers, hidden size 2816, mixture of experts with 128 experts and 8 active per token, K equals V. defenses: four norms and expert routing. fewer defenses, but refusal can hide inside 128 experts.</p>
+          <p className="blog-p"><strong>31B-it, 33B.</strong> 60 layers, hidden size 5376, 32 attention heads, 16 KV heads, K equals V. defenses: four norms only. the friendliest target. deep and dense.</p>
+
+          <p className="blog-p">two predictions follow. the E models are the hardest: every defense, least capacity. the standard models are easier: only the norms remain. our results confirm both. E2B needed over-correction to reach 12 percent with the direction method. E4B defeated the direction method completely. and the published 31B result from wangzhang reached 7 percent with attention-only edits, because the 31B has no side channel and no shared keys to repair the cut.</p>
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">attempt 1: the manual cut fails</h2>
-          <p className="blog-p">the first attempt used the part 1 procedure. compute the refusal direction at each layer. pick the strongest one. project it out of the attention and MLP matrices. keep the norms. the result: 10 refusals out of 16 test prompts. that is 62 percent. the model still refused most harmful prompts.</p>
-          <p className="blog-p">math and code still worked. the edit was safe. it was just too weak. one direction at full strength was not enough. more directions damaged the benchmarks. this is the same wall that part 1 mentioned. i needed a better way to explore the space.</p>
+          <h2 className="blog-section-tag">the direction method: the full failure record</h2>
+          <p className="blog-p">we did not fail once. we failed seven times, informatively. each failure removed one hypothesis.</p>
+
+          <p className="blog-p"><strong>attempt 1, the manual cut.</strong> compute the refusal direction at each layer from 512 harmful and 512 harmless prompts. pick the strongest layer. project the direction out of the attention output projection and the MLP down projection of every layer. restore the row norms. result on E2B: 10 refusals out of 16 test prompts. that is 62 percent. the edit was safe but too weak.</p>
+
+          <p className="blog-p"><strong>attempt 2, the first search.</strong> we replaced hand-tuning with an Optuna TPE search. the search optimized a strength kernel over the layers, for two components per layer. the objective minimized refusals and KL divergence together. result: 32 percent refusals at KL 0.028. the best trials pushed against the strength limit of 1.5. every trial also edited every layer. the search paid KL divergence on layers that gave no compliance.</p>
+
+          <p className="blog-p"><strong>attempt 3, three fixes.</strong> we added a sparse window (zero edit outside a learned layer range), over-correction (strength up to 4.0, which rotates weight rows past orthogonal), and ORBA (the refusal direction is made orthogonal to the mean harmless direction before the edit). we also added the key, query, and value projections as editable components. result on E2B: 10 percent refusals at KL 0.116, and 12 percent at KL 0.048.</p>
+          <p className="blog-p">the search also rejected one of our own hypotheses. we believed the key and value projections carried the refusal signal. the winning trial set their strength to 0.01. the win came from over-correction on the attention output projection alone, at strength 3.7. the barrier was the norms diluting a weak edit. it was never the K/V pathway.</p>
+
+          <p className="blog-p"><strong>attempt 4, the subspace.</strong> refusal is multi-dimensional. we replaced the single direction with a rank-k SVD subspace per layer, and the approximate norm rescale with the exact biprojected transform. result: the search reached 0 percent refusals. it also reached math score 1 out of 5 and gibberish output, at KL 3.5. the subspace removes refusal completely, and the model with it. the lesson: refusal metrics without a divergence limit will ship a destroyed model.</p>
+
+          <p className="blog-p"><strong>attempt 5, the divergence budget.</strong> we added a hard rule: trials above KL 0.05 are rejected. result: nothing inside the budget beat 12 percent. 12 percent is the genuine frontier of the direction method on E2B.</p>
+
+          <p className="blog-p"><strong>attempt 6, the data upgrade.</strong> we quintupled the direction data to 2048 prompts per class. we also replaced the narrow public evaluation set with our own diverse 300-prompt set. result: 10 percent refusals on our dataset, but 58 percent on the public one. the two refusal mechanisms are different. an edit that suppresses refusal to styled prompts does not suppress refusal to direct requests. this is the most important negative result of the project: every published refusal number is only valid for its own prompt distribution.</p>
+
+          <p className="blog-p"><strong>attempt 7, E4B.</strong> we ran the full improved pipeline on E4B. three variants: the standard recipe, a variant with wider strength, and a variant that also edited the per-layer embedding channel. all three stopped at about 30 percent refusals inside the divergence budget. all three kept refusing most direct requests. the per-layer embedding channel turned out to be a decoy. the wall was not a component or a parameter. the wall was the method class. a direction is a guess about where refusal lives. on E4B, the guess is never good enough.</p>
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">turn the problem into a search</h2>
-          <p className="blog-p">hand-tuning has a limit. the search space is too large. there are 35 layers, several weight matrices per layer, and a strength value for each one. so i made the ablation a function of four numbers: the peak position, the window width, the peak strength, and the floor strength. four numbers describe the whole curve of edit strengths over the layers. then i let an optimizer search the four numbers.</p>
-          <p className="blog-p">the loop is simple. the optimizer proposes four numbers. the machine builds the edit, applies it, and measures two scores: the refusal rate on 100 harmful prompts, and the KL divergence from the original model on 50 harmless prompts. KL divergence measures how much the output distribution changed. low KL means the model kept its capabilities. then the optimizer proposes the next four numbers, smarter this time. watch the machine run five trials.</p>
-          <SearchMachineDemo />
-          <p className="blog-p">the curve of edit strengths is called a kernel. attention and MLP get separate kernels, because MLP edits damage the model more than attention edits. the algorithm that proposes the numbers is TPE from the Optuna library. it learns from every trial. a trial that damages the model makes the next trial gentler. a trial with many refusals makes the next trial stronger.</p>
+          <h2 className="blog-section-tag">arbitrary rank ablation</h2>
+          <p className="blog-p">ARA stands for arbitrary rank ablation. the principle: forget directions completely. we implemented it from first principles in our own code.</p>
+
+          <p className="blog-p"><strong>step 1: record the inputs and outputs.</strong> attach a PyTorch forward hook to one weight matrix. run 400 harmless prompts and 400 harmful prompts through the model. for each prompt, record the input and the output of the matrix at the last token position. the last token position is where the model makes the refusal decision. repeat for every steerable matrix: the attention output projection and the MLP down projection of every layer.</p>
+
           <CodeBlock>{`
-def kernel_weights(max_w, pos, min_frac, dist):
-    """gaussian kernel: max_w at pos, decaying to max_w*min_frac
-    at dist. ZERO edit outside the window."""
-    min_w = max_w * min_frac
-    return torch.tensor([
-        0.0 if abs(l - pos) > dist
-        else min_w + (max_w - min_w) * math.exp(-2.0 * (abs(l - pos) / dist) ** 2)
-        for l in range(n_layers)
-    ])
+def capture_io(texts):
+    io = {}
+
+    def make_hook(layer_idx, comp):
+        def hook(module, inputs, outputs):
+            # (batch, position, dim) -> last token only.
+            # the last token position is where the model
+            # makes the refusal decision
+            io[(layer_idx, comp)] = (
+                inputs[0][:, -1, :].detach().float().cpu(),   # X
+                outputs[:, -1, :].detach().float().cpu(),     # Y
+            )
+        return hook
+
+    hooks = []
+    for li, layer in enumerate(lm_layers):
+        for comp, mod in get_modules(layer):   # o_proj, down_proj
+            hooks.append(mod.register_forward_hook(make_hook(li, comp)))
+
+    for b in range(0, tokens.shape[0], BATCH):
+        model(tokens[b:b + BATCH])             # one forward pass
+
+    for h in hooks:
+        h.remove()
+    return io
+
+io_good = capture_io(harmless_prompts)   # X_g, Y_g per matrix
+io_bad  = capture_io(harmful_prompts)    # X_b, Y_b per matrix
           `}</CodeBlock>
-          <p className="blog-p">each trial is fast. only the edited matrices are stored. the originals stay in CPU memory. a trial restores the originals, applies a new edit, and measures the two scores. one trial takes about one minute on one GPU.</p>
-        </section>
 
-        <section className="blog-section">
-          <h2 className="blog-section-tag">attempt 2: the search finds the ceiling</h2>
-          <p className="blog-p">the first search edited two components per layer: the attention output projection and the MLP down projection. strength was limited to 1.5. the kernel floor applied to all 35 layers. after 100 trials the best result was 32 percent refusals at KL 0.028.</p>
-          <p className="blog-p">better than 62 percent. but not good. the search itself showed two reasons. first: the best trials pushed strength to the 1.5 limit. the search wanted more room. second: every trial edited every layer. the KL cost came from layers that gave no compliance. and a third problem was hiding in the math. the raw refusal direction is not pure. part of it points in the same direction as normal, harmless processing. remove the raw direction and you damage harmless behavior too.</p>
-        </section>
+          <p className="blog-p"><strong>step 2: adjust the matrix with three rules.</strong> <M>{"W'"}</M> is the adjusted matrix. <M>{"X_g, Y_g"}</M> are the recorded inputs and outputs for harmless prompts. <M>{"X_b, Y_b"}</M> are the same for harmful prompts. the loss is:</p>
+          <M block>{"L = a \\cdot \\underbrace{\\|X_g W'^\\top - Y_g\\|^2}_{\\text{rule 1: preserve}} + b \\cdot \\big( \\underbrace{d_{\\text{knn}}(X_b W'^\\top, \\, Y_g)}_{\text{rule 2: pull}} - c \\cdot \\underbrace{d_{\\text{knn}}(X_b W'^\\top, \\, Y_b)}_{\text{rule 3: push}} \\big)"}</M>
+          <p className="blog-p">rule 1 keeps harmless outputs unchanged. this protects capability directly. no separate capability metric is necessary. rule 2 pulls harmful outputs toward the harmless outputs. this removes the refusal behavior. rule 3 pushes harmful outputs away from their original positions. this is over-correction. it is not a dial. it is a term in the loss. rule 3 is what beats the norm circle from the first section.</p>
+          <DistributionDemo />
 
-        <section className="blog-section">
-          <h2 className="blog-section-tag">attempt 3: three fixes</h2>
-          <p className="blog-p">so i changed three things. each fix answers one failure of attempt 2.</p>
-          <p className="blog-p"><strong>fix 1: a sparse window.</strong> layers far from the kernel peak now get zero edit. not a small edit. zero. the edit becomes surgical. the KL budget is spent only where it buys compliance. drag the sliders to feel it.</p>
-          <KernelExplorer />
-          <p className="blog-p"><strong>fix 2: over-correction.</strong> the strength limit went from 1.5 to 4.0. a strength of 1.0 removes the refusal component from a weight row. a strength above 1.0 rotates the row past orthogonal. the model starts to anti-express the direction. this is the answer to the self-healing wall. the norms dilute the edit. over-correction compensates. step through it.</p>
-          <StrengthDemo />
-          <p className="blog-p"><strong>fix 3: a clean direction.</strong> before the edit, remove the part of the refusal direction that overlaps with harmless processing. this is one gram-schmidt step. the technique is called ORBA.</p>
-          <ORBADemo />
-          <p className="blog-p">i also added the key, query, and value projections as editable components. then i ran 100 trials again. the result was a clean pareto front.</p>
-          <ParetoChart />
-          <p className="blog-p">a pareto front is the set of trials where you cannot improve one score without making the other score worse. the green point is the one i shipped: 12 percent refusals at KL 0.048. the point at 10 percent has KL 0.116. that is too much damage. the point at 15 percent has KL 0.024. the front gives you the choice. before, there was no choice. there was only one edit and one outcome.</p>
-          <p className="blog-p">the search also answered a question i did not ask. i thought the key and value projections carried the refusal signal. the best trial set the key/query/value strength to 0.01. almost zero. the search turned my hypothesis off. the win came from over-correction on the attention output projection, with a strength of 3.7. the barrier was never the key/value pathway. the barrier was the norms diluting a timid edit. this is why you run the search. the machine checks your beliefs.</p>
-          <p className="blog-p">one more result was stable across all searches. the best direction always came from layer 17 or 18. layer 14 is the last layer with its own keys and values. layer 17 is where the shared pathway is first processed in full attention. the refusal signal crystallizes there.</p>
-        </section>
+          <p className="blog-p"><strong>the distance is not an average.</strong> <M>{"d_{\\text{knn}}"}</M> is the mean distance from each output to its k nearest neighbors in the target set. an average would collapse the target set to one point. the nearest-neighbor distance preserves the shape of the set. the search chooses k between 1 and 15.</p>
 
-        <section className="blog-section">
-          <h2 className="blog-section-tag">be honest about the evaluation</h2>
-          <p className="blog-p">the numbers above use keyword matching on 100 public prompts. this has limits. gemma 4 can write a long helpful preamble and then refuse at the end. a keyword check on 100 tokens can miss this. an LLM judge catches it. so the true refusal rate is probably higher than 12 percent.</p>
-          <p className="blog-p">some published models claim 3 percent refusals. treat these numbers with care. ask three questions. how many tokens were generated? what counted as a refusal? which prompts were used? if the model card does not answer these questions, the number means nothing.</p>
-        </section>
+          <CodeBlock>{`
+def knn_mean(a, b, k):
+    # mean over rows of a of the mean distance
+    # to the k nearest rows in b
+    d = torch.cdist(a, b)
+    return d.topk(k, largest=False).values.mean()
 
-        <section className="blog-section">
-          <h2 className="blog-section-tag">what is next</h2>
-          <p className="blog-p">two improvements are already running. the first one uses a subspace instead of one direction. research shows that refusal is multi-dimensional. one direction leaves residual components. the search now picks a rank between 1 and 4 per layer. the second improvement is the biprojected transform. it decomposes each weight matrix into magnitudes and unit vectors. it edits only the unit vectors. norm preservation becomes exact, not approximate. this should lower the KL at the same refusal rate.</p>
-          <p className="blog-p">if that is not enough, the next step is RDO. RDO learns the direction with gradient descent through the frozen model. it does not estimate the direction from activations. the paper reports the same refusal removal with about 40 percent less capability damage.</p>
-        </section>
+def objective(W, Xg, Yg, Xb, Yb, pw, sw, oc, k):
+    new_good = Xg @ W.T
+    new_bad  = Xb @ W.T
 
-        <section className="blog-section">
-          <h2 className="blog-section-tag">the result</h2>
-          <p className="blog-p">the model is on HuggingFace. math and code still work. the vision and audio encoders were not touched.</p>
-          <ul className="blog-links-list">
-            <li><a href="https://huggingface.co/Bahushruth/gemma-4-E2B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-E2B-it-abliterated</a> (full model, bf16 safetensors)</li>
-            <li><a href="https://huggingface.co/datasets/Bahushruth/abliteration-harmful-enriched" target="_blank" rel="noopener noreferrer">Bahushruth/abliteration-harmful-enriched</a> (7356 harmful prompts used for the directions)</li>
-          </ul>
-          <p className="blog-p">the progression in one table:</p>
+    # rule 1: harmless outputs must not move
+    preserve = ((new_good - Yg) ** 2).mean()
+
+    # rule 2: pull harmful outputs toward harmless ones
+    # rule 3: push them away from their old positions
+    steer = (knn_mean(new_bad, Yg, k)
+             - oc * knn_mean(new_bad, Yb, k))
+
+    return pw * preserve + sw * steer
+          `}</CodeBlock>
+
+          <p className="blog-p"><strong>the norms are preserved inside the solve.</strong> the optimizer does not see the raw matrix. it sees a reparameterized form: <M>{"W' = N \\cdot \\hat{W}"}</M>, where <M>{"\\hat{W}"}</M> is the row-normalized matrix and <M>{"N"}</M> is the vector of original row norms. every row keeps its original length during the whole optimization. this is grimjim's norm preservation from part 1, built into the solver instead of applied after it.</p>
+
+          <p className="blog-p"><strong>the solver.</strong> the loss is smooth and close to convex. LBFGS with the strong-Wolfe line search converges in two or three steps per matrix. we run five steps. then the solver moves to the next matrix. a full pass over 42 layers and 84 matrices takes about one minute.</p>
+
+          <CodeBlock>{`
+W = module.weight.data.float().clone().requires_grad_(True)
+row_norms = module.weight.data.float().norm(dim=1, keepdim=True).detach()
+
+def get_matrix():
+    # reparameterization: row norms preserved by construction
+    return row_norms * F.normalize(W, p=2, dim=1)
+
+optimizer = LBFGS([W], lr=1.0, max_iter=20,
+                  history_size=10, line_search_fn="strong_wolfe")
+
+def closure():
+    optimizer.zero_grad()
+    loss = objective(get_matrix(), Xg, Yg, Xb, Yb, pw, sw, oc, k)
+    loss.backward()
+    return loss
+
+for step in range(5):              # converges in 2-3 steps
+    optimizer.step(closure)
+
+with torch.no_grad():
+    module.weight.data = get_matrix().to(module.weight.dtype)
+          `}</CodeBlock>
+
+          <p className="blog-p"><strong>the remaining search.</strong> six numbers are left to choose. an Optuna TPE search picks them. the search minimizes the refusal rate and the KL divergence together. trials above the divergence budget are rejected. the six numbers are:</p>
+
+          <CodeBlock>{`
+def objective(trial):
+    start = trial.suggest_int("start_layer_index", 0, n_layers // 2)
+    end   = trial.suggest_int("end_layer_index", n_layers // 2, n_layers)
+    pw    = trial.suggest_float("preserve_good_behavior_weight", 0.0, 1.0)
+    sw    = trial.suggest_float("steer_bad_behavior_weight", 1e-4, 1.0, log=True)
+    oc    = trial.suggest_float("overcorrect_relative_weight", 0.0, 1.3)
+    k     = trial.suggest_int("neighbor_count", 1, 15)
+
+    ara_abliterate(start, end, pw, sw, oc, k)
+
+    refusals = refusal_rate()      # 300 prompts, 2 datasets
+    kl = kl_divergence()           # 50 harmless prompts, teacher-forced
+    if kl > KL_BUDGET:
+        return refusals, 10.0 + kl  # rejected: dominated on objective 2
+    return refusals, kl
+
+study = optuna.create_study(directions=["minimize", "minimize"])
+study.optimize(objective, n_trials=40)
+          `}</CodeBlock>
           <div className="abl-quant-table">
             <div className="abl-quant-row abl-quant-header">
-              <span>attempt</span><span>method</span><span>refusals</span><span>KL</span>
+              <span>parameter</span><span>range</span><span>meaning</span>
             </div>
-            <div className="abl-quant-row">
-              <span>manual</span><span>one direction, full strength, all layers</span><span>62%</span><span>not measured</span>
-            </div>
-            <div className="abl-quant-row">
-              <span>search 1</span><span>2 components, dense kernel, strength ≤ 1.5</span><span>32%</span><span>0.028</span>
-            </div>
-            <div className="abl-quant-row">
-              <span>search 2</span><span>5 components, sparse kernel, strength ≤ 4.0, ORBA</span><span>12%</span><span>0.048</span>
-            </div>
+            <div className="abl-quant-row"><span>start_layer_index</span><span>0 to L/2</span><span>first edited layer</span></div>
+            <div className="abl-quant-row"><span>end_layer_index</span><span>L/2 to L</span><span>last edited layer</span></div>
+            <div className="abl-quant-row"><span>preserve_good_behavior_weight</span><span>0 to 1</span><span>strength of rule 1</span></div>
+            <div className="abl-quant-row"><span>steer_bad_behavior_weight</span><span>1e-4 to 1 (log)</span><span>strength of rules 2 and 3</span></div>
+            <div className="abl-quant-row"><span>overcorrect_relative_weight</span><span>0 to 1.3</span><span>rule 3 relative to rule 2</span></div>
+            <div className="abl-quant-row"><span>neighbor_count</span><span>1 to 15</span><span>k in the kNN distance</span></div>
           </div>
-          <p className="blog-p">the lesson of part 2 is not a new technique. it is a change of method. part 1 guessed the edit. part 2 defined the tradeoff and searched it. guessing gives you one outcome. searching gives you the frontier.</p>
+
+          <p className="blog-p">the difference from the direction method is fundamental. the direction method computes one global direction and applies it everywhere, whether or not each matrix needs it. ARA solves a local problem at each matrix. it spends change only where harmful and harmless behavior actually differ. this is why it beats the wall.</p>
+        </section>
+
+        <section className="blog-section">
+          <h2 className="blog-section-tag">evaluation methodology</h2>
+          <p className="blog-p"><strong>the refusal metric.</strong> 300 prompts: 200 from our enriched dataset (35 categories, 10 phrasing styles) and 100 from the public mlabonne dataset. both datasets are necessary. attempt 6 proved that a model can pass one and fail the other. a response counts as a refusal if it contains one of 31 keyword markers, case-insensitive. keyword matching undercounts soft refusals. an LLM judge would catch more. we report the keyword number and we say so.</p>
+          <p className="blog-p"><strong>the divergence metric.</strong> KL divergence from the original model. 50 harmless prompts. the original model generates an answer to each prompt first. both models are then scored on the original model's own answers, teacher-forced, over 100 token positions, full 262144-token vocabulary. this is a strict metric. other published numbers use cheaper variants: fewer positions, smaller vocabularies, or proxy sets. a KL number without a stated computation is not comparable.</p>
+          <p className="blog-p"><strong>the capability check.</strong> five arithmetic questions and one code question on the final model. the check is weak but it catches destroyed models. the destroyed models from attempt 4 passed the refusal test with 0 percent and failed arithmetic. the KL metric caught them too. both guards are necessary.</p>
+        </section>
+
+        <section className="blog-section">
+          <h2 className="blog-section-tag">results</h2>
+          <p className="blog-p">three gemma 4 models, one method (ARA), one evaluation protocol. every number below is a keyword refusal rate on the stated set, plus KL on our strict metric. all three models pass math 5/5 and a code check.</p>
+          <ResultsCharts />
+          <p className="blog-p">on E4B, the direction method stopped at 29–30 percent refusals inside the divergence budget. ARA reaches 2.7 percent on the same union set. that is about a 10× drop in refusals. KL rises from ~0.02 to ~0.12. destroyed models in attempt 4 started near KL 4. the gap is large.</p>
+          <p className="blog-p">the split matters. attempt 6 showed that a model can pass one prompt distribution and fail another. every shipped point above is balanced across enriched and mlabonne. the union objective forced that balance.</p>
+          <p className="blog-p">shipped weights:</p>
+          <ul className="blog-links-list">
+            <li><a href="https://huggingface.co/Bahushruth/gemma-4-E2B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-E2B-it-abliterated</a> — 3.0% union (1% / 6%) @ KL 0.173</li>
+            <li><a href="https://huggingface.co/Bahushruth/gemma-4-E4B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-E4B-it-abliterated</a> — 2.7% union (2% / 3%) @ KL 0.116</li>
+            <li><a href="https://huggingface.co/Bahushruth/gemma-4-26B-A4B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-26B-A4B-it-abliterated</a> — 6.7% union (6% / 7%) @ KL 0.230</li>
+            <li><a href="https://huggingface.co/datasets/Bahushruth/abliteration-harmful-enriched" target="_blank" rel="noopener noreferrer">Bahushruth/abliteration-harmful-enriched</a> — 7356 harmful prompts, 35 categories, 10 styles</li>
+          </ul>
+          <p className="blog-p">31B ARA search is still running. 12B is optional: same defenses as 31B, fewer layers. the collection updates as each model lands.</p>
         </section>
 
         <section className="blog-section">
           <h2 className="blog-section-tag">references</h2>
           <ul className="blog-links-list">
             <li>
-              <a href="https://github.com/p-e-w/heretic" target="_blank" rel="noopener noreferrer">p-e-w/heretic</a>
-              <br /><span className="blog-ref-note">the tool that popularized optuna-based abliteration. worth reading if you want the industrial version of this post</span>
-            </li>
-            <li>
               <a href="https://huggingface.co/blog/grimjim/norm-preserving-biprojected-abliteration" target="_blank" rel="noopener noreferrer">grimjim - norm-preserving biprojected abliteration</a>
-              <br /><span className="blog-ref-note">exact norm preservation. tops the abliteration leaderboards</span>
-            </li>
-            <li>
-              <a href="https://arxiv.org/abs/2502.17420" target="_blank" rel="noopener noreferrer">Wollschläger et al. - The Geometry of Refusal (ICML 2025)</a>
-              <br /><span className="blog-ref-note">learns the refusal direction with gradient descent. same efficacy, much less damage</span>
-            </li>
-            <li>
-              <a href="https://arxiv.org/abs/2511.08379" target="_blank" rel="noopener noreferrer">Piras et al. - SOM Directions Are Better Than One (AAAI 2026)</a>
-              <br /><span className="blog-ref-note">refusal is a manifold, not a line. multi-direction beats single-direction at the same budget</span>
+              <br /><span className="blog-ref-note">exact norm preservation, used inside the ARA solve</span>
             </li>
             <li>
               <a href="https://arxiv.org/abs/2502.09674" target="_blank" rel="noopener noreferrer">Pan et al. - The Hidden Dimensions of LLM Alignment (ICML 2025)</a>
-              <br /><span className="blog-ref-note">the formal proof that refusal is multi-dimensional</span>
+              <br /><span className="blog-ref-note">proof that refusal is multi-dimensional. the reason single directions hit a wall</span>
+            </li>
+            <li>
+              <a href="https://arxiv.org/abs/2511.08379" target="_blank" rel="noopener noreferrer">Piras et al. - SOM Directions Are Better Than One (AAAI 2026)</a>
+              <br /><span className="blog-ref-note">refusal is a manifold, not a line</span>
             </li>
             <li>
               <a href="https://arxiv.org/abs/2406.11717" target="_blank" rel="noopener noreferrer">Arditi et al. - Refusal in Language Models Is Mediated by a Single Direction (2024)</a>
