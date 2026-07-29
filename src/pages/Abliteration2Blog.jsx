@@ -273,7 +273,7 @@ export default function Abliteration2Blog() {
 
           <p className="blog-p"><strong>property 3: shared keys and values.</strong> the configuration field <code>num_kv_shared_layers</code> is 18 for E4B. layers 24 to 41 have no <code>k_proj</code> and no <code>v_proj</code>. they reuse the key and value states of earlier layers. an edit to the source layer propagates to 18 layers at once. the upper 18 layers have nothing to edit.</p>
 
-          <p className="blog-p">the standard series drops two of these defenses. 12B, 26B-A4B, and 31B have no per-layer embeddings and no shared keys and values. they keep only the four normalization layers. the standard series also sets <code>attention_k_eq_v = true</code>. the keys and values are the same tensor. there is no <code>v_proj</code> matrix to edit.</p>
+          <p className="blog-p">the standard series drops two of these defenses. 12B, 26B-A4B, and 31B have no per-layer embeddings and no shared keys and values. they keep only the four normalization layers. the standard series also sets <code>attention_k_eq_v = true</code>. the keys and values are the same tensor. there is no <code>v_proj</code> matrix to edit. fewer defenses does not mean easier. the standard models replace them with other problems: expert routing on A4B, and more layers with more capacity on 12B and 31B.</p>
 
           <div className="abl-quant-table abl-model-table">
             <div className="abl-quant-row abl-quant-header">
