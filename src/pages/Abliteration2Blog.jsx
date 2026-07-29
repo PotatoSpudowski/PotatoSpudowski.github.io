@@ -73,7 +73,7 @@ function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
 function ResultsCharts() {
   return (
     <div className="abl-results-charts">
-      <p className="abl-layer-caption">refusal rate by method. lower is better. the original model refuses almost every prompt. direction abliteration improved on E2B but stopped at 30% on E4B. ARA reaches single-digit refusals on all three models.</p>
+      <p className="abl-layer-caption">refusal rate by method on the 500-prompt union set. lower is better. the original model refuses almost every prompt. direction abliteration improved on E2B but stopped at 30% on E4B. ARA reaches single-digit refusals on all three models.</p>
       <GroupedBarChart data={COMPARE_RESULTS} series={REFUSAL_SERIES} maxValue={105} unit="%" />
 
       <p className="abl-layer-caption" style={{ marginTop: '1.5rem' }}>KL divergence from the original model (our metric: 50 harmless prompts, teacher-forced, 100 positions, full vocab). lower is better. ARA stays inside the capability-preserving region while cutting refusals by an order of magnitude.</p>
@@ -234,12 +234,12 @@ export default function Abliteration2Blog() {
           <h2 className="blog-section-tag">summary</h2>
           <p className="blog-p"><a href="https://potatospudowski.github.io/articles/abliteration" target="_blank" rel="noopener noreferrer">part 1</a> described directional ablation. it measures the refusal direction in the residual stream. it projects that direction out of the weight matrices. it preserves the row norms. the method worked on Qwen3.6-35B. the result was 0 percent refusals with intact benchmarks. that post reached more than <strong>250,000 impressions</strong> across LinkedIn, X, and Reddit. the <a href="https://huggingface.co/collections/Bahushruth/uncensored-llms" target="_blank" rel="noopener noreferrer">uncensored model collection</a> on Hugging Face passed <strong>700,000 downloads</strong> on 29 July 2026.</p>
           <p className="blog-p">this post describes what happened when we tried the same project on the gemma 4 family. gemma 4 is a harder target. the direction method stopped at 30 percent refusals inside the divergence budget. the reason is not better alignment. the reason is fault-tolerant architecture: four normalization layers per decoder layer, per-layer embeddings, and shared keys and values. we had to build a different method.</p>
-          <p className="blog-p">this post has four parts:</p>
+          <p className="blog-p">this post covers:</p>
           <ul className="blog-bullet-list">
-            <li>the three architectural defenses of gemma 4, with the real configuration values</li>
-            <li>why the direction method stopped, with numbers</li>
-            <li>arbitrary rank ablation (ARA), the method that works, specified completely</li>
-            <li>the evaluation methodology and the results</li>
+            <li>gemma 4's architectural defenses</li>
+            <li>why direction abliteration failed</li>
+            <li>arbitrary rank ablation (ARA)</li>
+            <li>evaluation and results</li>
           </ul>
         </section>
 
@@ -422,7 +422,7 @@ study.optimize(objective, n_trials=40)
 
         <section className="blog-section">
           <h2 className="blog-section-tag">results</h2>
-          <p className="blog-p">three gemma 4 models, one evaluation protocol. every number below is a keyword refusal rate on the union set, plus KL divergence from the original model on our strict metric. all three models pass math 5/5 and a code check.</p>
+          <p className="blog-p">three gemma 4 models, one evaluation protocol. every number below is a refusal rate on the 500-prompt union set, measured with keyword matching and an LLM judge, plus KL divergence from the original model on our strict metric. all three models pass the smoke battery.</p>
           <ResultsCharts />
           <p className="blog-p">the charts show the same story twice. the original model refuses 95 to 98 percent of the harmful prompts, depending on size. direction abliteration cut E2B to 12 percent, but it left E4B at 30 percent. ARA reaches 3.0 percent on E2B, 2.7 percent on E4B, and 6.7 percent on the MoE A4B. the reduction is about 4× on E2B and 10× on E4B.</p>
           <p className="blog-p">the KL numbers stay inside the safe region. direction abliteration on E2B used KL 0.048. ARA on E2B uses KL 0.173. that is a real increase, but it is far below the KL 4 region where models produce gibberish. ARA spends more divergence than direction abliteration because it makes local edits where they matter, not one global edit everywhere.</p>
