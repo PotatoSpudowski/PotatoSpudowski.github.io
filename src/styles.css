@@ -1843,7 +1843,7 @@ pre code {
 }
 
 .abl-model-table .abl-quant-row {
-    grid-template-columns: 110px 1fr 1fr 80px;
+    grid-template-columns: 110px 1.2fr 1fr;
 }
 
 @media (max-width: 720px) {
@@ -1853,7 +1853,6 @@ pre code {
     }
     .abl-model-table .abl-quant-row span:nth-child(2)::before { content: "Architecture: "; color: var(--text-muted); }
     .abl-model-table .abl-quant-row span:nth-child(3)::before { content: "Defenses: "; color: var(--text-muted); }
-    .abl-model-table .abl-quant-row span:nth-child(4)::before { content: "Difficulty: "; color: var(--text-muted); }
 }
 
 /* Layer viz */
@@ -3039,6 +3038,26 @@ pre code {
     background: var(--bg-primary);
     border: 1px solid var(--border);
     border-radius: 4px;
+}
+
+/* ARA demo split: SVG + code side by side */
+.abl-demo-split {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+.abl-demo-split .code-block {
+    margin: 0;
+    font-size: 0.7rem;
+    line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+    .abl-demo-split {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Kernel explorer sliders */
