@@ -17,7 +17,7 @@ function M({ children, block }) {
 const COMPARE_RESULTS = [
   { name: 'E2B (5B)', original: 99, direction: 12, ara: 3.0, directionKl: 0.048, araKl: 0.173 },
   { name: 'E4B (8B)', original: 99, direction: 30, ara: 2.7, directionKl: 0.020, araKl: 0.116 },
-  { name: '26B-A4B', original: 99, direction: null, ara: 6.7, directionKl: null, araKl: 0.230 },
+  { name: '26B-A4B', original: 99, direction: 22, ara: 6.7, directionKl: 0.035, araKl: 0.230 },
 ]
 
 const REFUSAL_SERIES = [
@@ -31,7 +31,7 @@ const KL_SERIES = [
   { key: 'araKl', name: 'ARA (this work)', color: '#79c0ff' },
 ]
 
-function GroupedBarChart({ data, series, maxValue, unit = '%', showAbsent }) {
+function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
   const max = maxValue || Math.max(
     ...data.flatMap(d => series.map(s => d[s.key] != null ? d[s.key] : 0)),
     1
@@ -52,21 +52,15 @@ function GroupedBarChart({ data, series, maxValue, unit = '%', showAbsent }) {
           <div className="css-chart-bars">
             {series.map(s => (
               <div key={s.key} className="css-chart-bar-wrap">
-                {d[s.key] != null ? (
-                  <>
-                    <div
-                      className="css-chart-bar"
-                      style={{ width: `${(d[s.key] / max) * 100}%`, background: s.color }}
-                    />
-                    <span className="css-chart-value">
-                      {typeof d[s.key] === 'number' && d[s.key] < 1
-                        ? d[s.key].toFixed(3)
-                        : d[s.key]}{unit}
-                    </span>
-                  </>
-                ) : (
-                  <span className="css-chart-value css-chart-absent">not run</span>
-                )}
+                <div
+                  className="css-chart-bar"
+                  style={{ width: `${(d[s.key] / max) * 100}%`, background: s.color }}
+                />
+                <span className="css-chart-value">
+                  {typeof d[s.key] === 'number' && d[s.key] < 1
+                    ? d[s.key].toFixed(3)
+                    : d[s.key]}{unit}
+                </span>
               </div>
             ))}
           </div>
