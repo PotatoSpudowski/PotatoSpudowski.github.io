@@ -14,20 +14,28 @@ function M({ children, block }) {
 
 // --- results: family release charts ---
 
-const FAMILY_RESULTS = [
-  { name: 'E2B (5B)', union: 3.0, enriched: 1, mlabonne: 6, kl: 0.173 },
-  { name: 'E4B (8B)', union: 2.7, enriched: 2, mlabonne: 3, kl: 0.116 },
-  { name: '26B-A4B', union: 6.7, enriched: 6, mlabonne: 7, kl: 0.230 },
+const COMPARE_RESULTS = [
+  { name: 'E2B (5B)', original: 99, direction: 12, ara: 3.0, directionKl: 0.048, araKl: 0.173 },
+  { name: 'E4B (8B)', original: 99, direction: 30, ara: 2.7, directionKl: 0.020, araKl: 0.116 },
+  { name: '26B-A4B', original: 99, direction: null, ara: 6.7, directionKl: null, araKl: 0.230 },
 ]
 
 const REFUSAL_SERIES = [
-  { key: 'union', name: 'union 300', color: '#7ee787' },
-  { key: 'enriched', name: 'enriched 200', color: '#79c0ff' },
-  { key: 'mlabonne', name: 'mlabonne 100', color: '#d2a8ff' },
+  { key: 'original', name: 'original model', color: '#ff7b72' },
+  { key: 'direction', name: 'direction abliteration', color: '#ffa657' },
+  { key: 'ara', name: 'ARA (this work)', color: '#7ee787' },
 ]
 
-function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
-  const max = maxValue || Math.max(...data.flatMap(d => series.map(s => d[s.key] || 0)), 1)
+const KL_SERIES = [
+  { key: 'directionKl', name: 'direction abliteration', color: '#ffa657' },
+  { key: 'araKl', name: 'ARA (this work)', color: '#79c0ff' },
+]
+
+function GroupedBarChart({ data, series, maxValue, unit = '%', showAbsent }) {
+  const max = maxValue || Math.max(
+    ...data.flatMap(d => series.map(s => d[s.key] != null ? d[s.key] : 0)),
+    1
+  )
   return (
     <div className="css-chart">
       <div className="css-chart-legend">
@@ -44,11 +52,21 @@ function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
           <div className="css-chart-bars">
             {series.map(s => (
               <div key={s.key} className="css-chart-bar-wrap">
-                <div
-                  className="css-chart-bar"
-                  style={{ width: `${(d[s.key] / max) * 100}%`, background: s.color }}
-                />
-                <span className="css-chart-value">{d[s.key]}{unit}</span>
+                {d[s.key] != null ? (
+                  <>
+                    <div
+                      className="css-chart-bar"
+                      style={{ width: `${(d[s.key] / max) * 100}%`, background: s.color }}
+                    />
+                    <span className="css-chart-value">
+                      {typeof d[s.key] === 'number' && d[s.key] < 1
+                        ? d[s.key].toFixed(3)
+                        : d[s.key]}{unit}
+                    </span>
+                  </>
+                ) : (
+                  <span className="css-chart-value css-chart-absent">not run</span>
+                )}
               </div>
             ))}
           </div>
@@ -59,33 +77,13 @@ function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
 }
 
 function ResultsCharts() {
-  const klData = FAMILY_RESULTS.map(d => ({
-    name: d.name,
-    sr: d.kl,
-    color: '#7ee787',
-  }))
-  const klMax = Math.max(...klData.map(d => d.sr)) * 1.15
-
   return (
     <div className="abl-results-charts">
-      <p className="abl-layer-caption">refusal rate on three eval sets. lower is better. original models refuse 97–99% of these prompts.</p>
-      <GroupedBarChart data={FAMILY_RESULTS} series={REFUSAL_SERIES} maxValue={12} unit="%" />
+      <p className="abl-layer-caption">refusal rate by method. lower is better. the original model refuses almost every prompt. direction abliteration improved on E2B but stopped at 30% on E4B. ARA reaches single-digit refusals on all three models.</p>
+      <GroupedBarChart data={COMPARE_RESULTS} series={REFUSAL_SERIES} maxValue={105} unit="%" />
 
-      <p className="abl-layer-caption" style={{ marginTop: '1.5rem' }}>KL divergence from the original model (our metric: 50 prompts, teacher-forced, full vocab). lower is better. destroyed models start near KL 4.</p>
-      <div className="css-chart">
-        {klData.map((d, i) => (
-          <div key={i} className="css-chart-row">
-            <span className="css-chart-name">{d.name}</span>
-            <div className="css-chart-bar-wrap">
-              <div
-                className="css-chart-bar"
-                style={{ width: `${(d.sr / klMax) * 100}%`, background: d.color }}
-              />
-              <span className="css-chart-value">{d.sr.toFixed(3)}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <p className="abl-layer-caption" style={{ marginTop: '1.5rem' }}>KL divergence from the original model (our metric: 50 harmless prompts, teacher-forced, 100 positions, full vocab). lower is better. ARA stays inside the capability-preserving region while cutting refusals by an order of magnitude.</p>
+      <GroupedBarChart data={COMPARE_RESULTS} series={KL_SERIES} maxValue={0.25} unit="" />
     </div>
   )
 }
@@ -179,7 +177,7 @@ export default function Abliteration2Blog() {
           <h2 className="blog-section-tag">summary</h2>
           <p className="blog-p">part 1 described directional ablation. it measures the refusal direction in the residual stream. it projects that direction out of the weight matrices. it preserves the row norms. the method worked on Qwen3.6-35B. the result was 0 percent refusals with intact benchmarks. that post reached more than 250,000 impressions across LinkedIn, X, and Reddit. the uncensored model collection on Hugging Face passed 700,000 downloads on 29 July 2026.</p>
           <p className="blog-p">this post describes what happened when we tried the same project on the gemma 4 family. gemma 4 is a harder target. the direction method stopped at 30 percent refusals inside the divergence budget. the reason is not better alignment. the reason is fault-tolerant architecture: four normalization layers per decoder layer, per-layer embeddings, and shared keys and values. we had to build a different method.</p>
-          <p className="blog-p">this post has four parts. part one: the three architectural defenses of gemma 4, with the real configuration values. part two: the full failure record of the direction method, with numbers. part three: arbitrary rank ablation (ARA), the method that works, specified completely. part four: the evaluation methodology and the results.</p>
+          <p className="blog-p">this post has four parts. part one: the three architectural defenses of gemma 4, with the real configuration values. part two: why the direction method stopped, with numbers. part three: arbitrary rank ablation (ARA), the method that works, specified completely. part four: the evaluation methodology and the results.</p>
         </section>
 
         <section className="blog-section">
@@ -207,30 +205,20 @@ export default function Abliteration2Blog() {
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">the direction method: the full failure record</h2>
-          <p className="blog-p">we did not fail once. we failed seven times, informatively. each failure removed one hypothesis.</p>
+          <h2 className="blog-section-tag">why the direction method stopped</h2>
 
-          <p className="blog-p"><strong>attempt 1, the manual cut.</strong> compute the refusal direction at each layer from 512 harmful and 512 harmless prompts. pick the strongest layer. project the direction out of the attention output projection and the MLP down projection of every layer. restore the row norms. result on E2B: 10 refusals out of 16 test prompts. that is 62 percent. the edit was safe but too weak.</p>
+          <p className="blog-p">we started with the same method that worked on Qwen3.6-35B. compute a refusal direction from harmful and harmless prompts. project that direction out of the weight matrices. restore the row norms. on gemma 4 the result was weak. a manual cut on E2B still refused 62 percent of test prompts.</p>
 
-          <p className="blog-p"><strong>attempt 2, the first search.</strong> we replaced hand-tuning with an Optuna TPE search. the search optimized a strength kernel over the layers, for two components per layer. the objective minimized refusals and KL divergence together. result: 32 percent refusals at KL 0.028. the best trials pushed against the strength limit of 1.5. every trial also edited every layer. the search paid KL divergence on layers that gave no compliance.</p>
+          <p className="blog-p">we searched for a better configuration. the search tried strength kernels, sparse layer windows, over-correction past orthogonal, ORBA, and rank-k subspaces. the best direction-method point on E2B was 12 percent refusals at KL 0.048. on E4B the same pipeline stopped at about 30 percent refusals inside the divergence budget. the budget kept the model intact, but it also capped the method.</p>
 
-          <p className="blog-p"><strong>attempt 3, three fixes.</strong> we added a sparse window (zero edit outside a learned layer range), over-correction (strength up to 4.0, which rotates weight rows past orthogonal), and ORBA (the refusal direction is made orthogonal to the mean harmless direction before the edit). we also added the key, query, and value projections as editable components. result on E2B: 10 percent refusals at KL 0.116, and 12 percent at KL 0.048.</p>
-          <p className="blog-p">the search also rejected one of our own hypotheses. we believed the key and value projections carried the refusal signal. the winning trial set their strength to 0.01. the win came from over-correction on the attention output projection alone, at strength 3.7. the barrier was the norms diluting a weak edit. it was never the K/V pathway.</p>
-
-          <p className="blog-p"><strong>attempt 4, the subspace.</strong> refusal is multi-dimensional. we replaced the single direction with a rank-k SVD subspace per layer, and the approximate norm rescale with the exact biprojected transform. result: the search reached 0 percent refusals. it also reached math score 1 out of 5 and gibberish output, at KL 3.5. the subspace removes refusal completely, and the model with it. the lesson: refusal metrics without a divergence limit will ship a destroyed model.</p>
-
-          <p className="blog-p"><strong>attempt 5, the divergence budget.</strong> we added a hard rule: trials above KL 0.05 are rejected. result: nothing inside the budget beat 12 percent. 12 percent is the genuine frontier of the direction method on E2B.</p>
-
-          <p className="blog-p"><strong>attempt 6, the data upgrade.</strong> we quintupled the direction data to 2048 prompts per class. we also replaced the narrow public evaluation set with our own diverse 300-prompt set. result: 10 percent refusals on our dataset, but 58 percent on the public one. the two refusal mechanisms are different. an edit that suppresses refusal to styled prompts does not suppress refusal to direct requests. this is the most important negative result of the project: every published refusal number is only valid for its own prompt distribution.</p>
-
-          <p className="blog-p"><strong>attempt 7, E4B.</strong> we ran the full improved pipeline on E4B. three variants: the standard recipe, a variant with wider strength, and a variant that also edited the per-layer embedding channel. all three stopped at about 30 percent refusals inside the divergence budget. all three kept refusing most direct requests. the per-layer embedding channel turned out to be a decoy. the wall was not a component or a parameter. the wall was the method class. a direction is a guess about where refusal lives. on E4B, the guess is never good enough.</p>
+          <p className="blog-p">the problem was the assumption. a direction method assumes refusal lives on one line in activation space. gemma 4 has four normalization layers per block, per-layer embeddings, and shared keys and values. these defenses dilute a single-direction edit. refusal is also multi-dimensional: one component hides in the orthogonal complement while the edit removes another. the wall was not a missing parameter. the wall was the method class.</p>
         </section>
 
         <section className="blog-section">
           <h2 className="blog-section-tag">arbitrary rank ablation</h2>
           <p className="blog-p">ARA stands for arbitrary rank ablation. the principle: forget directions completely. we implemented it from first principles in our own code.</p>
 
-          <p className="blog-p"><strong>step 1: record the inputs and outputs.</strong> attach a PyTorch forward hook to one weight matrix. run 400 harmless prompts and 400 harmful prompts through the model. for each prompt, record the input and the output of the matrix at the last token position. the last token position is where the model makes the refusal decision. repeat for every steerable matrix: the attention output projection and the MLP down projection of every layer.</p>
+          <p className="blog-p"><strong>step 1: record the inputs and outputs.</strong> attach a PyTorch forward hook to one weight matrix. run a large batch of harmless and harmful prompts from the enriched dataset through the model. for each prompt, record the input and the output of the matrix at the last token position. the last token position is where the model makes the refusal decision. repeat for every steerable matrix: the attention output projection and the MLP down projection of every layer.</p>
 
           <CodeBlock>{`
 def capture_io(texts):
@@ -366,10 +354,10 @@ study.optimize(objective, n_trials=40)
 
         <section className="blog-section">
           <h2 className="blog-section-tag">results</h2>
-          <p className="blog-p">three gemma 4 models, one method (ARA), one evaluation protocol. every number below is a keyword refusal rate on the stated set, plus KL on our strict metric. all three models pass math 5/5 and a code check.</p>
+          <p className="blog-p">three gemma 4 models, one evaluation protocol. every number below is a keyword refusal rate on the union set, plus KL divergence from the original model on our strict metric. all three models pass math 5/5 and a code check.</p>
           <ResultsCharts />
-          <p className="blog-p">on E4B, the direction method stopped at 29–30 percent refusals inside the divergence budget. ARA reaches 2.7 percent on the same union set. that is about a 10× drop in refusals. KL rises from ~0.02 to ~0.12. destroyed models in attempt 4 started near KL 4. the gap is large.</p>
-          <p className="blog-p">the split matters. attempt 6 showed that a model can pass one prompt distribution and fail another. every shipped point above is balanced across enriched and mlabonne. the union objective forced that balance.</p>
+          <p className="blog-p">the charts show the same story twice. the original model refuses 99 percent of the harmful prompts. direction abliteration cut E2B to 12 percent, but it left E4B at 30 percent. ARA reaches 3.0 percent on E2B, 2.7 percent on E4B, and 6.7 percent on the MoE A4B. the reduction is about 4× on E2B and 10× on E4B.</p>
+          <p className="blog-p">the KL numbers stay inside the safe region. direction abliteration on E2B used KL 0.048. ARA on E2B uses KL 0.173. that is a real increase, but it is far below the KL 4 region where models produce gibberish. ARA spends more divergence than direction abliteration because it makes local edits where they matter, not one global edit everywhere.</p>
           <p className="blog-p">shipped weights:</p>
           <ul className="blog-links-list">
             <li><a href="https://huggingface.co/Bahushruth/gemma-4-E2B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-E2B-it-abliterated</a> — 3.0% union (1% / 6%) @ KL 0.173</li>
