@@ -120,41 +120,6 @@ function DistributionDemo() {
 
   const toSvg = (p) => ({ x: cx + p.x * scale, y: cy - p.y * scale })
 
-  const stepCode = [
-    `# capture inputs and outputs
-io_good = capture_io(harmless_prompts)  # X_g, Y_g
-io_bad  = capture_io(harmful_prompts)   # X_b, Y_b
-
-# green = Y_g, red = Y_b
-# the two clusters are separate`,
-    `# rule 2: pull harmful outputs toward harmless ones
-# (plus rule 1: keep harmless outputs fixed)
-
-new_bad = X_b @ W.T
-pull = knn_mean(new_bad, Y_g, k)
-
-loss = preserve_w * preserve + steer_w * pull`,
-    `# rule 3: push harmful outputs away from their originals
-# over-correction, built into the objective
-
-new_bad = X_b @ W.T
-pull = knn_mean(new_bad, Y_g, k)
-push = knn_mean(new_bad, Y_b, k)
-
-loss = preserve_w * preserve + steer_w * (pull - overcorrect_w * push)`,
-    `# full objective: three rules at every matrix
-
-def objective(W, Xg, Yg, Xb, Yb, pw, sw, oc, k):
-    new_good = Xg @ W.T
-    new_bad  = Xb @ W.T
-
-    preserve = ((new_good - Yg) ** 2).mean()
-    pull = knn_mean(new_bad, Yg, k)
-    push = knn_mean(new_bad, Yb, k)
-
-    return pw * preserve + sw * (pull - oc * push)`,
-  ]
-
   const captions = [
     <>one weight matrix. green: harmless outputs. red: harmful outputs. the two clusters are separate.</>,
     <>ARA changes the matrix. <span style={{ color: '#ffa657' }}>rule 2</span>: pull the harmful outputs toward the harmless outputs. the green cluster stays fixed — <span style={{ color: '#7ee787' }}>rule 1</span>.</>,
@@ -178,73 +143,69 @@ def objective(W, Xg, Yg, Xb, Yb, pw, sw, oc, k):
 
       <p className="abl-ortho-caption">{captions[step]}</p>
 
-      <div className="abl-demo-split">
-        <svg viewBox={`0 0 ${W} ${H}`} className="abl-svg-wide">
-          {/* grid */}
-          {[-2, -1, 0, 1, 2].map(g => (
-            <g key={g}>
-              <line x1={cx + g * scale} y1={0} x2={cx + g * scale} y2={H} stroke="#1a1a1a" strokeWidth={1} />
-              <line x1={0} y1={cy - g * scale} x2={W} y2={cy - g * scale} stroke="#1a1a1a" strokeWidth={1} />
+      <svg viewBox={`0 0 ${W} ${H}`} className="abl-svg-wide">
+        {/* grid */}
+        {[-2, -1, 0, 1, 2].map(g => (
+          <g key={g}>
+            <line x1={cx + g * scale} y1={0} x2={cx + g * scale} y2={H} stroke="#1a1a1a" strokeWidth={1} />
+            <line x1={0} y1={cy - g * scale} x2={W} y2={cy - g * scale} stroke="#1a1a1a" strokeWidth={1} />
+          </g>
+        ))}
+        <line x1={cx} y1={0} x2={cx} y2={H} stroke="#2a2a2a" strokeWidth={1.5} />
+        <line x1={0} y1={cy} x2={W} y2={cy} stroke="#2a2a2a" strokeWidth={1.5} />
+
+        {/* axes labels */}
+        <text x={W - 20} y={cy - 8} fill="#585858" fontSize={9} fontFamily="monospace" textAnchor="end">output dimension 1</text>
+        <text x={cx + 8} y={20} fill="#585858" fontSize={9} fontFamily="monospace">output dimension 2</text>
+
+        {/* force arrows */}
+        {step >= 1 && harmful.map((p, i) => {
+          const from = toSvg(p)
+          const to = toSvg(transformed[i])
+          const color = step === 1 ? '#ffa657' : '#d2a8ff'
+          return (
+            <g key={i} style={{ transition: 'all 1s ease' }}>
+              <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} stroke={color} strokeWidth={1.5} strokeDasharray="4,3" opacity={0.7} />
+              <circle cx={to.x} cy={to.y} r={3} fill={color} opacity={0.9} />
             </g>
-          ))}
-          <line x1={cx} y1={0} x2={cx} y2={H} stroke="#2a2a2a" strokeWidth={1.5} />
-          <line x1={0} y1={cy} x2={W} y2={cy} stroke="#2a2a2a" strokeWidth={1.5} />
+          )
+        })}
 
-          {/* axes labels */}
-          <text x={W - 20} y={cy - 8} fill="#585858" fontSize={9} fontFamily="monospace" textAnchor="end">output dimension 1</text>
-          <text x={cx + 8} y={20} fill="#585858" fontSize={9} fontFamily="monospace">output dimension 2</text>
+        {/* original harmful (ghost) */}
+        {step >= 1 && harmful.map((p, i) => {
+          const s = toSvg(p)
+          return <circle key={i} cx={s.x} cy={s.y} r={5} fill="none" stroke="#ff7b72" strokeWidth={1} opacity={0.3} />
+        })}
 
-          {/* force arrows */}
-          {step >= 1 && harmful.map((p, i) => {
-            const from = toSvg(p)
-            const to = toSvg(transformed[i])
-            const color = step === 1 ? '#ffa657' : '#d2a8ff'
-            return (
-              <g key={i} style={{ transition: 'all 1s ease' }}>
-                <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} stroke={color} strokeWidth={1.5} strokeDasharray="4,3" opacity={0.7} />
-                <circle cx={to.x} cy={to.y} r={3} fill={color} opacity={0.9} />
-              </g>
-            )
-          })}
+        {/* harmless */}
+        {harmless.map((p, i) => {
+          const s = toSvg(p)
+          return (
+            <g key={i}>
+              <circle cx={s.x} cy={s.y} r={6} fill="#7ee787" opacity={0.9} />
+              <circle cx={s.x} cy={s.y} r={9} fill="none" stroke="#7ee787" strokeWidth={1} opacity={0.3} />
+            </g>
+          )
+        })}
 
-          {/* original harmful (ghost) */}
-          {step >= 1 && harmful.map((p, i) => {
-            const s = toSvg(p)
-            return <circle key={i} cx={s.x} cy={s.y} r={5} fill="none" stroke="#ff7b72" strokeWidth={1} opacity={0.3} />
-          })}
+        {/* harmful */}
+        {step === 0 && harmful.map((p, i) => {
+          const s = toSvg(p)
+          return <circle key={i} cx={s.x} cy={s.y} r={6} fill="#ff7b72" opacity={0.9} />
+        })}
 
-          {/* harmless */}
-          {harmless.map((p, i) => {
-            const s = toSvg(p)
-            return (
-              <g key={i}>
-                <circle cx={s.x} cy={s.y} r={6} fill="#7ee787" opacity={0.9} />
-                <circle cx={s.x} cy={s.y} r={9} fill="none" stroke="#7ee787" strokeWidth={1} opacity={0.3} />
-              </g>
-            )
-          })}
+        {/* transformed harmful */}
+        {step > 0 && transformed.map((p, i) => {
+          const s = toSvg(p)
+          return <circle key={i} cx={s.x} cy={s.y} r={6} fill="#ff7b72" opacity={0.9} />
+        })}
 
-          {/* harmful */}
-          {step === 0 && harmful.map((p, i) => {
-            const s = toSvg(p)
-            return <circle key={i} cx={s.x} cy={s.y} r={6} fill="#ff7b72" opacity={0.9} />
-          })}
-
-          {/* transformed harmful */}
-          {step > 0 && transformed.map((p, i) => {
-            const s = toSvg(p)
-            return <circle key={i} cx={s.x} cy={s.y} r={6} fill="#ff7b72" opacity={0.9} />
-          })}
-
-          {/* labels */}
-          <text x={cx - 0.9 * scale} y={cy - 1.1 * scale} fill="#7ee787" fontSize={11} fontFamily="monospace" textAnchor="middle">harmless</text>
-          {step === 0 && <text x={cx + 1.0 * scale} y={cy + 1.0 * scale} fill="#ff7b72" fontSize={11} fontFamily="monospace" textAnchor="middle">harmful</text>}
-          {step === 1 && <text x={cx + 0.2 * scale} y={cy + 0.8 * scale} fill="#ffa657" fontSize={11} fontFamily="monospace" textAnchor="middle">pull</text>}
-          {step === 2 && <text x={cx - 0.3 * scale} y={cy + 0.9 * scale} fill="#d2a8ff" fontSize={11} fontFamily="monospace" textAnchor="middle">push</text>}
-        </svg>
-
-        <CodeBlock>{stepCode[step]}</CodeBlock>
-      </div>
+        {/* labels */}
+        <text x={cx - 0.9 * scale} y={cy - 1.1 * scale} fill="#7ee787" fontSize={11} fontFamily="monospace" textAnchor="middle">harmless</text>
+        {step === 0 && <text x={cx + 1.0 * scale} y={cy + 1.0 * scale} fill="#ff7b72" fontSize={11} fontFamily="monospace" textAnchor="middle">harmful</text>}
+        {step === 1 && <text x={cx + 0.2 * scale} y={cy + 0.8 * scale} fill="#ffa657" fontSize={11} fontFamily="monospace" textAnchor="middle">pull</text>}
+        {step === 2 && <text x={cx - 0.3 * scale} y={cy + 0.9 * scale} fill="#d2a8ff" fontSize={11} fontFamily="monospace" textAnchor="middle">push</text>}
+      </svg>
     </div>
   )
 }

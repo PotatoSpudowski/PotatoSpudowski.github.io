@@ -3047,25 +3047,7 @@ pre code {
     border-radius: 4px;
 }
 
-/* ARA demo split: SVG + code side by side */
-.abl-demo-split {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 1rem;
-    align-items: start;
-}
 
-.abl-demo-split .code-block {
-    margin: 0;
-    font-size: 0.7rem;
-    line-height: 1.45;
-}
-
-@media (max-width: 900px) {
-    .abl-demo-split {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* Kernel explorer sliders */
 .abl-slider {
