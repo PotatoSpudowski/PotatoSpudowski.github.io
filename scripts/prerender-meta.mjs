@@ -18,7 +18,7 @@ const DIST = new URL('../dist/', import.meta.url).pathname
 const ARTICLES = [
   {
     slug: 'abliteration-2',
-    title: 'abliteration part 2: and on the eighth day, god added hella norms',
+    title: 'abliteration part 2: beating gemma 4',
     description: 'gemma 4 repairs every edit you make. four norms, per-layer embeddings, shared keys and values. this is how an automatic search beat the defenses: 62% refusals down to 12%.',
     image: '/abliteration-2-hero.jpg',
   },

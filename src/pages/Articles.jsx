@@ -5,7 +5,7 @@ import SortBar from '../components/SortBar'
 const ARTICLES = [
   {
     slug: 'abliteration-2',
-    title: 'abliteration part 2: and on the eighth day, god added hella norms',
+    title: 'abliteration part 2: beating gemma 4',
     date: 'July 24, 2026',
     dateObj: new Date(2026, 6, 24),
     readtime: '20 min read',

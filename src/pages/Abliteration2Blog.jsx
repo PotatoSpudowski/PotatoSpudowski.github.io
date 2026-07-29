@@ -223,7 +223,7 @@ export default function Abliteration2Blog() {
         <Fade>
           <div className="blog-hero-layout">
             <img src="/abliteration-2-hero.jpg" alt="the four norms dilute the edit" className="blog-hero-img" />
-            <h1 className="blog-title">abliteration part 2: and on the eighth day, god added hella norms</h1>
+            <h1 className="blog-title">abliteration part 2: beating gemma 4</h1>
           </div>
         </Fade>
       </div>
