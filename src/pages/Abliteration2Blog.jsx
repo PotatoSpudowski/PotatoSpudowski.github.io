@@ -18,6 +18,7 @@ const COMPARE_RESULTS = [
   { name: 'E2B (5B)', original: 97, direction: 12, ara: 3.0, directionKl: 0.048, araKl: 0.173 },
   { name: 'E4B (8B)', original: 98, direction: 30, ara: 2.7, directionKl: 0.020, araKl: 0.116 },
   { name: '26B-A4B', original: 95, direction: 22, ara: 6.7, directionKl: 0.035, araKl: 0.230 },
+  { name: '31B (33B)', original: 96, direction: 18, ara: 4.0, directionKl: 0.028, araKl: 0.283 },
 ]
 
 const REFUSAL_SERIES = [
@@ -437,18 +438,19 @@ study.optimize(objective, n_trials=40)
 
         <section className="blog-section">
           <h2 className="blog-section-tag">results</h2>
-          <p className="blog-p">three gemma 4 models, one evaluation protocol. every number below is a refusal rate on the 500-prompt union set, measured with keyword matching and an LLM judge, plus KL divergence from the original model on our strict metric. all three models pass the smoke battery.</p>
+          <p className="blog-p">four gemma 4 models, one evaluation protocol. every number below is a refusal rate on the 500-prompt union set, measured with keyword matching and an LLM judge, plus KL divergence from the original model on our strict metric. all four models pass the smoke battery.</p>
           <ResultsCharts />
-          <p className="blog-p">the charts show the same story twice. the original model refuses 95 to 98 percent of the harmful prompts, depending on size. direction abliteration cut E2B to 12 percent, but it left E4B at 30 percent. ARA reaches 3.0 percent on E2B, 2.7 percent on E4B, and 6.7 percent on the MoE A4B. the reduction is about 4× on E2B and 10× on E4B.</p>
-          <p className="blog-p">the KL numbers stay inside the safe region. direction abliteration on E2B used KL 0.048. ARA on E2B uses KL 0.173. that is a real increase, but it is far below the KL 4 region where models produce gibberish. ARA spends more divergence than direction abliteration because it makes local edits where they matter, not one global edit everywhere.</p>
+          <p className="blog-p">the charts show the same story twice. the original model refuses 95 to 98 percent of the harmful prompts, depending on size. direction abliteration cut E2B to 12 percent, but it left E4B at 30 percent. ARA reaches 3.0 percent on E2B, 2.7 percent on E4B, 6.7 percent on the MoE A4B, and 4.0 percent on 31B. the reduction is about 4× on E2B and 10× on E4B.</p>
+          <p className="blog-p">the KL numbers stay inside the safe region. direction abliteration on E2B used KL 0.048. ARA on E2B uses KL 0.173. that is a real increase, but it is far below the KL 4 region where models produce gibberish. ARA spends more divergence than direction abliteration because it makes local edits where they matter, not one global edit everywhere. the 31B result costs more divergence (KL 0.283) because the model has 60 layers and more capacity to route around the edit.</p>
           <p className="blog-p">shipped weights:</p>
           <ul className="blog-links-list">
             <li><a href="https://huggingface.co/Bahushruth/gemma-4-E2B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-E2B-it-abliterated</a> — 3.0% union (1% / 6%) @ KL 0.173</li>
             <li><a href="https://huggingface.co/Bahushruth/gemma-4-E4B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-E4B-it-abliterated</a> — 2.7% union (2% / 3%) @ KL 0.116</li>
             <li><a href="https://huggingface.co/Bahushruth/gemma-4-26B-A4B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-26B-A4B-it-abliterated</a> — 6.7% union (6% / 7%) @ KL 0.230</li>
+            <li><a href="https://huggingface.co/Bahushruth/gemma-4-31B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-31B-it-abliterated</a> — 4.0% union (3% / 5%) @ KL 0.283</li>
             <li><a href="https://huggingface.co/datasets/Bahushruth/abliteration-harmful-enriched" target="_blank" rel="noopener noreferrer">Bahushruth/abliteration-harmful-enriched</a> — 7356 harmful prompts, 35 categories, 10 styles</li>
           </ul>
-          <p className="blog-p">31B ARA search is still running. 12B is optional: same defenses as 31B, fewer layers. the collection updates as each model lands.</p>
+          <p className="blog-p">12B is optional: same defenses as 31B, fewer layers. the collection updates as it lands.</p>
         </section>
 
         <section className="blog-section">
