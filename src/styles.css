@@ -1846,13 +1846,20 @@ pre code {
     grid-template-columns: 110px 1.2fr 1fr;
 }
 
+.abl-param-table .abl-quant-row {
+    grid-template-columns: 1.2fr 1fr 1fr;
+}
+
 @media (max-width: 720px) {
-    .abl-model-table .abl-quant-row {
+    .abl-model-table .abl-quant-row,
+    .abl-param-table .abl-quant-row {
         grid-template-columns: 1fr;
         gap: 0.25rem;
     }
     .abl-model-table .abl-quant-row span:nth-child(2)::before { content: "Architecture: "; color: var(--text-muted); }
     .abl-model-table .abl-quant-row span:nth-child(3)::before { content: "Defenses: "; color: var(--text-muted); }
+    .abl-param-table .abl-quant-row span:nth-child(2)::before { content: "Range: "; color: var(--text-muted); }
+    .abl-param-table .abl-quant-row span:nth-child(3)::before { content: "Meaning: "; color: var(--text-muted); }
 }
 
 /* Layer viz */

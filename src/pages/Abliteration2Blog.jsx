@@ -428,7 +428,7 @@ def objective(trial):
 study = optuna.create_study(directions=["minimize", "minimize"])
 study.optimize(objective, n_trials=40)
           `}</CodeBlock>
-          <div className="abl-quant-table">
+          <div className="abl-quant-table abl-param-table">
             <div className="abl-quant-row abl-quant-header">
               <span>parameter</span><span>range</span><span>meaning</span>
             </div>
