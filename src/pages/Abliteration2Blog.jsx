@@ -285,7 +285,6 @@ export default function Abliteration2Blog() {
             <div className="abl-quant-row"><span>31B-it, 33B</span><span>60 layers, hidden 5376, 32 heads / 16 KV heads, K=V</span><span>4 norms only</span></div>
           </div>
 
-          <p className="blog-p">this split makes a prediction. the E models are the hardest: every defense, least capacity. the standard models are easier: only the norms remain. the results match the prediction. the direction method reached 12 percent on E2B. it stopped at 30 percent on E4B. on 31B, a published result from wangzhang reached 7 percent with attention-only edits, because 31B has no side channel and no shared keys to repair the cut.</p>
         </section>
 
         <section className="blog-section">
