@@ -15,9 +15,9 @@ function M({ children, block }) {
 // --- results: family release charts ---
 
 const COMPARE_RESULTS = [
-  { name: 'E2B (5B)', original: 99, direction: 12, ara: 3.0, directionKl: 0.048, araKl: 0.173 },
-  { name: 'E4B (8B)', original: 99, direction: 30, ara: 2.7, directionKl: 0.020, araKl: 0.116 },
-  { name: '26B-A4B', original: 99, direction: 22, ara: 6.7, directionKl: 0.035, araKl: 0.230 },
+  { name: 'E2B (5B)', original: 97, direction: 12, ara: 3.0, directionKl: 0.048, araKl: 0.173 },
+  { name: 'E4B (8B)', original: 98, direction: 30, ara: 2.7, directionKl: 0.020, araKl: 0.116 },
+  { name: '26B-A4B', original: 95, direction: 22, ara: 6.7, directionKl: 0.035, araKl: 0.230 },
 ]
 
 const REFUSAL_SERIES = [
@@ -418,7 +418,7 @@ study.optimize(objective, n_trials=40)
           <h2 className="blog-section-tag">results</h2>
           <p className="blog-p">three gemma 4 models, one evaluation protocol. every number below is a keyword refusal rate on the union set, plus KL divergence from the original model on our strict metric. all three models pass math 5/5 and a code check.</p>
           <ResultsCharts />
-          <p className="blog-p">the charts show the same story twice. the original model refuses 99 percent of the harmful prompts. direction abliteration cut E2B to 12 percent, but it left E4B at 30 percent. ARA reaches 3.0 percent on E2B, 2.7 percent on E4B, and 6.7 percent on the MoE A4B. the reduction is about 4× on E2B and 10× on E4B.</p>
+          <p className="blog-p">the charts show the same story twice. the original model refuses 95 to 98 percent of the harmful prompts, depending on size. direction abliteration cut E2B to 12 percent, but it left E4B at 30 percent. ARA reaches 3.0 percent on E2B, 2.7 percent on E4B, and 6.7 percent on the MoE A4B. the reduction is about 4× on E2B and 10× on E4B.</p>
           <p className="blog-p">the KL numbers stay inside the safe region. direction abliteration on E2B used KL 0.048. ARA on E2B uses KL 0.173. that is a real increase, but it is far below the KL 4 region where models produce gibberish. ARA spends more divergence than direction abliteration because it makes local edits where they matter, not one global edit everywhere.</p>
           <p className="blog-p">shipped weights:</p>
           <ul className="blog-links-list">
