@@ -450,7 +450,6 @@ study.optimize(objective, n_trials=40)
             <li><a href="https://huggingface.co/Bahushruth/gemma-4-31B-it-abliterated" target="_blank" rel="noopener noreferrer">Bahushruth/gemma-4-31B-it-abliterated</a> — 4.0% union (3% / 5%) @ KL 0.283</li>
             <li><a href="https://huggingface.co/datasets/Bahushruth/abliteration-harmful-enriched" target="_blank" rel="noopener noreferrer">Bahushruth/abliteration-harmful-enriched</a> — 7356 harmful prompts, 35 categories, 10 styles</li>
           </ul>
-          <p className="blog-p">12B is optional: same defenses as 31B, fewer layers. the collection updates as it lands.</p>
         </section>
 
         <section className="blog-section">
