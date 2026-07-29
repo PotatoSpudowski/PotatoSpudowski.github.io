@@ -184,7 +184,7 @@ export default function Abliteration2Blog() {
 
         <section className="blog-section">
           <h2 className="blog-section-tag">why gemma 4 is hard</h2>
-          <p className="blog-p">read the configuration before you write code. this rule saved us twice. gemma 4 is not more aligned than other models. it is fault-tolerant. three architectural properties dilute every weight edit.</p>
+          <p className="blog-p">we read the model configuration before we wrote the abliteration code. the configuration showed the architectural defenses. gemma 4 is not more aligned than other models. it is fault-tolerant. three architectural properties dilute every weight edit.</p>
 
           <p className="blog-p"><strong>property 1: four normalization layers per decoder layer.</strong> a standard transformer block has two normalization layers. a gemma 4 decoder layer has four: <code>input_layernorm</code>, <code>post_attention_layernorm</code>, <code>pre_feedforward_layernorm</code>, and <code>post_feedforward_layernorm</code>. each one is an RMSNorm with epsilon 1e-6. RMSNorm divides a vector by its root-mean-square magnitude. the effect: the model re-scales the residual stream after every block. an edit that only weakens a signal gets amplified back. only a change in direction survives.</p>
           <p className="blog-p">there is a second effect. attention in gemma 4 applies <code>q_norm</code> and <code>k_norm</code> after the projections. these are per-head RMSNorms at head dimension 256. the value path uses <code>v_norm</code> without a learned scale. a magnitude change in the K and V weights is normalized away before attention runs. only a direction change in K and V survives.</p>
