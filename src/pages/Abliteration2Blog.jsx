@@ -232,7 +232,7 @@ export default function Abliteration2Blog() {
 
         <section className="blog-section">
           <h2 className="blog-section-tag">summary</h2>
-          <p className="blog-p">part 1 described directional ablation. it measures the refusal direction in the residual stream. it projects that direction out of the weight matrices. it preserves the row norms. the method worked on Qwen3.6-35B. the result was 0 percent refusals with intact benchmarks. that post reached more than 250,000 impressions across LinkedIn, X, and Reddit. the uncensored model collection on Hugging Face passed 700,000 downloads on 29 July 2026.</p>
+          <p className="blog-p">part 1 described directional ablation. it measures the refusal direction in the residual stream. it projects that direction out of the weight matrices. it preserves the row norms. the method worked on Qwen3.6-35B. the result was 0 percent refusals with intact benchmarks. that post reached more than <strong>250,000 impressions</strong> across LinkedIn, X, and Reddit. the <a href="https://huggingface.co/collections/Bahushruth/uncensored-llms" target="_blank" rel="noopener noreferrer">uncensored model collection</a> on Hugging Face passed <strong>700,000 downloads</strong> on 29 July 2026.</p>
           <p className="blog-p">this post describes what happened when we tried the same project on the gemma 4 family. gemma 4 is a harder target. the direction method stopped at 30 percent refusals inside the divergence budget. the reason is not better alignment. the reason is fault-tolerant architecture: four normalization layers per decoder layer, per-layer embeddings, and shared keys and values. we had to build a different method.</p>
           <p className="blog-p">this post has four parts. part one: the three architectural defenses of gemma 4, with the real configuration values. part two: why the direction method stopped, with numbers. part three: arbitrary rank ablation (ARA), the method that works, specified completely. part four: the evaluation methodology and the results.</p>
         </section>
@@ -433,6 +433,10 @@ study.optimize(objective, n_trials=40)
         <section className="blog-section">
           <h2 className="blog-section-tag">references</h2>
           <ul className="blog-links-list">
+            <li>
+              <a href="https://github.com/p-e-w/heretic" target="_blank" rel="noopener noreferrer">p-e-w - heretic</a>
+              <br /><span className="blog-ref-note">the library that introduced ARA. we rebuilt it from first principles in our own code</span>
+            </li>
             <li>
               <a href="https://huggingface.co/blog/grimjim/norm-preserving-biprojected-abliteration" target="_blank" rel="noopener noreferrer">grimjim - norm-preserving biprojected abliteration</a>
               <br /><span className="blog-ref-note">exact norm preservation, used inside the ARA solve</span>
