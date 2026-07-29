@@ -1794,6 +1794,19 @@ pre code {
     border-bottom-color: #79c0ff;
 }
 
+.blog-bullet-list {
+    margin: 0.75rem 0 1.25rem 1.25rem;
+    padding: 0;
+}
+
+.blog-bullet-list li {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
 .blog-ref-note {
     color: var(--text-muted);
     font-size: 0.75rem;
