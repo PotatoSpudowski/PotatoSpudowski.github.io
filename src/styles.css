@@ -1842,6 +1842,20 @@ pre code {
     font-weight: normal;
 }
 
+.abl-model-table .abl-quant-row {
+    grid-template-columns: 110px 1fr 1fr 80px;
+}
+
+@media (max-width: 720px) {
+    .abl-model-table .abl-quant-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+    .abl-model-table .abl-quant-row span:nth-child(2)::before { content: "Architecture: "; color: var(--text-muted); }
+    .abl-model-table .abl-quant-row span:nth-child(3)::before { content: "Defenses: "; color: var(--text-muted); }
+    .abl-model-table .abl-quant-row span:nth-child(4)::before { content: "Difficulty: "; color: var(--text-muted); }
+}
+
 /* Layer viz */
 .abl-layer-viz {
     margin: 1.5rem 0;

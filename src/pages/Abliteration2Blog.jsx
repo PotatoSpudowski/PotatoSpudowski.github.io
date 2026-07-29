@@ -249,11 +249,16 @@ export default function Abliteration2Blog() {
 
           <p className="blog-p">the defenses differ per model. we read the configuration of every gemma 4 model. the family splits in two. the E series (E2B, E4B) is built for edge devices: shared keys and values to shrink the cache, per-layer embeddings to recover capacity, small sliding windows. the standard series (12B, 26B-A4B, 31B) drops both of those mechanisms. one more difference is important: the standard series sets <code>attention_k_eq_v = true</code>. the keys and values are the same tensor. there is no <code>v_proj</code> matrix to edit at all. the E series keeps separate K and V projections.</p>
 
-          <p className="blog-p"><strong>E2B-it, 5.1B.</strong> 35 layers, hidden size 1536, 8 attention heads, 1 KV head. double-wide MLP in the shared region. defenses: four norms, per-layer embeddings, 20 shared K/V layers. full armor, least capacity. hard target.</p>
-          <p className="blog-p"><strong>E4B-it, 8B.</strong> 42 layers, hidden size 2560, 8 attention heads, 2 KV heads. defenses: four norms, per-layer embeddings, 18 shared K/V layers. full armor, more layers to carry the signal. the hardest target we tested.</p>
-          <p className="blog-p"><strong>12B-it.</strong> 48 layers, hidden size 3840, 16 attention heads, 8 KV heads, K equals V. defenses: four norms only. the defenses drop here. much friendlier target.</p>
-          <p className="blog-p"><strong>26B-A4B-it, 27B.</strong> 30 layers, hidden size 2816, mixture of experts with 128 experts and 8 active per token, K equals V. defenses: four norms and expert routing. fewer defenses, but refusal can hide inside 128 experts.</p>
-          <p className="blog-p"><strong>31B-it, 33B.</strong> 60 layers, hidden size 5376, 32 attention heads, 16 KV heads, K equals V. defenses: four norms only. the friendliest target. deep and dense.</p>
+          <div className="abl-quant-table abl-model-table">
+            <div className="abl-quant-row abl-quant-header">
+              <span>model</span><span>architecture</span><span>defenses</span><span>difficulty</span>
+            </div>
+            <div className="abl-quant-row"><span>E2B-it, 5.1B</span><span>35 layers, hidden 1536, 8 heads / 1 KV head</span><span>4 norms + PLE-256 + 20 shared K/V</span><span>hard</span></div>
+            <div className="abl-quant-row"><span>E4B-it, 8B</span><span>42 layers, hidden 2560, 8 heads / 2 KV heads</span><span>4 norms + PLE-256 + 18 shared K/V</span><span>hardest</span></div>
+            <div className="abl-quant-row"><span>12B-it</span><span>48 layers, hidden 3840, 16 heads / 8 KV heads, K=V</span><span>4 norms only</span><span>friendlier</span></div>
+            <div className="abl-quant-row"><span>26B-A4B-it, 27B</span><span>30 layers, hidden 2816, MoE 128 experts / top 8, K=V</span><span>4 norms + expert routing</span><span>medium</span></div>
+            <div className="abl-quant-row"><span>31B-it, 33B</span><span>60 layers, hidden 5376, 32 heads / 16 KV heads, K=V</span><span>4 norms only</span><span>friendliest</span></div>
+          </div>
 
           <p className="blog-p">two predictions follow. the E models are the hardest: every defense, least capacity. the standard models are easier: only the norms remain. our results confirm both. E2B needed over-correction to reach 12 percent with the direction method. E4B defeated the direction method completely. and the published 31B result from wangzhang reached 7 percent with attention-only edits, because the 31B has no side channel and no shared keys to repair the cut.</p>
         </section>
