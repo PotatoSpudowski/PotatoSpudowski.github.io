@@ -31,7 +31,7 @@ const KL_SERIES = [
   { key: 'araKl', name: 'ARA (this work)', color: '#79c0ff' },
 ]
 
-function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
+function GroupedBarChart({ data, series, maxValue, unit = '%', zombieThreshold }) {
   const max = maxValue || Math.max(
     ...data.flatMap(d => series.map(s => d[s.key] != null ? d[s.key] : 0)),
     1
@@ -45,27 +45,43 @@ function GroupedBarChart({ data, series, maxValue, unit = '%' }) {
             {s.name}
           </span>
         ))}
+        {zombieThreshold && (
+          <span className="css-chart-legend-item">
+            <span className="css-chart-legend-dot" style={{ background: '#ff7b72' }} />
+            zombie threshold
+          </span>
+        )}
       </div>
-      {data.map((d, i) => (
-        <div key={i} className="css-chart-group">
-          <span className="css-chart-name">{d.name}</span>
-          <div className="css-chart-bars">
-            {series.map(s => (
-              <div key={s.key} className="css-chart-bar-wrap">
-                <div
-                  className="css-chart-bar"
-                  style={{ width: `${(d[s.key] / max) * 100}%`, background: s.color }}
-                />
-                <span className="css-chart-value">
-                  {typeof d[s.key] === 'number' && d[s.key] < 1
-                    ? d[s.key].toFixed(3)
-                    : d[s.key]}{unit}
-                </span>
-              </div>
-            ))}
+      <div className="css-chart-body" style={{ position: 'relative' }}>
+        {zombieThreshold && (
+          <div
+            className="css-chart-threshold"
+            style={{ left: `${(zombieThreshold / max) * 100}%` }}
+          >
+            <span className="css-chart-threshold-label">KL {zombieThreshold}</span>
           </div>
-        </div>
-      ))}
+        )}
+        {data.map((d, i) => (
+          <div key={i} className="css-chart-group">
+            <span className="css-chart-name">{d.name}</span>
+            <div className="css-chart-bars">
+              {series.map(s => (
+                <div key={s.key} className="css-chart-bar-wrap">
+                  <div
+                    className="css-chart-bar"
+                    style={{ width: `${(d[s.key] / max) * 100}%`, background: s.color }}
+                  />
+                  <span className="css-chart-value">
+                    {typeof d[s.key] === 'number' && d[s.key] < 1
+                      ? d[s.key].toFixed(3)
+                      : d[s.key]}{unit}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -76,8 +92,8 @@ function ResultsCharts() {
       <p className="abl-layer-caption">refusal rate by method on the 500-prompt union set. lower is better. the original model refuses almost every prompt. direction abliteration improved on E2B but stopped at 30% on E4B. ARA reaches single-digit refusals on all three models.</p>
       <GroupedBarChart data={COMPARE_RESULTS} series={REFUSAL_SERIES} maxValue={105} unit="%" />
 
-      <p className="abl-layer-caption" style={{ marginTop: '1.5rem' }}>KL divergence from the original model (our metric: 50 harmless prompts, teacher-forced, 100 positions, full vocab). lower is better. ARA stays inside the capability-preserving region while cutting refusals by an order of magnitude.</p>
-      <GroupedBarChart data={COMPARE_RESULTS} series={KL_SERIES} maxValue={0.25} unit="" />
+      <p className="abl-layer-caption" style={{ marginTop: '1.5rem' }}>KL divergence from the original model (our metric: 50 harmless prompts, teacher-forced, 100 positions, full vocab). lower is better. the zombie threshold is KL 4 — models above that produce gibberish and fail basic arithmetic. ARA stays far below it.</p>
+      <GroupedBarChart data={COMPARE_RESULTS} series={KL_SERIES} maxValue={4.5} unit="" zombieThreshold={4} />
     </div>
   )
 }
