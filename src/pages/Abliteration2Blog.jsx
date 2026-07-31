@@ -240,7 +240,7 @@ export default function Abliteration2Blog() {
         <Fade>
           <div className="blog-hero-layout">
             <img src="/abliteration-2-hero.jpg" alt="the four norms dilute the edit" className="blog-hero-img" />
-            <h1 className="blog-title">abliteration part 2: beating gemma 4</h1>
+            <h1 className="blog-title">Abliteration part 2: Beating Google's guardrails (Gemma 4)</h1>
           </div>
         </Fade>
       </div>
@@ -336,7 +336,7 @@ io_bad  = capture_io(harmful_prompts)    # X_b, Y_b per matrix
           `}</CodeBlock>
 
           <p className="blog-p"><strong>step 2: adjust the matrix with three rules.</strong> <M>{"W'"}</M> is the adjusted matrix. <M>{"X_g, Y_g"}</M> are the recorded inputs and outputs for harmless prompts. <M>{"X_b, Y_b"}</M> are the same for harmful prompts. the loss is:</p>
-          <M block>{"L = a \\cdot \\underbrace{\\|X_g W'^\\top - Y_g\\|^2}_{\\text{rule 1: preserve}} + b \\cdot \\big( \\underbrace{d_{\\text{knn}}(X_b W'^\\top, \\, Y_g)}_{\text{rule 2: pull}} - c \\cdot \\underbrace{d_{\\text{knn}}(X_b W'^\\top, \\, Y_b)}_{\text{rule 3: push}} \\big)"}</M>
+          <M block>{"L = a \\cdot \\underbrace{\\|X_g W'^\\top - Y_g\\|^2}_{\\text{rule 1: preserve}} + b \\cdot \\big( \\underbrace{d_{\\text{knn}}(X_b W'^\\top, \\, Y_g)}_{\\text{rule 2: pull}} - c \\cdot \\underbrace{d_{\\text{knn}}(X_b W'^\\top, \\, Y_b)}_{\\text{rule 3: push}} \\big)"}</M>
           <p className="blog-p">rule 1 keeps harmless outputs unchanged. this protects capability directly. no separate capability metric is necessary. rule 2 pulls harmful outputs toward the harmless outputs. this removes the refusal behavior. rule 3 pushes harmful outputs away from their original positions. this is over-correction. it is not a dial. it is a term in the loss. rule 3 is what beats the norm circle from the first section.</p>
           <DistributionDemo />
 
