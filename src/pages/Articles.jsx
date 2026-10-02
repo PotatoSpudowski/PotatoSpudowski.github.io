@@ -4,6 +4,15 @@ import SortBar from '../components/SortBar'
 
 const ARTICLES = [
   {
+    slug: 'engram',
+    title: 'engram is chinas way to win ai without hbm',
+    date: 'September 27, 2026',
+    dateObj: new Date(2026, 8, 27),
+    readtime: '30 min read',
+    tags: ['ai', 'llm', 'systems', 'inference'],
+    image: '/engram-hero.png',
+  },
+  {
     slug: 'abliteration-2',
     title: 'abliteration part 2: beating gemma 4',
     date: 'July 24, 2026',

@@ -1480,6 +1480,14 @@ pre code {
     border-bottom: 1px solid var(--border);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+.blog-section {
+    scroll-margin-top: 24px;
+}
+
 .blog-hero-layout {
     display: flex;
     flex-direction: column;
@@ -1554,6 +1562,33 @@ pre code {
     background: var(--bg-tertiary);
     padding: 0.15rem 0.4rem;
     border-radius: 3px;
+}
+
+.blog-p a {
+    color: #79c0ff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(121, 192, 255, 0.3);
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.blog-p a:hover {
+    color: #a5d6ff;
+    border-bottom-color: #a5d6ff;
+}
+
+.blog-hl {
+    color: var(--text-primary);
+    background: rgba(255, 166, 87, 0.12);
+    padding: 0.08em 0.25em;
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.blog-p--key {
+    border-left: 2px solid #ffa657;
+    padding-left: 1.15rem;
+    color: var(--text-primary);
 }
 
 /* Blog code blocks */

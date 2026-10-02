@@ -10,6 +10,7 @@ import RadioBlog from './pages/RadioBlog'
 import AbliterationBlog from './pages/AbliterationBlog'
 import Abliteration2Blog from './pages/Abliteration2Blog'
 import DSparkBlog from './pages/DSparkBlog'
+import EngramBlog from './pages/EngramBlog'
 import Books from './pages/Books'
 
 function ScrollToTop() {
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/articles/abliteration-2" element={<Abliteration2Blog />} />
         <Route path="/articles/vjepa2-deep-dive" element={<VJEPABlog />} />
         <Route path="/articles/dspark" element={<DSparkBlog />} />
+        <Route path="/articles/engram" element={<EngramBlog />} />
         <Route path="/books" element={<Books />} />
         <Route path="/articles/:slug" element={<Article />} />
       </Routes>
