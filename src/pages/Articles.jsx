@@ -5,7 +5,7 @@ import SortBar from '../components/SortBar'
 const ARTICLES = [
   {
     slug: 'engram',
-    title: 'you dont replace hbm with dram. you change what needs hbm.',
+    title: 'the west is scaling hbm. china may scale around it.',
     date: 'September 27, 2026',
     dateObj: new Date(2026, 8, 27),
     readtime: '30 min read',

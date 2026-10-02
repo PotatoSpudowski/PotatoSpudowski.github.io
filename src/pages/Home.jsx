@@ -21,7 +21,7 @@ const LinkedinIcon = () => (
 const PINNED = [
   {
     slug: 'engram',
-    title: 'you dont replace hbm with dram. you change what needs hbm.',
+    title: 'the west is scaling hbm. china may scale around it.',
     date: 'September 27, 2026',
     readtime: '30 min read',
     tags: ['ai', 'llm', 'systems', 'inference'],

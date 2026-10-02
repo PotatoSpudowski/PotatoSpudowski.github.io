@@ -42,7 +42,7 @@ export default function EngramBlog() {
         <Fade>
           <div className="blog-hero-layout">
             <img src="/engram-hero.png" alt="" className="blog-hero-img" />
-            <h1 className="blog-title">you dont replace hbm with dram. you change what needs hbm.</h1>
+            <h1 className="blog-title">the west is scaling hbm. china may scale around it.</h1>
             <p className="blog-p">tldr. HBM is the fast memory glued next to a GPU and it is priced like bandwidth not like RAM. You cannot just move a model into DDR5. But you can change the model so most of its bytes stop needing HBM. Engram does that. It stores the meaning of repeated token sequences in big lookup tables that live in host DRAM and it fetches a few rows per token instead of recomputing that meaning. 100B of table ran outside HBM for under 3% throughput loss and at matched budgets the benchmarks went up. The same fabs make both kinds of memory so there is no clean winner. But China gets squeezed hardest on HBM and 3 chinese labs already ship this. The real shift is a model that owns 200 GB of memory without needing 200 GB of HBM. HBM stays. What changes is what has to sit in it.</p>
           </div>
         </Fade>
