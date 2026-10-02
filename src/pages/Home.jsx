@@ -21,7 +21,7 @@ const LinkedinIcon = () => (
 const PINNED = [
   {
     slug: 'engram',
-    title: 'engram is chinas way to win ai without hbm',
+    title: 'you dont replace hbm with dram. you change what needs hbm.',
     date: 'September 27, 2026',
     readtime: '30 min read',
     tags: ['ai', 'llm', 'systems', 'inference'],
