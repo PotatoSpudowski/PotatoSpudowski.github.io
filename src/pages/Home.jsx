@@ -20,28 +20,28 @@ const LinkedinIcon = () => (
 
 const PINNED = [
   {
+    slug: 'engram',
+    title: 'engram is chinas way to win ai without hbm',
+    date: 'September 27, 2026',
+    readtime: '30 min read',
+    tags: ['ai', 'llm', 'systems', 'inference'],
+    image: '/engram-hero.png',
+  },
+  {
+    slug: 'abliteration-2',
+    title: 'abliteration part 2: beating gemma 4',
+    date: 'July 24, 2026',
+    readtime: '20 min read',
+    tags: ['ml', 'llm', 'research'],
+    image: '/abliteration-2-hero.jpg',
+  },
+  {
     slug: 'abliteration',
     title: 'surgically removing refusal tendencies in LLMs',
     date: 'June 13, 2026',
     readtime: '30 min read',
     tags: ['ml', 'llm', 'research'],
     image: '/abliteration-hero.jpg',
-  },
-  {
-    slug: 'radio-security-from-scratch',
-    title: 'building a secure radio link on two esp32s',
-    date: 'April 13, 2026',
-    readtime: '20 min read',
-    tags: ['hardware', 'security', 'esp32'],
-    image: '/radio-hero.png',
-  },
-  {
-    slug: 'vjepa2-deep-dive',
-    title: 'what the fuck is a JEPA?',
-    date: 'March 26, 2026',
-    readtime: '25 min read',
-    tags: ['ai', 'research', 'computer-vision'],
-    image: '/vjepa-hero.jpg',
   },
 ]
 
