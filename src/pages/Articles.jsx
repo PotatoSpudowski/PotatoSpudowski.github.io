@@ -5,7 +5,7 @@ import SortBar from '../components/SortBar'
 const ARTICLES = [
   {
     slug: 'getting-mw4-running-on-linux',
-    title: 'getting COD MW4 to run on linux',
+    title: 'patching COD MW4 to run on linux',
     date: 'October 27, 2026',
     dateObj: new Date(2026, 9, 27),
     readtime: '15 min read',

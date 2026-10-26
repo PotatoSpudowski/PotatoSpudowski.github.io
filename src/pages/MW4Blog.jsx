@@ -32,7 +32,7 @@ export default function MW4Blog() {
         <Fade>
           <div className="blog-hero-layout">
             <img src="/mw4-linux-menu.png" alt="Campaign menu reached by our source helper on the isolated Bazzite test copy" className="blog-hero-img mw4-hero-img" />
-            <h1 className="blog-title">getting COD MW4 to run on linux</h1>
+            <h1 className="blog-title">patching COD MW4 to run on linux</h1>
             <p className="blog-p">I wanted to install SteamOS on my PC and turn it into a Steam Machine. Boot into Steam, pick a game with a controller, play. I ended up using Bazzite on an RX 7900 XTX and an i5-12400F. More on that setup in another blog. This one is about getting the Call of Duty: Modern Warfare 4 campaign running, and the startup compatibility work that made it possible.</p>
           </div>
         </Fade>
@@ -41,10 +41,10 @@ export default function MW4Blog() {
       <div className="blog-body">
         <section className="blog-section">
           <h2 className="blog-section-tag">what actually made it work</h2>
-          <p className="blog-p">The Windows-oriented installation passed file verification but failed to start through the configurations we tried. The working Linux package changed the launch environment and the program itself. Understanding that second part requires looking below Proton, at the instructions executed during startup.</p>
-          <p className="blog-p">The working setup uses GE-Proton11-9 through UMU, explicit D3D12 libraries and a Linux helper called <code>codpatch</code>. The helper changes the startup path. It prepares a DLL to wait for attachment, patches selected instructions in the loaded process and intercepts a request for the Randgrid device. That request is redirected to the Windows null device.</p>
-          <p className="blog-p blog-p--key">The fix changes what the game requires during startup. <span className="blog-hl">It redirects the driver-device request and changes build-specific checks instead of making the Windows driver work natively on Linux.</span> Wine and VKD3D supply the execution and rendering environment around that modified path.</p>
-          <p className="blog-p">I wanted a repair I could read, test and publish. Using a coding agent over SSH, I decoded the community helpers patch table, traced its call sites and implemented the Linux startup helper in Python. The <a href="https://github.com/PotatoSpudowski/mw4-linux">source repository</a> includes build detection, preparation, a runtime tracer, rollback and tests. Our helper reached the campaign menu with the reference helper removed from the test tree. Credit for the original repair belongs to its community authors; our contribution is the source implementation and the reproducible account below.</p>
+          <p className="blog-p">Getting the Windows campaign onto the SSD was the easy part. Starting it under Proton was where things broke. Wine could load the executable, but this build still expected a Windows device and particular results from its startup checks. A different launch option was not going to supply that contract.</p>
+          <p className="blog-p">I built <a href="https://github.com/PotatoSpudowski/mw4-linux">mw4-linux</a> to apply the compatibility patch and launch the supported campaign on Linux. It checks the game build, backs up the files it changes, prepares the startup path and runs a small tracer alongside Proton. The tracer repairs the device-open request and startup state, then detaches. The game continues through Wine and VKD3D.</p>
+          <p className="blog-p blog-p--key"><span className="blog-hl">Patch the Windows startup assumptions, then let Proton run the game.</span> The CPU executes the game code. Wine supplies Windows APIs. VKD3D translates Direct3D 12. Our patch handles the specific startup behavior those layers do not satisfy for this build.</p>
+          <p className="blog-p">The alpha reached the rendered campaign menu on my Bazzite machine. The repo includes installation, launch and restore commands, with exact build checks and tests. It currently targets one offline campaign build. Here is what the patch changes, why those changes work and how to apply it.</p>
         </section>
 
         <section className="blog-section">
@@ -158,8 +158,8 @@ on a breakpoint stop:
         </section>
 
         <section className="blog-section">
-          <h2 className="blog-section-tag">turning the mechanism into a tool</h2>
-          <p className="blog-p">The first alpha is <a href="https://github.com/PotatoSpudowski/mw4-linux">mw4-linux</a>. It uses Python standard-library bindings to Linux ptrace. Full executable and Rex hashes pin the patch to a known layout. Installation backs up affected files and records their before/after hashes; restore refuses to overwrite files modified afterward.</p>
+          <h2 className="blog-section-tag">applying the patch</h2>
+          <p className="blog-p">The patcher is <a href="https://github.com/PotatoSpudowski/mw4-linux">mw4-linux</a>. It uses Python standard-library bindings to Linux ptrace. Full executable and Rex hashes pin the patch to a known layout. Installation backs up affected files and records their before/after hashes; restore refuses to overwrite files modified afterward.</p>
           <p className="blog-p">I tested it on a Btrfs reflink copy of the working offline campaign package. In that copy, I reversed the known Rex preparation bytes, removed the graphics overrides and moved codpatch out of the tree. Our installer then prepared the files and our tracer launched them. The prefix, caches and saves came from the working setup. This isolates the helper replacement; it is not a clean retail or fresh-prefix test.</p>
           <Fig cap="Source helper run · both repairs observed, followed by detach">
             <CodeBlock language="json">{`{"event":"ready","patches":10,"threads":1}
@@ -167,7 +167,7 @@ on a breakpoint stop:
 {"event":"startup_checkpoint_repaired"}
 {"event":"detached","result":"both startup repairs observed"}`}</CodeBlock>
           </Fig>
-          <p className="blog-p">Nine regression tests cover argument layout, exact-name matching, buffer capacity, input rejection and rollback protection. A Linux fixture tests a real breakpoint, instruction-pointer repair and clean detach against our own child process. The first game test failed because the device breakpoint targeted the export instead of its caller. Correcting that mistake produced the two repair events and the menu. Implementing the mechanism exposed an error that static inspection had missed.</p>
+          <p className="blog-p">Nine regression tests cover argument layout, exact-name matching, buffer capacity, input rejection and rollback protection. A Linux fixture tests a real breakpoint, instruction-pointer repair and clean detach against our own child process. In the game test, both startup repairs fired, the tracer detached and the campaign menu rendered. Restore then returned the test files to their pre-patch state.</p>
           <p className="blog-p blog-p--key"><span className="blog-hl">The alpha supports one fingerprinted offline campaign build.</span> It does not convert an arbitrary retail installation, ship game files or implement multiplayer compatibility. The verified graphics DLLs and a working UMU/Proton environment are external prerequisites. The repository records their exact fingerprints.</p>
           <p className="blog-p">For the supported installation, make separate game and prefix copies, close MW4 and point the tool at the directory containing sp26. Doctor reads files only. Install checks all inputs before modifying the copy.</p>
           <Fig cap="Quick start · substitute your own absolute paths and existing launch argument">
@@ -191,6 +191,11 @@ python3 mw4.py launch --game /path/to/test-game \\
           <p className="blog-p">The provider includes process and processor compatibility work. Its Code Integrity validation function still returns <code>STATUS_NOT_IMPLEMENTED</code>, so even its name should not be read as a complete Windows integrity implementation. The authors report controlled startup tests requiring the provider, Rex repair, dispatcher repair and clock repair on their tested build. Those are their findings, not experiments repeated on my Mac.</p>
           <p className="blog-p">The Linux path we inspected redirects the device request and modifies the running process. The Mac project supplies part of the driver-host environment as well as binary repairs. A shared installer could manage build detection, backups and rollback, but these mechanisms need separate implementations and tests. Sharing a Wine foundation does not make a Linux ptrace helper portable to macOS.</p>
           <p className="blog-p">For my Steam Machine, the practical result is a campaign running through a repaired startup path and a selected graphics stack. The technically interesting result is narrower and more useful: we can now point to the execution gate, the device request and the control-flow edits that distinguish this launch from simply running the EXE under Proton.</p>
+        </section>
+
+        <section className="blog-section">
+          <h2 className="blog-section-tag">credits</h2>
+          <p className="blog-p">The startup repair builds on the community codpatch work, implemented here in Python with build checks, installation and rollback. UMU, Proton and VKD3D provide the runtime around it. The <a href="https://github.com/PotatoSpudowski/mw4-linux/blob/main/research/mechanism.md">technical notes</a> preserve the reference fingerprints and analysis behind the patch.</p>
         </section>
 
         <section className="blog-section blog-section--last">
