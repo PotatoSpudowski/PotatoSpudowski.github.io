@@ -17,6 +17,12 @@ const DIST = new URL('../dist/', import.meta.url).pathname
 
 const ARTICLES = [
   {
+    slug: 'getting-mw4-running-on-linux',
+    title: 'getting COD MW4 to run on linux',
+    description: 'How MW4 runs on Bazzite: a prepared DLL execution gate, ptrace-driven startup repairs, Randgrid device redirection, and a separate D3D12 translation stack.',
+    image: '/mw4-linux-menu.png',
+  },
+  {
     slug: 'engram',
     title: 'the west is scaling hbm. china may scale around it.',
     description: 'the west stacks more hbm. china is building models that need less of it. engram stores repeated meaning in lookup tables that live in host dram and fetches a few rows per token. 100b outside hbm for under 3% throughput loss.',

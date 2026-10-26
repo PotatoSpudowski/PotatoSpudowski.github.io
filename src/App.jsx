@@ -12,6 +12,7 @@ import Abliteration2Blog from './pages/Abliteration2Blog'
 import DSparkBlog from './pages/DSparkBlog'
 import EngramBlog from './pages/EngramBlog'
 import Books from './pages/Books'
+import MW4Blog from './pages/MW4Blog'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/articles/dspark" element={<DSparkBlog />} />
         <Route path="/articles/engram" element={<EngramBlog />} />
         <Route path="/books" element={<Books />} />
+        <Route path="/articles/getting-mw4-running-on-linux" element={<MW4Blog />} />
         <Route path="/articles/:slug" element={<Article />} />
       </Routes>
       <Footer />

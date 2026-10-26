@@ -4,6 +4,15 @@ import SortBar from '../components/SortBar'
 
 const ARTICLES = [
   {
+    slug: 'getting-mw4-running-on-linux',
+    title: 'getting COD MW4 to run on linux',
+    date: 'October 27, 2026',
+    dateObj: new Date(2026, 9, 27),
+    readtime: '15 min read',
+    tags: ['linux', 'gaming', 'systems', 'debugging'],
+    image: '/mw4-linux-menu.png',
+  },
+  {
     slug: 'engram',
     title: 'the west is scaling hbm. china may scale around it.',
     date: 'September 27, 2026',

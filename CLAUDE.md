@@ -57,47 +57,40 @@ Two types of articles:
 
 2. **Rich React articles** (like the V-JEPA blog): Create a component in `src/pages/`, add a route in `App.jsx` (before the `:slug` catch-all), add entry to `ARTICLES` array.
 
-## Blog Writing Style
+## Blog Writing Style (updated October 2026)
 
-Match Bahushruth's voice exactly. Conversational, direct, no bullshit. Like explaining something to a smart friend over coffee.
+Recent published posts are the source of truth. Read `EngramBlog.jsx` for the current editorial style, `DSparkBlog.jsx` for first-principles explanations and interactive demonstrations, and `RadioBlog.jsx` for personal engineering investigations before drafting. Do not infer the voice from an old markdown post alone.
 
-### Voice
-- First principles always. Explain WHY before HOW
-- Natural swearing where it adds weight ("thats not just X, thats fucking X")
-- Casual slang sparingly: "cooked", "goes hard", "wild", "insane", "ngl", "tbh"
-- Analogies from everyday experience, one per concept max
-- Call out what matters vs what doesnt explicitly
+### Editorial approach
 
-### Grammar
-- Skip apostrophes: "dont" "its" "thats" "doesnt" "youre" "cant" "wont"
-- Numbers as digits always: "3 not three", "16 layers", "75%"
-- No bold text ever
-- No bullet points in prose — write lists into sentences
-- No ## headers in blog body — use styled section labels like "01 — the architecture"
-- No sign-offs, no "in conclusion", posts just end
-- Minimal punctuation. No semicolons. Rare commas. Short sentences for emphasis
-- Paragraphs are the primary structure unit
+- For personal engineering posts, start from the authors actual goal when requested. A first-person opening is welcome. Do not force a TLDR ahead of the story.
+- Center technical investigations on the causal mechanism: what requirement failed, what changed, and why that change addresses it. Downloading a package and inspecting it are methods, not the explanation. Minor debugging mistakes should not become the thesis unless the author asks for that angle.
 
-### Never Do
-- "delve", "utilize", "leverage", "facilitate", "comprehensive", "robust"
-- "in conclusion", "to summarize", "in this article we explored"
-- Emojis in blog posts
-- "Note:" or "Important:" callouts
-- Passive voice when active works
-- Explain obvious acronyms (GPU, API, LLM, SOTA, EMA)
-- "without further ado", "lets dive in"
-- Start a blog post with "I"
+- Lead with the mechanism or a concrete thesis. The Engram post uses a compact `tldr.` in the hero. Use that when it gives readers the argument upfront.
+- Explain the underlying constraint, then show why the proposed solution changes it. First principles means a useful causal explanation, not an introductory glossary.
+- Use connected paragraphs with varied sentence lengths. A short paragraph can land a point, but do not turn every sentence into a slogan.
+- Be conversational and technically specific. Casual language and occasional swearing should come from the story, not a quota. Do not manufacture slang to impersonate the author.
+- Personal work should describe what we observed, changed and learned. Credit upstream authors. Clearly distinguish logs, direct tests, inference and untested claims without repeating a disclaimer after every paragraph.
+- Use numbers and source references where they support the argument. Move long hashes and raw diagnostic dumps out of the main narrative unless the bytes themselves matter.
+- Explain acronyms or unfamiliar concepts when the reader needs them. Do not apply blanket prohibitions.
+- Existing posts often omit apostrophes and use lowercase headings. Follow their natural cadence without deliberately introducing grammatical errors or banning normal punctuation.
+- No canned opening or closing, forced analogies, or inflated claims. End on the technical implication or the unresolved experiment.
 
-### Code Blocks
-- Always have a filename/path label
-- Explain what code does before or after showing it
-- Reference actual source (repo, file, function name)
-- Code is evidence/proof, surrounding text is the explanation
+### Presentation
 
-### Structure
-- Section labels: "01 — topic name" (lowercase, numbered)
-- Flow: problem → why existing sucks → core insight → how it works (with code) → why it matters
-- Every paragraph earns its place. No filler
-- Vary sentence length. Short after long for emphasis
-- Technical sections longer, opinion sections punchier
+- Substantial technical posts use a dedicated React page, not the generic markdown renderer. Reuse `blog-main`, `blog-hero-layout`, `blog-title`, `blog-body`, `blog-section`, `blog-section-tag` and `blog-p`.
+- Headings are descriptive, lowercase and usually unnumbered. The previous mandatory `01 — topic` format is obsolete.
+- Reuse `Fade`, `Fig`, `PaperFig` and `CodeBlock` from `BlogPrimitives.jsx`. Reuse existing typography and spacing before adding scoped CSS.
+- Use `blog-hl` for a small number of important phrases and `blog-p--key` for central deductions. Do not highlight whole sections.
+- Diagrams and interactive figures should teach the actual mechanism or expose a tradeoff. No decorative dashboards or invented measurements. Label illustrative data and distinguish it from observed results.
+- Give evidence images useful captions and alt text. Preserve their aspect ratio if cropping would remove evidence.
+- Code should be short, explained and tied to a source file or log in its caption. Use the shared syntax-highlighted CodeBlock.
+- Prose is the default. Lists are appropriate for references or an index, and tables when comparisons need them. There is no blanket ban on lists, emphasis or semantic headings.
+- Link primary sources near technical claims and use the existing `blog-refs` treatment for references.
 
+### Integration and verification
+
+- Add the rich article route before `:slug` in `src/App.jsx`.
+- Keep `src/pages/Articles.jsx` and `scripts/prerender-meta.mjs` aligned with the title, description and image.
+- Run the production build and inspect the actual page at desktop and narrow widths. Check diagrams, code overflow and figure readability.
+- A draft remains local until publication is requested. Preserve unrelated work.

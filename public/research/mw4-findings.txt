@@ -1,0 +1,93 @@
+MW4 Linux startup investigation — 2026-10-26
+
+Scope
+Static inspection of the installed launcher and helper, read-only inspection of
+rex_sp.dll, and existing launch logs. No game files, live process memory or host
+configuration were changed during this investigation. No component-ablation test.
+
+Helper identity
+ELF64 x86-64, static, stripped, 907392 bytes
+SHA256 cd2bec4f40cbdf8aacdbc7917634d3600eca64b82018baea49aacf06c52ce915
+GNU build ID c1f17202e2c6fd454dbe9d35bcf74c43c860ee4d
+All helper virtual addresses below apply only to this exact binary.
+
+Launcher
+Selects GE-Proton11-9, UMU, dedicated prefix and HOME.
+Pins and selects d3d12.dll and d3d12core.dll with native,builtin overrides.
+Refuses launch when pgrep -fi Randgrid succeeds.
+Starts sp26-cod.exe through UMU, waits for rex_sp.dll in /proc/PID/maps,
+then starts codpatch --attach PID. Existing logs contain codpatch: ready.
+It retains the helper PID and waits for its exit after the game launcher exits.
+
+Static decoder
+ELF .cpw section starts at file offset 0xc6260, size 0x2080.
+Decoder at 0x4041a0 implements a 20-round ChaCha-shaped block function,
+128 blocks of 64 bytes, counter starting at 1.
+Reimplementation in Python produced CPW1 magic, version 1, length 557,
+32 structurally valid typed records. No helper execution was needed.
+See mw4-decode.py for the read-only reconstruction and bounds checks.
+
+Decoded names
+sp26-cod.exe
+rex_sp.dll
+ntdll.dll
+NtCreateFile
+UTF-16 source:      \??\Randgrid
+UTF-16 replacement: \??\NUL
+
+Records relevant to the Rex gate
+Type 1, stage 2: file offset 0x43db, 5-byte call replaced with
+jump-to-self plus NOP padding.
+Type 1, stage 1: RVA 0x4fdb, jump-to-self replaced with NOPs.
+The installed DLL's PE section table maps file offset 0x43db to RVA 0x4fdb.
+Read-only byte check: installed offset 0x43db contains ebfe909090.
+This establishes a prepared execution gate and a matching runtime release.
+
+Other patch records
+10 stage-0 game-image records. Recognizable effects include:
+- conditional jump to unconditional jump
+- removal of a conditional branch
+- function entry changed to mov eax,1; ret
+- zeroing edx changed to writing 1 into dl
+- changing a 32-bit constant from 20000 to 2147483647
+These are instruction effects, not recovered source-level function names.
+No claim that every edited offset is an anti-cheat check.
+
+Runtime evidence locations in codpatch
+0x43b64e: ptrace wrapper; syscall number 0x65 (101) at 0x43b6a9.
+0x405490: breakpoint setup; saves original byte and writes 0xcc.
+0x404b60: original-byte restoration.
+0x4049d0: process-memory write helper, /proc/PID/mem path,
+           with ptrace POKETEXT fallback.
+0x405c44: readiness-message call site.
+0x405cbc: stopped-signal comparison against SIGTRAP (5).
+0x405d3b: PTRACE_GETREGS (12).
+0x405f53 and 0x406323: PTRACE_SETREGS (13).
+0x405f6c: PTRACE_SINGLESTEP (9).
+0x405ccf: PTRACE_CONT (7).
+0x405dbd onward: clone event / GETEVENTMSG / new-thread handling.
+0x4061e2–0x406218: compare UTF-16 name length and exact source contents.
+0x40621e–0x4062b7: capacity check, replacement length and buffer writes.
+0x4062bd–0x406335: further saved-register modifications and SETREGS.
+
+Interpretation
+The helper combines static preparation, runtime byte patches and debugger-style
+interposition. It substitutes the Randgrid device name with NUL and changes
+specific decisions in the game image. This avoids relying on an actual Randgrid
+device at that intercepted open. It does not implement the full driver protocol,
+prove retail anti-cheat support or establish multiplayer compatibility.
+
+Evidence boundaries
+The full semantic purpose of every patched function is not recovered.
+No isolated test proves all 10 image patches or exact graphics DLLs necessary.
+Readiness logs do not prove every breakpoint handler executed in a given run.
+The separately published macOS provider is NOT assumed to be this Linux helper.
+
+2026-10-27 correction and isolated validation
+The device breakpoint is game RVA 0x0b58c7c6. NtCreateFile is the resolved
+callee, not the breakpoint target. OBJECT_ATTRIBUTES is at RBP+0x3e0,
+with ObjectName at +16. The second breakpoint is game RVA 0x0b5a7163.
+An independent source tracer observed both repairs and detached; the test copy
+rendered the campaign menu with the reference helper removed. This separate
+write/launch experiment followed the read-only investigation documented above.
+Source and exact test limits: https://github.com/PotatoSpudowski/mw4-linux
