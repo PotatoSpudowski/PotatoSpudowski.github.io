@@ -1287,30 +1287,17 @@ body {
     font-weight: 600;
 }
 
-/* MW4 uses the shared rich-article typography and figure primitives. */
-.blog-hero-img.mw4-hero-img { aspect-ratio: 1600 / 675; }
-.mw4-layers { padding: 1.25rem; }
-.mw4-layer-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.mw4-layer-buttons button {
-    font: inherit;
-    font-size: 0.8125rem;
-    color: var(--text-secondary);
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.65rem 0.85rem;
-    cursor: pointer;
+/* MW4: one static, responsive startup sequence. */
+.blog-hero-img.mw4-hero-img { aspect-ratio: auto; height: auto; object-fit: contain; max-width: 760px; margin-inline: auto; }
+.mw4-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; list-style: none; margin: 0; padding: 1.5rem; }
+.mw4-flow li { position: relative; }
+.mw4-flow li + li::before { content: '→'; position: absolute; left: -1.5rem; color: #ffa657; }
+.mw4-flow strong { display: block; color: var(--text-primary); font-size: 1rem; font-weight: 500; }
+.mw4-flow span { display: block; margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6; }
+@media (max-width: 600px) {
+    .mw4-flow { grid-template-columns: 1fr; gap: 2.5rem; }
+    .mw4-flow li + li::before { content: '↓'; top: -2rem; left: 0; }
 }
-.mw4-layer-buttons button[aria-pressed="true"] {
-    color: #ffa657;
-    border-color: #ffa657;
-    background: rgba(255, 166, 87, 0.08);
-}
-.mw4-layer-buttons button:focus-visible { outline: 2px solid #79c0ff; outline-offset: 3px; }
-.mw4-layer-detail { padding-top: 1.5rem; }
-.mw4-layer-detail h3 { color: var(--text-primary); font-size: 1rem; margin: 0 0 1rem; }
-.mw4-layer-detail p { color: var(--text-secondary); line-height: 1.8; margin: 0 0 1rem; }
-.mw4-layer-detail .mw4-layer-evidence { color: #7ee787; font-size: 0.875rem; margin-bottom: 0; }
 
 .article-tags {
     margin-top: 3rem;

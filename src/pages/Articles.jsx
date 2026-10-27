@@ -8,9 +8,9 @@ const ARTICLES = [
     title: 'patching COD MW4 to run on linux',
     date: 'October 27, 2026',
     dateObj: new Date(2026, 9, 27),
-    readtime: '15 min read',
+    readtime: '5 min read',
     tags: ['linux', 'gaming', 'systems', 'debugging'],
-    image: '/mw4-linux-menu.png',
+    image: '/mw4-linux-meme.png',
   },
   {
     slug: 'engram',
