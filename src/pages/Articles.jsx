@@ -8,7 +8,7 @@ const ARTICLES = [
     title: 'patching COD MW4 to run on linux',
     date: 'October 27, 2026',
     dateObj: new Date(2026, 9, 27),
-    readtime: '5 min read',
+    readtime: '8 min read',
     tags: ['linux', 'gaming', 'systems', 'debugging'],
     image: '/mw4-linux-meme.png',
   },
