@@ -15,9 +15,10 @@ export default function MW4Blog() {
 
       <div className="blog-body">
         <section className="blog-section">
-          <h2 className="blog-section-tag">proton gets us most of the way</h2>
-          <p className="blog-p">I wanted to install SteamOS on my PC and turn it into a Steam Machine. Pick a game with a controller and play. I ended up using Bazzite with an RX 7900 XTX and i5-12400F. More on that setup in another blog.</p>
-          <p className="blog-p">MW4 was the problem. My CPU can execute its Windows machine code, but the game also needs Windows services and graphics APIs. Proton includes Wine to handle Windows APIs. VKD3D translates the Direct3D 12 graphics calls into Vulkan.</p>
+          <h2 className="blog-section-tag">i wanted a console, not another waiting list</h2>
+          <p className="blog-p">I wanted my PC to feel like a console. Turn it on, pick up a controller, choose a game and play. So I installed <a href="https://bazzite.gg/">Bazzite</a>, a Fedora-based gaming OS with a SteamOS-style experience, on my RX 7900 XTX and i5-12400F machine. More on that setup in another blog.</p>
+          <p className="blog-p">I really wanted to play MW4 this week. But the Windows-only campaign would not launch on my new Linux setup. I already wait for PS5 games to come to Windows. I did not want to wait again for Windows games to become playable on Linux. I wanted to find what was blocking this one and fix it.</p>
+          <p className="blog-p">Proton got us most of the way. My CPU can execute the Windows machine code, but the game also needs Windows services and graphics APIs. Proton includes Wine to handle Windows APIs. VKD3D translates Direct3D 12 graphics calls into Vulkan.</p>
           <p className="blog-p">This campaign build still tried to open a Windows driver device called Randgrid. That startup path did not work in our Linux setup. The patch changes the device request and the checks around it so the campaign can continue.</p>
         </section>
 
