@@ -7,7 +7,7 @@ export default function MW4Blog() {
         <Fade>
           <div className="blog-hero-layout">
             <h1 className="blog-title">patching COD MW4 to run on linux</h1>
-            <p className="blog-p blog-p--key">I built <a href="https://github.com/PotatoSpudowski/mw4-linux">mw4-linux</a> to patch a supported Windows campaign build and launch it through Proton. <span className="blog-hl">The patch reached the campaign menu on Bazzite.</span> Here is why it needs a patch, what changes and how to try it.</p>
+            <p className="blog-p blog-p--key">I built <a href="https://github.com/PotatoSpudowski/mw4-linux">mw4-linux</a> to patch a supported Windows campaign build and launch it through Proton. <span className="blog-hl">I tested it in campaign gameplay on Bazzite.</span> Here is why it needs a patch, what changes and how to try it.</p>
             <img src="/mw4-linux-meme.png" alt="Gru's plan: install MW4 on Linux, use Proton and Wine, discover it still will not launch, then patch the binary yourself." className="blog-hero-img mw4-hero-img" />
           </div>
         </Fade>
@@ -39,11 +39,11 @@ export default function MW4Blog() {
 
         <section className="blog-section">
           <h2 className="blog-section-tag">what worked</h2>
-          <p className="blog-p">I tested our patcher on a separate copy of the game, with the original helper removed. Both repairs fired, the patcher detached and the campaign menu rendered. Restoring the files also worked. Nine regression tests and a small live tracing test passed.</p>
+          <p className="blog-p">I tested our patcher on a separate copy of the game, with the original helper removed. Both repairs fired, the patcher detached and the campaign menu rendered. I have since tested it in campaign gameplay too. Restoring the files also worked. Nine regression tests and a small live tracing test passed.</p>
           <Fig cap="Campaign menu reached by our patcher on the isolated Bazzite test copy.">
             <img src="/mw4-linux-menu.png" alt="MW4 campaign menu with Resume selected after the source patcher completed startup." style={{ display: 'block', width: '100%', height: 'auto' }} loading="lazy" />
           </Fig>
-          <p className="blog-p">This is an alpha for one offline campaign build. The test reused a working Wine prefix and graphics libraries. A fresh setup, full campaign, controller support and macOS still need testing. The patch does not enable multiplayer or support an untouched retail installation.</p>
+          <p className="blog-p">This is an alpha for one offline campaign build. The test reused a working Wine prefix and graphics libraries. A fresh setup, full campaign completion, broader controller support and macOS still need testing. The patch does not enable multiplayer or support an untouched retail installation.</p>
         </section>
 
         <section className="blog-section">
